@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>तरबूज़ एवं विज्ञान क्विज़</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .quiz-container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 650px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .question {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        .question p {
+            font-weight: bold;
+            color: #333;
+        }
+        .options label {
+            display: block;
+            margin: 6px 0;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            background: #f9f9f9;
+        }
+        .options label:hover {
+            background: #eef2f5;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #219150;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h2>तरबूज़ एवं विज्ञान - क्विज़</h2>
+    <form id="quizForm">
+        
+        <div class="question">
+            <p>1. तरबूज़ में लगभग कितने प्रतिशत पानी होता है?</p>
+            <div class="options">
+                <label><input type="radio" name="q1" value="A"> (A) 50 प्रतिशत</label>
+                <label><input type="radio" name="q1" value="B"> (B) 80 प्रतिशत</label>
+                <label><input type="radio" name="q1" value="C"> (C) 92 प्रतिशत</label>
+                <label><input type="radio" name="q1" value="D"> (D) 100 प्रतिशत</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <p>2. जापान के चौकोर तरबूज़ किस कारण विशेष माने जाते हैं?</p>
+            <div class="options">
+                <label><input type="radio" name="q2" value="A"> (A) उनके अनोखे आकार और सुंदरता के कारण</label>
+                <label><input type="radio" name="q2" value="B"> (B) उनके नीले रंग के कारण</label>
+                <label><input type="radio" name="q2" value="C"> (C) उनमें बीज न होने के कारण</label>
+                <label><input type="radio" name="q2" value="D"> (D) उनके बहुत छोटे होने के कारण</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <p>3. तरबूज़ के लाल भाग में कौन-सा लाभदायक तत्व पाया जाता है?</p>
+            <div class="options">
+                <label><input type="radio" name="q3" value="A"> (A) लाइकोपीन</label>
+                <label><input type="radio" name="q3" value="B"> (B) तारा</label>
+                <label><input type="radio" name="q3" value="C"> (C) साँचा</label>
+                <label><input type="radio" name="q3" value="D"> (D) काँच</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <p>4. दादाजी ने गोलू को वैज्ञानिक बनने के लिए क्यों प्रेरित किया?</p>
+            <div class="options">
+                <label><input type="radio" name="q4" value="A"> (A) क्योंकि वैज्ञानिक नई बातों को समझते हैं और उपयोगी खोज करते हैं।</label>
+                <label><input type="radio" name="q4" value="B"> (B) क्योंकि वैज्ञानिक केवल खेल-कूद करते हैं।</label>
+                <label><input type="radio" name="q4" value="C"> (C) क्योंकि वैज्ञानिक केवल पुस्तकें पढ़ते हैं।</label>
+                <label><input type="radio" name="q4" value="D"> (D) क्योंकि वैज्ञानिक महँगे फल खरीदते हैं।</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <p>5. जापान के कागावा प्रांत के किस शहर के किसान चौकोर तरबूज़ उगाने के लिए प्रसिद्ध हैं?</p>
+            <div class="options">
+                <label><input type="radio" name="q5" value="A"> (A) टोक्यो</label>
+                <label><input type="radio" name="q5" value="B"> (B) ज़ेंत्सुजी</label>
+                <label><input type="radio" name="q5" value="C"> (C) ओसाका</label>
+                <label><input type="radio" name="q5" value="D"> (D) क्योतो</label>
+            </div>
+        </div>
+
+        <div class="question">
+            <p>6. पाठ में साधारण गोल तरबूज़ और चौकोर तरबूज़ की कीमत क्रमशः क्या बताई गई है?</p>
+            <div class="options">
+                <label><input type="radio" name="q6" value="A"> (A) ₹50 और ₹1,000</label>
+                <label><input type="radio" name="q6" value="B"> (B) ₹100-200 और लगभग ₹7,000 (10,000 येन)</label>
+                <label><input type="radio" name="q6" value="C"> (C) ₹500 और ₹2,000</label>
+                <label><input type="radio" name="q6" value="D"> (D) ₹200 और ₹15,000</label>
+            </div>
+        </div>
+
+        <button type="button" onclick="calculateScore()">सबमिट करें</button>
+    </form>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    function calculateScore() {
+        const answers = {
+            q1: "C",
+            q2: "A",
+            q3: "A",
+            q4: "A",
+            q5: "B",
+            q6: "B"
+        };
+
+        let score = 0;
+        let totalQuestions = Object.keys(answers).length;
+
+        for (let q in answers) {
+            let selected = document.querySelector(`input[name="${q}"]:checked`);
+            if (selected && selected.value === answers[q]) {
+                score++;
+            }
+        }
+
+        let resultDiv = document.getElementById("result");
+        resultDiv.innerHTML = `आपका स्कोर: ${score} / ${totalQuestions}`;
+    }
+</script>
+
+</body>
+</html>
