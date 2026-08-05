@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>कोयल: मीठी बोली और अच्छे गुण क्विज़</title>
+    <title>इंटरैक्टिव क्विज़</title>
     <style>
         :root {
-            --game-bg: #ffffff;
+            --bg-main: #ffffff;
             --panel-bg: #f8fafc;
-            --primary-blue: #2563eb;
-            --accent-green: #16a34a;
-            --accent-red: #dc2626;
-            --accent-amber: #d97706;
-            --border-color: #e2e8f0;
-            --text-main: #0f172a;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #16a34a;
+            --error: #dc2626;
+            --warning: #d97706;
+            --border: #e2e8f0;
+            --text-dark: #0f172a;
             --text-muted: #64748b;
         }
 
@@ -21,216 +22,196 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
         }
 
         body {
-            background: #f1f5f9;
-            color: var(--text-main);
+            background-color: #f1f5f9;
+            color: var(--text-dark);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 10px;
-            overflow: hidden;
+            padding: 12px;
         }
 
-        /* Arcade Cabinet Frame with Clean White Styling */
-        .arcade-cabinet {
+        /* Fully Responsive Container for Mobile, Tablet, Laptop, Desktop */
+        .quiz-container {
             width: 100%;
-            max-width: 460px;
-            height: 95vh;
-            min-height: 620px;
-            max-height: 780px;
-            background: var(--game-bg);
-            border-radius: 24px;
-            border: 3px solid var(--border-color);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            min-height: 550px;
+            background: var(--bg-main);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
             position: relative;
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
-        .game-view {
+        .view-panel {
             display: none;
             width: 100%;
             height: 100%;
             flex-direction: column;
-            padding: 20px;
+            padding: 24px;
+            flex-grow: 1;
             position: relative;
         }
 
-        .game-view.active {
+        .view-panel.active {
             display: flex;
         }
 
-        /* 1) Splash Screen (5 Seconds - Logo Only) */
-        #splash-view {
+        /* SCREEN 1: SPLASH SCREEN (Only Logo for 5s) */
+        #splash-screen {
             background: #ffffff;
             justify-content: center;
             align-items: center;
         }
 
         .splash-logo {
-            max-width: 220px;
+            max-width: 240px;
+            width: 70%;
             height: auto;
-            animation: radarPulse 1.5s infinite ease-in-out;
+            animation: softPulse 2s infinite ease-in-out;
         }
 
-        @keyframes radarPulse {
-            0% { transform: scale(0.96); opacity: 0.9; }
-            50% { transform: scale(1.04); opacity: 1; }
-            100% { transform: scale(0.96); opacity: 0.9; }
+        @keyframes softPulse {
+            0%, 100% { transform: scale(0.97); opacity: 0.95; }
+            50% { transform: scale(1.03); opacity: 1; }
         }
 
-        /* 2) Intro Screen */
-        #intro-view {
+        /* SCREEN 2: SIMPLE INSTRUCTIONS (No Logo) */
+        #instruction-screen {
             justify-content: center;
             align-items: center;
             text-align: center;
-            background: #ffffff;
         }
 
-        .game-main-title {
-            font-size: 34px;
-            font-weight: 900;
-            color: var(--primary-blue);
-            margin-bottom: 5px;
-            letter-spacing: 0.5px;
+        .screen-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 20px;
         }
 
-        .game-subtitle {
-            font-size: 15px;
-            color: var(--text-muted);
-            margin-bottom: 25px;
-            font-weight: 600;
-        }
-
-        .mission-box {
+        .instruction-card {
             background: var(--panel-bg);
-            border: 2px dashed var(--primary-blue);
+            border: 1px solid var(--border);
             border-radius: 16px;
             padding: 20px;
             width: 100%;
             text-align: left;
-            margin-bottom: 30px;
+            margin-bottom: 28px;
         }
 
-        .mission-line {
-            font-size: 14px;
+        .instruction-item {
+            font-size: 15px;
             font-weight: 600;
             margin-bottom: 12px;
             color: #334155;
             display: flex;
-            align-items: flex-start;
-            gap: 10px;
+            align-items: center;
+            gap: 12px;
             line-height: 1.4;
         }
 
-        .btn-start-game {
-            background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
-            color: #fff;
+        .instruction-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .btn-action {
+            background: var(--primary);
+            color: #ffffff;
             border: none;
-            padding: 14px 45px;
+            padding: 14px 40px;
             font-size: 18px;
-            font-weight: 800;
-            border-radius: 40px;
+            font-weight: 700;
+            border-radius: 30px;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-            text-transform: uppercase;
-            transition: all 0.1s;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+            transition: all 0.2s ease;
         }
 
-        .btn-start-game:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+        .btn-action:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
         }
 
-        /* 3) Main Gameplay Console */
-        .status-hud {
+        .btn-action:active {
+            transform: translateY(1px);
+        }
+
+        /* SCREEN 3: GAMEPLAY CONSOLE */
+        .hud-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: var(--panel-bg);
-            padding: 12px 16px;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
+            padding: 12px 18px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            margin-bottom: 16px;
         }
 
-        .hud-item {
+        .hud-box {
             font-size: 11px;
             font-weight: 700;
             color: var(--text-muted);
             text-transform: uppercase;
         }
 
-        .hud-item span {
+        .hud-box span {
             display: block;
             font-size: 16px;
-            color: var(--text-main);
-            font-weight: 900;
-        }
-
-        .score-glow span {
-            color: var(--accent-green);
-        }
-
-        .hud-lives {
-            font-size: 18px;
-            letter-spacing: 2px;
-        }
-
-        /* Question Box */
-        .question-panel {
-            margin: 18px 0;
-            background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            padding: 18px;
-            border-radius: 16px;
-            position: relative;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-        }
-
-        .competency-tag {
-            position: absolute;
-            top: -10px;
-            left: 15px;
-            background: var(--primary-blue);
-            color: #fff;
-            font-size: 10px;
-            padding: 3px 10px;
-            border-radius: 12px;
+            color: var(--text-dark);
             font-weight: 800;
-            text-transform: uppercase;
+        }
+
+        .question-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 18px;
+            position: relative;
+        }
+
+        .tag-competency {
+            display: inline-block;
+            background: #e0e7ff;
+            color: #3730a3;
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            margin-bottom: 8px;
         }
 
         .question-text {
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 700;
             line-height: 1.5;
-            color: var(--text-main);
-            margin-top: 5px;
+            color: var(--text-dark);
         }
 
-        /* Choices Grid */
-        .choices-grid {
+        .options-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            flex-grow: 1;
-            justify-content: center;
-            margin-bottom: 10px;
+            gap: 10px;
+            margin-bottom: 12px;
         }
 
-        .interactive-choice-btn {
+        .btn-option {
             background: #ffffff;
-            border: 2px solid var(--border-color);
-            border-radius: 16px;
+            border: 2px solid var(--border);
+            border-radius: 14px;
             padding: 14px 16px;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             color: #334155;
             cursor: pointer;
@@ -239,14 +220,14 @@
             align-items: center;
             gap: 12px;
             text-align: left;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
         }
 
-        .interactive-choice-btn:active:not(:disabled) {
-            transform: translateY(2px);
+        .btn-option:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: #f8fafc;
         }
 
-        .choice-badge {
+        .badge-index {
             width: 26px;
             height: 26px;
             background: #f1f5f9;
@@ -261,149 +242,154 @@
         }
 
         /* Feedback States */
-        .interactive-choice-btn.hit-success {
+        .btn-option.hit-success {
             background: #f0fdf4 !important;
-            border-color: var(--accent-green) !important;
-            color: var(--accent-green) !important;
-            font-weight: 700;
+            border-color: var(--success) !important;
+            color: var(--success) !important;
         }
 
-        .interactive-choice-btn.hit-success .choice-badge {
-            background: var(--accent-green);
+        .btn-option.hit-success .badge-index {
+            background: var(--success);
             color: #ffffff;
         }
 
-        .interactive-choice-btn.hit-failed {
+        .btn-option.hit-failed {
             background: #fef2f2 !important;
-            border-color: var(--accent-red) !important;
-            color: var(--accent-red) !important;
-            font-weight: 700;
+            border-color: var(--error) !important;
+            color: var(--error) !important;
+            opacity: 0.7;
         }
 
-        .interactive-choice-btn.hit-failed .choice-badge {
-            background: var(--accent-red);
+        .btn-option.hit-failed .badge-index {
+            background: var(--error);
             color: #ffffff;
         }
 
-        .warning-toast {
-            background: #fef2f2;
-            border: 1px solid #fca5a5;
-            color: var(--accent-red);
+        .toast-msg {
+            background: #fffbeeb0;
+            border: 1px solid #fde68a;
+            color: var(--warning);
             padding: 10px;
             border-radius: 10px;
             text-align: center;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 700;
             margin-top: auto;
             display: none;
         }
 
-        @keyframes consoleShake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-6px); }
-            40%, 80% { transform: translateX(6px); }
-        }
-
-        /* 4) End Game View */
-        #gameover-view {
+        /* SCREEN 4: CREATIVE END/CONGRATULATIONS PAGE */
+        #end-screen {
             justify-content: center;
             align-items: center;
             text-align: center;
             background: #ffffff;
         }
 
-        .endgame-art {
-            font-size: 65px;
+        .celebration-badge {
+            font-size: 70px;
             margin-bottom: 10px;
-            animation: bounceArt 1.5s infinite alternate ease-in-out;
+            animation: bounceIcon 1.2s infinite alternate ease-in-out;
         }
 
-        @keyframes bounceArt {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-10px); }
+        @keyframes bounceIcon {
+            from { transform: translateY(0); }
+            to { transform: translateY(-12px); }
         }
 
-        .final-score-display {
+        .congrats-title {
+            font-size: 30px;
+            font-weight: 900;
+            color: var(--success);
+            margin-bottom: 8px;
+        }
+
+        .score-banner {
             font-size: 42px;
             font-weight: 900;
-            color: var(--accent-green);
+            color: var(--primary);
             margin: 15px 0;
-            letter-spacing: 1px;
         }
 
-        .final-narration-text {
-            font-size: 14px;
+        .final-desc {
+            font-size: 15px;
             color: var(--text-muted);
             line-height: 1.5;
-            max-width: 360px;
-            margin-bottom: 30px;
-            padding: 0 10px;
+            max-width: 380px;
+            margin-bottom: 25px;
+        }
+
+        /* Canvas for confetti effect */
+        #confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
 
-    <div class="arcade-cabinet" id="console-body">
-
-        <div id="splash-view" class="game-view active">
+    <div class="quiz-container">
+        
+        <div id="splash-screen" class="view-panel active">
             <img src="assets/image_9d321f.png" alt="Innovine Logo" class="splash-logo">
         </div>
 
-        <div id="intro-view" class="game-view">
-            <div class="game-main-title">कोयल</div>
-            <div class="game-subtitle">मधुर वाणी और अच्छे गुणों का महत्व</div>
+        <div id="instruction-screen" class="view-panel">
+            <div class="screen-title">क्विज़ निर्देश</div>
             
-            <div class="mission-box">
-                <div class="mission-line">🐦 <span>इस क्विज़ में आपके सामने 'कोयल' कविता पर आधारित 10 महत्त्वपूर्ण निर्णय-आधारित प्रश्न आएंगे।</span></div>
-                <div class="mission-line">🎯 <span>सही विकल्प चुनें और मधुर बोली व अच्छे व्यवहार का महत्व समझें।</span></div>
-                <div class="mission-line">❤️ <span>सावधान! आपके पास कुल 3 लाइफ्स (शील्ड) हैं। गलत उत्तर पर एक लाइफ कम हो जाएगी।</span></div>
+            <div class="instruction-card">
+                <div class="instruction-item">🎯 <span>प्रत्येक प्रश्न का उत्तर देने के लिए <b>2 अवसर</b> मिलेंगे।</span></div>
+                <div class="instruction-item">⭐ <span>सही उत्तर चुनने पर अंक प्राप्त होंगे।</span></div>
+                <div class="instruction-item">💡 <span>2 बार गलत उत्तर देने पर सही उत्तर दिखाया जाएगा।</span></div>
+                <div class="instruction-item">🏆 <span>सभी प्रश्नों को पूरा करके अपना अंतिम स्कोर देखें।</span></div>
             </div>
             
-            <button class="btn-start-game" onclick="startQuizMission()">शुरू करें 🚀</button>
+            <button class="btn-action" onclick="startQuiz()">शुरू करें 🚀</button>
         </div>
 
-        <div id="gameplay-view" class="game-view">
-            <div class="status-hud">
-                <div class="hud-item">
+        <div id="gameplay-screen" class="view-panel">
+            <div class="hud-header">
+                <div class="hud-box">
                     प्रगति
-                    <span id="hud-round-lbl">ROUND 01</span>
+                    <span id="hud-round">01 / 10</span>
                 </div>
-                <div class="hud-item score-glow">
+                <div class="hud-box" style="text-align: right;">
                     कुल अंक
-                    <span id="hud-score-lbl">000</span>
-                </div>
-                <div class="hud-item" style="text-align: right;">
-                    शील्ड हेल्थ
-                    <div class="hud-lives" id="hud-lives-lbl">❤️❤️❤️</div>
+                    <span id="hud-score" style="color: var(--success);">0</span>
                 </div>
             </div>
 
-            <div class="question-panel">
-                <div class="competency-tag" id="lbl-competency">Competency</div>
-                <div class="question-text" id="lbl-question">लोड हो रहा है...</div>
+            <div class="question-card">
+                <div class="tag-competency" id="lbl-competency">दक्षता</div>
+                <div class="question-text" id="lbl-question">प्रश्न लोड हो रहा है...</div>
             </div>
 
-            <div class="choices-grid" id="container-choices">
+            <div class="options-list" id="container-options">
                 </div>
 
-            <div class="warning-toast" id="lbl-warning"></div>
+            <div class="toast-msg" id="lbl-toast"></div>
         </div>
 
-        <div id="gameover-view" class="game-view">
-            <div class="endgame-art" id="end-badge">🏆</div>
-            <div class="game-main-title" id="end-status-title" style="color:var(--accent-amber);">मिशन सफल</div>
-            <div class="final-score-display" id="lbl-final-score">000 PTS</div>
-            <div class="final-narration-text" id="lbl-final-comment">शानदार! आपने मधुर वाणी और अच्छे गुणों का महत्व बहुत अच्छे से समझा।</div>
-            <button class="btn-start-game" onclick="resetQuizConsole()">री-प्ले 🔄</button>
+        <div id="end-screen" class="view-panel">
+            <canvas id="confetti-canvas"></canvas>
+            <div class="celebration-badge" id="end-icon">🎉</div>
+            <div class="congrats-title" id="end-title">बहुत-बहुत बधाई!</div>
+            <div class="score-banner" id="lbl-final-score">0 PTS</div>
+            <div class="final-desc" id="lbl-final-desc">आपने सफलतापूर्वक सभी प्रश्नों के उत्तर दे दिए हैं!</div>
+            <button class="btn-action" onclick="restartQuiz()">पुनः खेलें 🔄</button>
         </div>
 
     </div>
 
     <script>
-        // Quiz Data directly mapped from input
+        // Clean dataset without Grade, Topic, or Chapter mentions
         const quizDataset = [
             {
-                q: "यदि आपके मित्र की कोई आदत अच्छी नहीं है, तो कोयल की कविता से आपको क्या सीख मिलती है?",
+                q: "यदि आपके मित्र की कोई आदत अच्छी नहीं है, तो आपको क्या करना चाहिए?",
                 choices: [
                     "केवल बाहरी रूप देखकर निर्णय लेना चाहिए।",
                     "अच्छे गुणों और व्यवहार को महत्व देना चाहिए।",
@@ -411,21 +397,21 @@
                     "किसी से बात नहीं करनी चाहिए।"
                 ],
                 correctIdx: 1,
-                comp: "सीख को जीवन में लागू करना"
+                comp: "व्यवहारिक समझ"
             },
             {
-                q: "कविता में कोयल काली होने के बाद भी सभी को प्रिय लगती है। इसका मुख्य कारण क्या है?",
+                q: "व्यक्ति की पहचान और लोकप्रियता का मुख्य कारण क्या होता है?",
                 choices: [
-                    "वह सबसे बड़ी चिड़िया है।",
-                    "उसकी मधुर बोली और अच्छे गुण उसे विशेष बनाते हैं।",
-                    "वह सबसे तेज उड़ती है।",
-                    "वह पेड़ों को काटती है।"
+                    "उसका आकार या शारीरिक बनावट।",
+                    "उसकी मधुर बोली और अच्छे गुण।",
+                    "उसका तेज़ी से काम करना।",
+                    "दूसरों पर हुक्म चलाना।"
                 ],
                 correctIdx: 1,
-                comp: "गुणों के आधार पर विश्लेषण करना"
+                comp: "गुणों का विश्लेषण"
             },
             {
-                q: "यदि कोई विद्यार्थी गुस्से में अपने मित्र से कठोर शब्द बोल देता है, तो कोयल से मिली सीख के अनुसार उसे क्या करना चाहिए?",
+                q: "यदि कोई विद्यार्थी गुस्से में अपने मित्र से कठोर शब्द बोल देता है, तो उसे क्या करना चाहिए?",
                 choices: [
                     "और अधिक कठोर शब्द बोलने चाहिए।",
                     "चुप रहकर मित्र से बात करना बंद कर देना चाहिए।",
@@ -433,21 +419,21 @@
                     "अपने मित्र को दोष देना चाहिए।"
                 ],
                 correctIdx: 2,
-                comp: "व्यवहार में सकारात्मक बदलाव लाना"
+                comp: "सकारात्मक बदलाव"
             },
             {
-                q: "“आमों में मिश्री घोली” पंक्ति से कवयित्री क्या बताना चाहती हैं?",
+                q: "“बातचीत में मिठास होना” इस कथन का क्या अर्थ है?",
                 choices: [
-                    "कोयल आमों पर मिश्री डालती है।",
-                    "कोयल की मीठी आवाज वातावरण को आनंदमय बना देती है।",
-                    "कोयल को आम खाना पसंद है।",
-                    "आम का स्वाद बदल जाता है।"
+                    "बातों में चीनी मिलाना।",
+                    "मीठी और विनम्र आवाज से वातावरण को आनंदमय बनाना।",
+                    "मीठा खाना पसंद होना।",
+                    "कम बोलना।"
                 ],
                 correctIdx: 1,
-                comp: "काव्य भाव को समझना"
+                comp: "भाव समझना"
             },
             {
-                q: "यदि आपके आसपास पक्षियों की संख्या कम हो रही है, तो आप कोयल और अन्य पक्षियों की सहायता के लिए क्या कर सकते हैं?",
+                q: "यदि आपके आसपास पक्षियों की संख्या कम हो रही है, तो आप उनकी सहायता के लिए क्या कर सकते हैं?",
                 choices: [
                     "पेड़ों को काट सकते हैं।",
                     "पक्षियों के लिए पानी रख सकते हैं और पेड़ लगा सकते हैं।",
@@ -455,223 +441,217 @@
                     "उनके घोंसले हटा सकते हैं।"
                 ],
                 correctIdx: 1,
-                comp: "पर्यावरण के प्रति जिम्मेदारी निभाना"
+                comp: "पर्यावरण जिम्मेदारी"
             },
             {
-                q: "कवयित्री ने कोयल को “चिड़ियों की रानी” क्यों कहा होगा?",
+                q: "किसी को 'विशेष या श्रेष्ठ' क्यों माना जाता है?",
                 choices: [
-                    "क्योंकि वह सबसे सुंदर रंग की है।",
+                    "क्योंकि वह सबसे सुंदर रंग का है।",
                     "क्योंकि उसकी मधुर आवाज और अच्छे गुण उसे विशेष बनाते हैं।",
-                    "क्योंकि वह सबसे ऊँचे पेड़ पर रहती है।",
-                    "क्योंकि वह सभी पक्षियों से बड़ी है।"
+                    "क्योंकि वह सबसे ऊँचे स्थान पर रहता है।",
+                    "क्योंकि वह आकार में बड़ा है।"
                 ],
                 correctIdx: 1,
-                comp: "कारण और परिणाम का मूल्यांकन करना"
+                comp: "मूल्यांकन"
             },
             {
-                q: "आपकी कक्षा में एक विद्यार्थी बहुत तेज आवाज में बात करता है। कोयल की सीख के अनुसार आप उसे क्या सुझाव देंगे?",
+                q: "आपकी कक्षा में एक विद्यार्थी बहुत तेज आवाज में बात करता है। आप उसे क्या सुझाव देंगे?",
                 choices: [
                     "उसे और तेज बोलने के लिए कहेंगे।",
                     "उसे मधुर और विनम्र भाषा का प्रयोग करने के लिए कहेंगे।",
                     "उससे हमेशा नाराज़ रहेंगे।",
-                    "उससे दोस्ती समाप्त कर देंगे।"
+                    "उससे बातचीत समाप्त कर देंगे।"
                 ],
                 correctIdx: 1,
-                comp: "सामाजिक परिस्थितियों में सीख का प्रयोग"
+                comp: "सामाजिक व्यवहार"
             },
             {
-                q: "दो पक्षियों में से एक सुंदर दिखता है लेकिन कठोर आवाज में बोलता है और दूसरा साधारण दिखता है लेकिन मधुर बोलता है। कविता के अनुसार कौन अधिक पसंद किया जाएगा?",
+                q: "दो व्यक्तियों में से एक सुंदर दिखता है लेकिन कठोर बोलता है, दूसरा साधारण दिखता है लेकिन मधुर बोलता है। कौन अधिक प्रिय होगा?",
                 choices: [
-                    "सुंदर दिखने वाला पक्षी",
-                    "मधुर बोलने वाला पक्षी",
-                    "दोनों को कोई पसंद नहीं करेगा",
-                    "जो सबसे बड़ा होगा"
+                    "सुंदर दिखने वाला व्यक्ति",
+                    "मधुर बोलने वाला व्यक्ति",
+                    "दोनों में से कोई नहीं",
+                    "जो सबसे अधिक धनवान होगा"
                 ],
                 correctIdx: 1,
-                comp: "गुणों की तुलना करके निर्णय लेना"
+                comp: "तुलनात्मक निर्णय"
             },
             {
-                q: "यदि कोयल मनुष्यों को एक संदेश दे, तो वह क्या कह सकती है?",
+                q: "अपने व्यवहार से समाज को खुश रखने का सबसे अच्छा तरीका क्या है?",
                 choices: [
-                    "हमेशा दूसरों से कठोर भाषा में बात करो।",
-                    "अपने अच्छे गुणों से सबको खुश रखो।",
-                    "केवल अपने बारे में सोचो।",
-                    "प्रकृति को नुकसान पहुँचाओ।"
+                    "हमेशा दूसरों से कठोर भाषा में बात करना।",
+                    "अपने अच्छे गुणों और विनम्रता से सबको खुश रखना।",
+                    "केवल अपने बारे में सोचना।",
+                    "आस-पास के वातावरण को नुकसान पहुँचाना।"
                 ],
                 correctIdx: 1,
-                comp: "पाठ के संदेश को नए संदर्भ में लागू करना"
+                comp: "संदेश का अनुप्रयोग"
             },
             {
-                q: "“कोयल” कविता का मुख्य संदेश क्या है?",
+                q: "अच्छी वाणी और सद्व्यवहार का जीवन में क्या महत्व है?",
                 choices: [
-                    "केवल पक्षियों के रंगों का वर्णन करना।",
-                    "मधुर वाणी, अच्छे व्यवहार और गुणों का महत्व समझाना।",
-                    "पेड़ों की संख्या कम करना।",
-                    "केवल ऋतु परिवर्तन के बारे में बताना।"
+                    "केवल दिखावा करना।",
+                    "मधुर वाणी, अच्छे व्यवहार और गुणों से सभी का दिल जीतना।",
+                    "दूसरों से श्रेष्ठ साबित होना।",
+                    "केवल शांत बैठे रहना।"
                 ],
                 correctIdx: 1,
-                comp: "मुख्य विचार की पहचान और मूल्यांकन"
+                comp: "मुख्य विचार पहचानना"
             }
         ];
 
-        let activeRound = 0;
-        let finalScore = 0;
-        let shieldCount = 3;
-        let roundFaults = 0;
-        let actionLock = false;
+        let currentIdx = 0;
+        let score = 0;
+        let attemptsLeft = 2;
+        let isLocked = false;
 
-        const synthContext = new (window.AudioContext || window.webkitAudioContext)();
-
-        function triggerConsoleAudio(soundType) {
-            const oscillator = synthContext.createOscillator();
-            const volumeNode = synthContext.createGain();
-            oscillator.connect(volumeNode);
-            volumeNode.connect(synthContext.destination);
-            volumeNode.gain.setValueAtTime(0.05, synthContext.currentTime);
-
-            if (soundType === 'correct') {
-                oscillator.type = 'triangle';
-                oscillator.frequency.setValueAtTime(550, synthContext.currentTime);
-                oscillator.frequency.setValueAtTime(850, synthContext.currentTime + 0.08);
-                volumeNode.gain.exponentialRampToValueAtTime(0.01, synthContext.currentTime + 0.25);
-                oscillator.start(); oscillator.stop(synthContext.currentTime + 0.25);
-            } else if (soundType === 'wrong') {
-                oscillator.type = 'sawtooth';
-                oscillator.frequency.setValueAtTime(130, synthContext.currentTime);
-                volumeNode.gain.exponentialRampToValueAtTime(0.01, synthContext.currentTime + 0.35);
-                oscillator.start(); oscillator.stop(synthContext.currentTime + 0.35);
-            } else if (soundType === 'finish') {
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(440, synthContext.currentTime);
-                oscillator.frequency.setValueAtTime(220, synthContext.currentTime + 0.25);
-                volumeNode.gain.exponentialRampToValueAtTime(0.01, synthContext.currentTime + 0.6);
-                oscillator.start(); oscillator.stop(synthContext.currentTime + 0.6);
-            }
-        }
-
-        function changeDisplayView(viewId) {
-            document.querySelectorAll('.game-view').forEach(v => v.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
-        }
-
+        // Auto-switch Splash Screen after EXACTLY 5 Seconds
         window.onload = () => {
-            // Strict 5-Second Brand Splash Window
-            setTimeout(() => { changeDisplayView('intro-view'); }, 5000);
+            setTimeout(() => {
+                showPanel('instruction-screen');
+            }, 5000);
         };
 
-        function startQuizMission() {
-            if (synthContext.state === 'suspended') synthContext.resume();
-            activeRound = 0;
-            finalScore = 0;
-            shieldCount = 3;
-            changeDisplayView('gameplay-view');
-            loadQuizRound();
+        function showPanel(panelId) {
+            document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(panelId).classList.add('active');
         }
 
-        function loadQuizRound() {
-            roundFaults = 0;
-            actionLock = false;
-            const currentItem = quizDataset[activeRound];
+        function startQuiz() {
+            currentIdx = 0;
+            score = 0;
+            showPanel('gameplay-screen');
+            loadQuestion();
+        }
 
-            document.getElementById('hud-round-lbl').innerText = `ROUND ${String(activeRound + 1).padStart(2, '0')}`;
-            document.getElementById('hud-score-lbl').innerText = String(finalScore).padStart(3, '0');
-            document.getElementById('hud-lives-lbl').innerText = '❤️'.repeat(shieldCount);
-            document.getElementById('lbl-competency').innerText = currentItem.comp;
-            document.getElementById('lbl-question').innerText = currentItem.q;
-            document.getElementById('lbl-warning').style.display = 'none';
+        function loadQuestion() {
+            attemptsLeft = 2;
+            isLocked = false;
+            const currentQ = quizDataset[currentIdx];
 
-            const choicesBox = document.getElementById('container-choices');
-            choicesBox.innerHTML = '';
+            document.getElementById('hud-round').innerText = `${String(currentIdx + 1).padStart(2, '0')} / ${quizDataset.length}`;
+            document.getElementById('hud-score').innerText = score;
+            document.getElementById('lbl-competency').innerText = currentQ.comp;
+            document.getElementById('lbl-question').innerText = currentQ.q;
+            document.getElementById('lbl-toast').style.display = 'none';
 
-            const indexes = ['A', 'B', 'C', 'D'];
-            currentItem.choices.forEach((text, idx) => {
+            const optionsContainer = document.getElementById('container-options');
+            optionsContainer.innerHTML = '';
+
+            const prefixes = ['A', 'B', 'C', 'D'];
+            currentQ.choices.forEach((choiceText, index) => {
                 const btn = document.createElement('button');
-                btn.className = 'interactive-choice-btn';
-                btn.innerHTML = `<span class="choice-badge">${indexes[idx]}</span><span>${text}</span>`;
-                btn.onclick = () => evaluateChoiceClick(idx, btn);
-                choicesBox.appendChild(btn);
+                btn.className = 'btn-option';
+                btn.innerHTML = `<span class="badge-index">${prefixes[index]}</span><span>${choiceText}</span>`;
+                btn.onclick = () => selectOption(index, btn);
+                optionsContainer.appendChild(btn);
             });
         }
 
-        function evaluateChoiceClick(clickedIdx, element) {
-            if (actionLock) return;
-            const currentData = quizDataset[activeRound];
-            const warningToast = document.getElementById('lbl-warning');
+        function selectOption(selectedIndex, buttonElem) {
+            if (isLocked) return;
+            const currentQ = quizDataset[currentIdx];
+            const toast = document.getElementById('lbl-toast');
 
-            if (clickedIdx === currentData.correctIdx) {
-                actionLock = true;
-                element.classList.add('hit-success');
-                triggerConsoleAudio('correct');
-                finalScore += 10;
-                setTimeout(goToNextRound, 1000);
+            if (selectedIndex === currentQ.correctIdx) {
+                // Correct Answer
+                isLocked = true;
+                buttonElem.classList.add('hit-success');
+                score += (attemptsLeft === 2) ? 10 : 5;
+                document.getElementById('hud-score').innerText = score;
+                setTimeout(nextQuestion, 1000);
             } else {
-                roundFaults++;
-                shieldCount--;
-                element.classList.add('hit-failed');
-                document.getElementById('hud-lives-lbl').innerText = '❤️'.repeat(shieldCount > 0 ? shieldCount : 0);
-                triggerConsoleAudio('wrong');
+                // Wrong Answer
+                attemptsLeft--;
+                buttonElem.classList.add('hit-failed');
+                buttonElem.disabled = true;
 
-                const mainConsole = document.getElementById('console-body');
-                mainConsole.style.animation = 'consoleShake 0.3s ease-out';
-                setTimeout(() => mainConsole.style.animation = '', 300);
-
-                if (shieldCount <= 0) {
-                    actionLock = true;
-                    setTimeout(() => evaluateEndSummary(false), 1000);
-                    return;
-                }
-
-                if (roundFaults === 1) {
-                    warningToast.innerText = "💥 गलत उत्तर! कोयल की तरह मीठी और सही बात चुनें। शील्ड डैमेज हुई!";
-                    warningToast.style.display = 'block';
-                    element.disabled = true;
+                if (attemptsLeft === 1) {
+                    // First wrong attempt -> Give 1 more chance
+                    toast.innerText = "⚠️ गलत उत्तर! आपके पास 1 अंतिम प्रयास बचा है।";
+                    toast.style.display = 'block';
                 } else {
-                    actionLock = true;
-                    warningToast.style.display = 'none';
-                    document.querySelectorAll('.interactive-choice-btn')[currentData.correctIdx].classList.add('hit-success');
-                    setTimeout(goToNextRound, 1400);
+                    // Second wrong attempt -> Reveal correct answer
+                    isLocked = true;
+                    toast.innerText = "❌ 2 प्रयास समाप्त! सही उत्तर हरा दिखाया गया है।";
+                    toast.style.display = 'block';
+
+                    const allButtons = document.querySelectorAll('.btn-option');
+                    allButtons[currentQ.correctIdx].classList.add('hit-success');
+                    allButtons.forEach(b => b.disabled = true);
+
+                    setTimeout(nextQuestion, 1800);
                 }
             }
         }
 
-        function goToNextRound() {
-            activeRound++;
-            if (activeRound < quizDataset.length) {
-                loadQuizRound();
+        function nextQuestion() {
+            currentIdx++;
+            if (currentIdx < quizDataset.length) {
+                loadQuestion();
             } else {
-                evaluateEndSummary(true);
+                renderEndScreen();
             }
         }
 
-        function evaluateEndSummary(isSuccess) {
-            changeDisplayView('gameover-view');
-            triggerConsoleAudio('finish');
-            document.getElementById('lbl-final-score').innerText = `${finalScore} PTS`;
+        function renderEndScreen() {
+            showPanel('end-screen');
+            document.getElementById('lbl-final-score').innerText = `${score} PTS`;
+            
+            const title = document.getElementById('end-title');
+            const desc = document.getElementById('lbl-final-desc');
+            const icon = document.getElementById('end-icon');
 
-            const badge = document.getElementById('end-badge');
-            const title = document.getElementById('end-status-title');
-            const narration = document.getElementById('lbl-final-comment');
-
-            if (isSuccess && finalScore >= 80) {
-                badge.innerText = "👑🏆🐦";
-                title.innerText = "मधुर वाणी सम्राट";
-                title.style.color = "var(--accent-green)";
-                narration.innerText = "अद्भुत! आपने सभी प्रश्नों के सटीक उत्तर देकर यह साबित कर दिया कि मधुर वाणी और अच्छे गुण ही मनुष्य की सच्ची पहचान हैं।";
-            } else if (shieldCount > 0) {
-                badge.innerText = "⚡🎯✨";
-                title.innerText = "मिशन पूरा हुआ";
-                title.style.color = "var(--primary-blue)";
-                narration.innerText = "बधाई हो! आपने इस इंटरैक्टिव मिशन को सफलतापूर्वक पूरा कर लिया है। व्यवहार में मिठास बनाए रखने का अभ्यास जारी रखें!";
+            if (score >= 80) {
+                icon.innerText = "🏆";
+                title.innerText = "उत्कृष्ट प्रदर्शन!";
+                desc.innerText = "शानदार! आपने उत्कृष्ट ज्ञान और व्यवहारिक समझ का परिचय दिया है।";
             } else {
-                badge.innerText = "👾💥🚨";
-                title.innerText = "मिशन असफल";
-                title.style.color = "var(--accent-red)";
-                narration.innerText = "आपकी शील्ड्स समाप्त हो गईं! घबराएं नहीं, फिर से प्रयास करें और कोयल के गुणों को अच्छी तरह समझें।";
+                icon.innerText = "🌟";
+                title.innerText = "बधाई हो!";
+                desc.innerText = "आपने सफलतापूर्वक क्विज़ पूरा कर लिया है! निरंतर अभ्यास करते रहें।";
             }
+
+            launchConfetti();
         }
 
-        function resetQuizConsole() {
-            changeDisplayView('intro-view');
+        function restartQuiz() {
+            showPanel('instruction-screen');
+        }
+
+        /* Simple Canvas Confetti for Creative Completion Page */
+        function launchConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            const pieces = [];
+            const colors = ['#2563eb', '#16a34a', '#d97706', '#ec4899', '#8b5cf6'];
+
+            for (let i = 0; i < 60; i++) {
+                pieces.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    size: Math.random() * 8 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    speed: Math.random() * 3 + 2,
+                    angle: Math.random() * 360
+                });
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                pieces.forEach(p => {
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(p.x, p.y, p.size, p.size);
+                    p.y += p.speed;
+                    p.angle += 2;
+                    if (p.y > canvas.height) p.y = -10;
+                });
+                requestAnimationFrame(draw);
+            }
+            draw();
         }
     </script>
 </body>
