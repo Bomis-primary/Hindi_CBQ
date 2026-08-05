@@ -1,1 +1,670 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>इंटरैक्टिव अभ्यास - हवा महल</title>
+    <style>
+        :root {
+            --bg-main: #ffffff;
+            --panel-bg: #f8fafc;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #16a34a;
+            --error: #dc2626;
+            --warning: #d97706;
+            --border: #e2e8f0;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 12px;
+        }
+
+        /* Responsive Container */
+        .quiz-container {
+            width: 100%;
+            max-width: 650px;
+            min-height: 550px;
+            background: var(--bg-main);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .view-panel {
+            display: none;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            padding: 24px;
+            flex-grow: 1;
+            position: relative;
+        }
+
+        .view-panel.active {
+            display: flex;
+        }
+
+        /* SCREEN 1: SPLASH SCREEN */
+        #splash-screen {
+            background: #ffffff;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+        }
+
+        .splash-logo-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 280px;
+            height: 180px;
+        }
+
+        .splash-logo {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            animation: softPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes softPulse {
+            0%, 100% { transform: scale(0.97); opacity: 0.95; }
+            50% { transform: scale(1.03); opacity: 1; }
+        }
+
+        /* SCREEN 2: INSTRUCTIONS */
+        #instruction-screen {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .screen-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .instruction-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 28px;
+        }
+
+        .instruction-item {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            line-height: 1.4;
+        }
+
+        .instruction-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .btn-action {
+            background: var(--primary);
+            color: #ffffff;
+            border: none;
+            padding: 14px 40px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+            transition: all 0.2s ease;
+        }
+
+        .btn-action:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-action:active {
+            transform: translateY(1px);
+        }
+
+        /* SCREEN 3: GAMEPLAY CONSOLE */
+        .hud-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--panel-bg);
+            padding: 12px 18px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            margin-bottom: 16px;
+        }
+
+        .hud-box {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .hud-box span {
+            display: block;
+            font-size: 16px;
+            color: var(--text-dark);
+            font-weight: 800;
+        }
+
+        .question-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 18px;
+            position: relative;
+        }
+
+        .tag-competency {
+            display: inline-block;
+            background: #e0e7ff;
+            color: #3730a3;
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.5;
+            color: var(--text-dark);
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .btn-option {
+            background: #ffffff;
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #334155;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-align: left;
+        }
+
+        .btn-option:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: #f8fafc;
+        }
+
+        .badge-index {
+            width: 26px;
+            height: 26px;
+            background: #f1f5f9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+            font-weight: 800;
+        }
+
+        /* Feedback States */
+        .btn-option.hit-success {
+            background: #f0fdf4 !important;
+            border-color: var(--success) !important;
+            color: var(--success) !important;
+        }
+
+        .btn-option.hit-success .badge-index {
+            background: var(--success);
+            color: #ffffff;
+        }
+
+        .btn-option.hit-failed {
+            background: #fef2f2 !important;
+            border-color: var(--error) !important;
+            color: var(--error) !important;
+            opacity: 0.7;
+        }
+
+        .btn-option.hit-failed .badge-index {
+            background: var(--error);
+            color: #ffffff;
+        }
+
+        .toast-msg {
+            background: #fffbeeb0;
+            border: 1px solid #fde68a;
+            color: var(--warning);
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 700;
+            margin-top: auto;
+            display: none;
+        }
+
+        /* SCREEN 4: CONGRATULATIONS PAGE */
+        #end-screen {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: #ffffff;
+        }
+
+        .celebration-badge {
+            font-size: 70px;
+            margin-bottom: 10px;
+            animation: bounceIcon 1.2s infinite alternate ease-in-out;
+        }
+
+        @keyframes bounceIcon {
+            from { transform: translateY(0); }
+            to { transform: translateY(-12px); }
+        }
+
+        .congrats-title {
+            font-size: 30px;
+            font-weight: 900;
+            color: var(--success);
+            margin-bottom: 8px;
+        }
+
+        .score-banner {
+            font-size: 42px;
+            font-weight: 900;
+            color: var(--primary);
+            margin: 15px 0;
+        }
+
+        .final-desc {
+            font-size: 15px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            max-width: 380px;
+            margin-bottom: 25px;
+        }
+
+        #confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        
+        <div id="splash-screen" class="view-panel active">
+            <div class="splash-logo-box">
+                <img 
+                    src="assets/image_9d321f.png" 
+                    alt="Innovine Logo" 
+                    class="splash-logo"
+                    onerror="this.onerror=null; this.src='image_9d321f.png';"
+                />
+            </div>
+        </div>
+
+        <div id="instruction-screen" class="view-panel">
+            <div class="screen-title">निर्देश</div>
+            
+            <div class="instruction-card">
+                <div class="instruction-item">🎯 <span>प्रत्येक प्रश्न का उत्तर देने के लिए <b>2 अवसर</b> मिलेंगे।</span></div>
+                <div class="instruction-item">⭐ <span>सही उत्तर चुनने पर अंक प्राप्त होंगे।</span></div>
+                <div class="instruction-item">💡 <span>2 बार गलत उत्तर देने पर सही उत्तर दिखाया जाएगा।</span></div>
+                <div class="instruction-item">🏆 <span>सभी प्रश्नों को पूरा करके अपना अंतिम स्कोर देखें।</span></div>
+            </div>
+            
+            <button class="btn-action" onclick="startQuiz()">शुरू करें 🚀</button>
+        </div>
+
+        <div id="gameplay-screen" class="view-panel">
+            <div class="hud-header">
+                <div class="hud-box">
+                    प्रगति
+                    <span id="hud-round">01 / 10</span>
+                </div>
+                <div class="hud-box" style="text-align: right;">
+                    कुल अंक
+                    <span id="hud-score" style="color: var(--success);">0</span>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="tag-competency" id="lbl-competency">दक्षता</div>
+                <div class="question-text" id="lbl-question">प्रश्न लोड हो रहा है...</div>
+            </div>
+
+            <div class="options-list" id="container-options">
+                </div>
+
+            <div class="toast-msg" id="lbl-toast"></div>
+        </div>
+
+        <div id="end-screen" class="view-panel">
+            <canvas id="confetti-canvas"></canvas>
+            <div class="celebration-badge" id="end-icon">🎉</div>
+            <div class="congrats-title" id="end-title">बहुत-बहुत बधाई!</div>
+            <div class="score-banner" id="lbl-final-score">0 PTS</div>
+            <div class="final-desc" id="lbl-final-desc">आपने सफलतापूर्वक सभी प्रश्नों के उत्तर दे दिए हैं!</div>
+            <button class="btn-action" onclick="restartQuiz()">पुनः खेलें 🔄</button>
+        </div>
+
+    </div>
+
+    <script>
+        const quizDataset = [
+            {
+                q: "यदि आप किसी ऐतिहासिक स्थान पर घूमने जाएँ, तो वहाँ की सुंदरता के साथ-साथ आपको क्या करना चाहिए?",
+                choices: [
+                    "केवल तस्वीरें खींचनी चाहिए।",
+                    "उस स्थान के इतिहास और महत्व के बारे में जानना चाहिए।",
+                    "वहाँ की वस्तुओं को छूना और नुकसान पहुँचाना चाहिए।",
+                    "जल्दी से वापस आ जाना चाहिए।"
+                ],
+                correctIdx: 1,
+                comp: "ज्ञान को वास्तविक जीवन से जोड़ना"
+            },
+            {
+                q: "हवा महल में इतने सारे झरोखे बनाने का मुख्य कारण क्या था?",
+                choices: [
+                    "महल को और ऊँचा दिखाने के लिए",
+                    "सुंदर सजावट के लिए",
+                    "ठंडी हवा अंदर आने के लिए",
+                    "रोशनी को रोकने के लिए"
+                ],
+                correctIdx: 2,
+                comp: "कारण और परिणाम को समझना"
+            },
+            {
+                q: "यदि किसी पुराने ऐतिहासिक भवन की देखभाल न की जाए, तो क्या हो सकता है?",
+                choices: [
+                    "वह और सुंदर हो जाएगा।",
+                    "वह खराब होकर नष्ट हो सकता है।",
+                    "उसकी ऊँचाई बढ़ जाएगी।",
+                    "उसमें नए झरोखे बन जाएंगे।"
+                ],
+                correctIdx: 1,
+                comp: "समस्या और समाधान की पहचान"
+            },
+            {
+                q: "जयपुर को “गुलाबी नगरी” क्यों कहा जाता है?",
+                choices: [
+                    "वहाँ केवल गुलाबी फूल उगते हैं।",
+                    "वहाँ की इमारतों को गुलाबी रंग से रंगा गया था।",
+                    "वहाँ के लोग गुलाबी कपड़े पहनते हैं।",
+                    "वहाँ का मौसम गुलाबी होता है।"
+                ],
+                correctIdx: 1,
+                comp: "जानकारी का विश्लेषण करना"
+            },
+            {
+                q: "आप हवा महल देखने जाते हैं। वहाँ पहुँचकर आप सबसे अच्छा क्या करेंगे?",
+                choices: [
+                    "दीवारों पर अपना नाम लिखेंगे।",
+                    "वहाँ की जानकारी पढ़ेंगे और स्वच्छता बनाए रखेंगे।",
+                    "झरोखों को छूकर नुकसान पहुँचाएंगे।",
+                    "वहाँ का कोई पत्थर अपने साथ ले जाएँगे।"
+                ],
+                correctIdx: 1,
+                comp: "जिम्मेदार व्यवहार अपनाना"
+            },
+            {
+                q: "हवा महल को राजा के मुकुट जैसा क्यों बताया गया है?",
+                choices: [
+                    "क्योंकि वह चमकदार धातु से बना था।",
+                    "क्योंकि उसका आकार और सुंदर बनावट आकर्षक थी।",
+                    "क्योंकि राजा वहाँ रहते थे।",
+                    "क्योंकि वह बहुत छोटा था।"
+                ],
+                correctIdx: 1,
+                comp: "वर्णन के भाव को समझना"
+            },
+            {
+                q: "यदि आपको अपने शहर की किसी ऐतिहासिक जगह के बारे में लोगों को बताना हो, तो आप क्या करेंगे?",
+                choices: [
+                    "उसके इतिहास और विशेषताओं को साझा करेंगे।",
+                    "उसके बारे में गलत जानकारी देंगे।",
+                    "लोगों को वहाँ जाने से रोकेंगे।",
+                    "उसके महत्व को छिपाएँगे।"
+                ],
+                correctIdx: 0,
+                comp: "ज्ञान का रचनात्मक उपयोग"
+            },
+            {
+                q: "हवा महल और आधुनिक इमारतों में क्या अंतर हो सकता है?",
+                choices: [
+                    "हवा महल में पुराने समय की वास्तुकला दिखाई देती है।",
+                    "दोनों बिल्कुल एक जैसे होते हैं।",
+                    "आधुनिक इमारतों में कोई खिड़की नहीं होती।",
+                    "हवा महल आज की तकनीक से बना है।"
+                ],
+                correctIdx: 0,
+                comp: "तुलना और विश्लेषण करना"
+            },
+            {
+                q: "हवा महल जैसे ऐतिहासिक स्थानों को सुरक्षित रखने के लिए हमें क्या करना चाहिए?",
+                choices: [
+                    "वहाँ कूड़ा फैलाना चाहिए।",
+                    "नियमों का पालन करना और स्वच्छता बनाए रखनी चाहिए।",
+                    "दीवारों पर लिखना चाहिए।",
+                    "पुरानी चीजों को हटाना चाहिए।"
+                ],
+                correctIdx: 1,
+                comp: "विरासत संरक्षण की समझ विकसित करना"
+            },
+            {
+                q: "“हवा महल” पाठ से हमें क्या सीख मिलती है?",
+                choices: [
+                    "केवल यात्रा करना ही महत्वपूर्ण है।",
+                    "ऐतिहासिक धरोहरों का महत्व समझना और उनकी रक्षा करना चाहिए।",
+                    "पुराने भवनों का कोई महत्व नहीं होता।",
+                    "केवल बड़े शहरों में घूमना चाहिए।"
+                ],
+                correctIdx: 1,
+                comp: "पाठ के मुख्य संदेश का मूल्यांकन करना"
+            }
+        ];
+
+        let currentIdx = 0;
+        let score = 0;
+        let attemptsLeft = 2;
+        let isLocked = false;
+
+        // Auto-switch Splash Screen after EXACTLY 5 Seconds
+        window.onload = () => {
+            setTimeout(() => {
+                showPanel('instruction-screen');
+            }, 5000);
+        };
+
+        function showPanel(panelId) {
+            document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(panelId).classList.add('active');
+        }
+
+        function startQuiz() {
+            currentIdx = 0;
+            score = 0;
+            showPanel('gameplay-screen');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            attemptsLeft = 2;
+            isLocked = false;
+            const currentQ = quizDataset[currentIdx];
+
+            document.getElementById('hud-round').innerText = `${String(currentIdx + 1).padStart(2, '0')} / ${quizDataset.length}`;
+            document.getElementById('hud-score').innerText = score;
+            document.getElementById('lbl-competency').innerText = currentQ.comp;
+            document.getElementById('lbl-question').innerText = currentQ.q;
+            document.getElementById('lbl-toast').style.display = 'none';
+
+            const optionsContainer = document.getElementById('container-options');
+            optionsContainer.innerHTML = '';
+
+            const prefixes = ['A', 'B', 'C', 'D'];
+            currentQ.choices.forEach((choiceText, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-option';
+                btn.innerHTML = `<span class="badge-index">${prefixes[index]}</span><span>${choiceText}</span>`;
+                btn.onclick = () => selectOption(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(selectedIndex, buttonElem) {
+            if (isLocked) return;
+            const currentQ = quizDataset[currentIdx];
+            const toast = document.getElementById('lbl-toast');
+
+            if (selectedIndex === currentQ.correctIdx) {
+                // Correct Answer
+                isLocked = true;
+                buttonElem.classList.add('hit-success');
+                score += (attemptsLeft === 2) ? 10 : 5;
+                document.getElementById('hud-score').innerText = score;
+                setTimeout(nextQuestion, 1000);
+            } else {
+                // Wrong Answer
+                attemptsLeft--;
+                buttonElem.classList.add('hit-failed');
+                buttonElem.disabled = true;
+
+                if (attemptsLeft === 1) {
+                    toast.innerText = "⚠️ गलत उत्तर! आपके पास 1 अंतिम प्रयास बचा है।";
+                    toast.style.display = 'block';
+                } else {
+                    isLocked = true;
+                    toast.innerText = "❌ 2 प्रयास समाप्त! सही उत्तर हरा दिखाया गया है।";
+                    toast.style.display = 'block';
+
+                    const allButtons = document.querySelectorAll('.btn-option');
+                    allButtons[currentQ.correctIdx].classList.add('hit-success');
+                    allButtons.forEach(b => b.disabled = true);
+
+                    setTimeout(nextQuestion, 1800);
+                }
+            }
+        }
+
+        function nextQuestion() {
+            currentIdx++;
+            if (currentIdx < quizDataset.length) {
+                loadQuestion();
+            } else {
+                renderEndScreen();
+            }
+        }
+
+        function renderEndScreen() {
+            showPanel('end-screen');
+            document.getElementById('lbl-final-score').innerText = `${score} PTS`;
+            
+            const title = document.getElementById('end-title');
+            const desc = document.getElementById('lbl-final-desc');
+            const icon = document.getElementById('end-icon');
+
+            if (score >= 80) {
+                icon.innerText = "🏆";
+                title.innerText = "उत्कृष्ट प्रदर्शन!";
+                desc.innerText = "शानदार! आपने ऐतिहासिक धरोहरों और पाठ की सभी संकल्पनाओं को बहुत अच्छी तरह समझा है।";
+            } else {
+                icon.innerText = "🌟";
+                title.innerText = "बधाई हो!";
+                desc.innerText = "आपने सफलतापूर्वक सभी प्रश्नों को पूरा कर लिया है! निरंतर अभ्यास करते रहें।";
+            }
+
+            launchConfetti();
+        }
+
+        function restartQuiz() {
+            showPanel('instruction-screen');
+        }
+
+        function launchConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            const pieces = [];
+            const colors = ['#2563eb', '#16a34a', '#d97706', '#ec4899', '#8b5cf6'];
+
+            for (let i = 0; i < 60; i++) {
+                pieces.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    size: Math.random() * 8 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    speed: Math.random() * 3 + 2,
+                    angle: Math.random() * 360
+                });
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                pieces.forEach(p => {
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(p.x, p.y, p.size, p.size);
+                    p.y += p.speed;
+                    p.angle += 2;
+                    if (p.y > canvas.height) p.y = -10;
+                });
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+    </script>
+</body>
+</html>
