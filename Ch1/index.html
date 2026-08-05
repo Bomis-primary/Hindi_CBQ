@@ -37,7 +37,7 @@
             padding: 12px;
         }
 
-        /* Fully Responsive Container for Mobile, Tablet, Laptop, Desktop */
+        /* Fully Responsive Container */
         .quiz-container {
             width: 100%;
             max-width: 650px;
@@ -71,12 +71,22 @@
             background: #ffffff;
             justify-content: center;
             align-items: center;
+            display: flex;
+        }
+
+        .splash-logo-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 280px;
+            height: 180px;
         }
 
         .splash-logo {
-            max-width: 240px;
-            width: 70%;
-            height: auto;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
             animation: softPulse 2s infinite ease-in-out;
         }
 
@@ -278,7 +288,7 @@
             display: none;
         }
 
-        /* SCREEN 4: CREATIVE END/CONGRATULATIONS PAGE */
+        /* SCREEN 4: CREATIVE CONGRATULATIONS PAGE */
         #end-screen {
             justify-content: center;
             align-items: center;
@@ -319,7 +329,6 @@
             margin-bottom: 25px;
         }
 
-        /* Canvas for confetti effect */
         #confetti-canvas {
             position: absolute;
             top: 0;
@@ -335,7 +344,14 @@
     <div class="quiz-container">
         
         <div id="splash-screen" class="view-panel active">
-            <img src="assets/image_9d321f.png" alt="Innovine Logo" class="splash-logo">
+            <div class="splash-logo-box">
+                <img 
+                    src="assets/image_9d321f.png" 
+                    alt="Innovine Logo" 
+                    class="splash-logo"
+                    onerror="this.onerror=null; this.src='image_9d321f.png';"
+                />
+            </div>
         </div>
 
         <div id="instruction-screen" class="view-panel">
@@ -386,7 +402,6 @@
     </div>
 
     <script>
-        // Clean dataset without Grade, Topic, or Chapter mentions
         const quizDataset = [
             {
                 q: "यदि आपके मित्र की कोई आदत अच्छी नहीं है, तो आपको क्या करना चाहिए?",
@@ -567,11 +582,9 @@
                 buttonElem.disabled = true;
 
                 if (attemptsLeft === 1) {
-                    // First wrong attempt -> Give 1 more chance
                     toast.innerText = "⚠️ गलत उत्तर! आपके पास 1 अंतिम प्रयास बचा है।";
                     toast.style.display = 'block';
                 } else {
-                    // Second wrong attempt -> Reveal correct answer
                     isLocked = true;
                     toast.innerText = "❌ 2 प्रयास समाप्त! सही उत्तर हरा दिखाया गया है।";
                     toast.style.display = 'block';
@@ -619,7 +632,6 @@
             showPanel('instruction-screen');
         }
 
-        /* Simple Canvas Confetti for Creative Completion Page */
         function launchConfetti() {
             const canvas = document.getElementById('confetti-canvas');
             const ctx = canvas.getContext('2d');
