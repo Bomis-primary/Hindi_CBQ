@@ -1,1 +1,670 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>इंटरैक्टिव अभ्यास - जगमग जगमग</title>
+    <style>
+        :root {
+            --bg-main: #ffffff;
+            --panel-bg: #f8fafc;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #16a34a;
+            --error: #dc2626;
+            --warning: #d97706;
+            --border: #e2e8f0;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 12px;
+        }
+
+        /* Responsive Container */
+        .quiz-container {
+            width: 100%;
+            max-width: 650px;
+            min-height: 550px;
+            background: var(--bg-main);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .view-panel {
+            display: none;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            padding: 24px;
+            flex-grow: 1;
+            position: relative;
+        }
+
+        .view-panel.active {
+            display: flex;
+        }
+
+        /* SCREEN 1: SPLASH SCREEN */
+        #splash-screen {
+            background: #ffffff;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+        }
+
+        .splash-logo-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 280px;
+            height: 180px;
+        }
+
+        .splash-logo {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            animation: softPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes softPulse {
+            0%, 100% { transform: scale(0.97); opacity: 0.95; }
+            50% { transform: scale(1.03); opacity: 1; }
+        }
+
+        /* SCREEN 2: INSTRUCTIONS */
+        #instruction-screen {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .screen-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .instruction-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 28px;
+        }
+
+        .instruction-item {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            line-height: 1.4;
+        }
+
+        .instruction-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .btn-action {
+            background: var(--primary);
+            color: #ffffff;
+            border: none;
+            padding: 14px 40px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+            transition: all 0.2s ease;
+        }
+
+        .btn-action:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-action:active {
+            transform: translateY(1px);
+        }
+
+        /* SCREEN 3: GAMEPLAY CONSOLE */
+        .hud-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--panel-bg);
+            padding: 12px 18px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            margin-bottom: 16px;
+        }
+
+        .hud-box {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .hud-box span {
+            display: block;
+            font-size: 16px;
+            color: var(--text-dark);
+            font-weight: 800;
+        }
+
+        .question-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 18px;
+            position: relative;
+        }
+
+        .tag-competency {
+            display: inline-block;
+            background: #e0e7ff;
+            color: #3730a3;
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.5;
+            color: var(--text-dark);
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .btn-option {
+            background: #ffffff;
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #334155;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-align: left;
+        }
+
+        .btn-option:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: #f8fafc;
+        }
+
+        .badge-index {
+            width: 26px;
+            height: 26px;
+            background: #f1f5f9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+            font-weight: 800;
+        }
+
+        /* Feedback States */
+        .btn-option.hit-success {
+            background: #f0fdf4 !important;
+            border-color: var(--success) !important;
+            color: var(--success) !important;
+        }
+
+        .btn-option.hit-success .badge-index {
+            background: var(--success);
+            color: #ffffff;
+        }
+
+        .btn-option.hit-failed {
+            background: #fef2f2 !important;
+            border-color: var(--error) !important;
+            color: var(--error) !important;
+            opacity: 0.7;
+        }
+
+        .btn-option.hit-failed .badge-index {
+            background: var(--error);
+            color: #ffffff;
+        }
+
+        .toast-msg {
+            background: #fffbeeb0;
+            border: 1px solid #fde68a;
+            color: var(--warning);
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 700;
+            margin-top: auto;
+            display: none;
+        }
+
+        /* SCREEN 4: CONGRATULATIONS PAGE */
+        #end-screen {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: #ffffff;
+        }
+
+        .celebration-badge {
+            font-size: 70px;
+            margin-bottom: 10px;
+            animation: bounceIcon 1.2s infinite alternate ease-in-out;
+        }
+
+        @keyframes bounceIcon {
+            from { transform: translateY(0); }
+            to { transform: translateY(-12px); }
+        }
+
+        .congrats-title {
+            font-size: 30px;
+            font-weight: 900;
+            color: var(--success);
+            margin-bottom: 8px;
+        }
+
+        .score-banner {
+            font-size: 42px;
+            font-weight: 900;
+            color: var(--primary);
+            margin: 15px 0;
+        }
+
+        .final-desc {
+            font-size: 15px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            max-width: 380px;
+            margin-bottom: 25px;
+        }
+
+        #confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        
+        <div id="splash-screen" class="view-panel active">
+            <div class="splash-logo-box">
+                <img 
+                    src="assets/image_9d321f.png" 
+                    alt="Innovine Logo" 
+                    class="splash-logo"
+                    onerror="this.onerror=null; this.src='image_9d321f.png';"
+                />
+            </div>
+        </div>
+
+        <div id="instruction-screen" class="view-panel">
+            <div class="screen-title">निर्देश</div>
+            
+            <div class="instruction-card">
+                <div class="instruction-item">🎯 <span>प्रत्येक प्रश्न का उत्तर देने के लिए <b>2 अवसर</b> मिलेंगे।</span></div>
+                <div class="instruction-item">⭐ <span>सही उत्तर चुनने पर अंक प्राप्त होंगे।</span></div>
+                <div class="instruction-item">💡 <span>2 बार गलत उत्तर देने पर सही उत्तर दिखाया जाएगा।</span></div>
+                <div class="instruction-item">🏆 <span>सभी प्रश्नों को पूरा करके अपना अंतिम स्कोर देखें।</span></div>
+            </div>
+            
+            <button class="btn-action" onclick="startQuiz()">शुरू करें 🚀</button>
+        </div>
+
+        <div id="gameplay-screen" class="view-panel">
+            <div class="hud-header">
+                <div class="hud-box">
+                    प्रगति
+                    <span id="hud-round">01 / 10</span>
+                </div>
+                <div class="hud-box" style="text-align: right;">
+                    कुल अंक
+                    <span id="hud-score" style="color: var(--success);">0</span>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="tag-competency" id="lbl-competency">दक्षता</div>
+                <div class="question-text" id="lbl-question">प्रश्न लोड हो रहा है...</div>
+            </div>
+
+            <div class="options-list" id="container-options">
+                </div>
+
+            <div class="toast-msg" id="lbl-toast"></div>
+        </div>
+
+        <div id="end-screen" class="view-panel">
+            <canvas id="confetti-canvas"></canvas>
+            <div class="celebration-badge" id="end-icon">🎉</div>
+            <div class="congrats-title" id="end-title">बहुत-बहुत बधाई!</div>
+            <div class="score-banner" id="lbl-final-score">0 PTS</div>
+            <div class="final-desc" id="lbl-final-desc">आपने सफलतापूर्वक सभी प्रश्नों के उत्तर दे दिए हैं!</div>
+            <button class="btn-action" onclick="restartQuiz()">पुनः खेलें 🔄</button>
+        </div>
+
+    </div>
+
+    <script>
+        const quizDataset = [
+            {
+                q: "कविता में दीपों की रोशनी से चारों ओर खुशी का वातावरण दिखाया गया है। यदि आपके पड़ोस में कोई व्यक्ति अकेला है, तो आप क्या कर सकते हैं?",
+                choices: [
+                    "उसे अनदेखा कर सकते हैं।",
+                    "उसके साथ त्योहार की खुशियाँ बाँट सकते हैं।",
+                    "केवल अपने घर की सजावट कर सकते हैं।",
+                    "उससे बात करना बंद कर सकते हैं।"
+                ],
+                correctIdx: 1,
+                comp: "सीख को जीवन में लागू करना"
+            },
+            {
+                q: "कविता में “हर घर, हर दर, बाहर, भीतर” पंक्ति से क्या भाव प्रकट होता है?",
+                choices: [
+                    "केवल बड़े घरों में सजावट होती है।",
+                    "प्रकाश और खुशी चारों ओर फैल जाती है।",
+                    "लोग घर से बाहर नहीं निकलते।",
+                    "केवल दरवाजे सजाए जाते हैं।"
+                ],
+                correctIdx: 1,
+                comp: "काव्य भाव को समझना"
+            },
+            {
+                q: "कविता में राजा और गरीब व्यक्ति के घर समान रूप से दीप जलने की बात कही गई है। इससे हमें क्या सीख मिलती है?",
+                choices: [
+                    "केवल अमीर लोग त्योहार मना सकते हैं।",
+                    "खुशियाँ सभी के लिए समान होती हैं।",
+                    "गरीबों को त्योहार नहीं मनाना चाहिए।",
+                    "दीप केवल बड़े घरों में अच्छे लगते हैं।"
+                ],
+                correctIdx: 1,
+                comp: "सामाजिक मूल्यों को समझना"
+            },
+            {
+                q: "यदि दीपों की जगह पूरे शहर में केवल तेज बिजली की रोशनी हो और लोग मिलकर त्योहार न मनाएँ, तो क्या कमी महसूस होगी?",
+                choices: [
+                    "त्योहार का अपनापन और खुशी कम हो सकती है।",
+                    "रोशनी बिल्कुल समाप्त हो जाएगी।",
+                    "घर छोटे हो जाएँगे।",
+                    "लोग त्योहार भूल जाएँगे।"
+                ],
+                correctIdx: 0,
+                comp: "कारण और प्रभाव का विश्लेषण"
+            },
+            {
+                q: "दिवाली को सुंदर और सुरक्षित बनाने के लिए आप कौन-सा विकल्प चुनेंगे?",
+                choices: [
+                    "अधिक धुआँ करने वाले पटाखे जलाना।",
+                    "दीप जलाना और स्वच्छता बनाए रखना।",
+                    "कूड़ा फैलाना।",
+                    "दूसरों को परेशान करना।"
+                ],
+                correctIdx: 1,
+                comp: "जिम्मेदार व्यवहार अपनाना"
+            },
+            {
+                q: "कवि ने “जगमग-जगमग” शब्द को बार-बार क्यों दोहराया है?",
+                choices: [
+                    "कविता को कठिन बनाने के लिए।",
+                    "रोशनी और चमक का सुंदर प्रभाव दिखाने के लिए।",
+                    "कविता को लंबा करने के लिए।",
+                    "केवल शब्दों की संख्या बढ़ाने के लिए।"
+                ],
+                correctIdx: 1,
+                comp: "भाषा प्रयोग के प्रभाव को समझना"
+            },
+            {
+                q: "आपकी कक्षा में दिवाली उत्सव मनाया जा रहा है। कविता के संदेश के अनुसार आप क्या करेंगे?",
+                choices: [
+                    "केवल अपनी सजावट दिखाएँगे।",
+                    "सभी साथियों के साथ मिलकर खुशी बाँटेंगे।",
+                    "दूसरों की सजावट खराब करेंगे।",
+                    "किसी से बात नहीं करेंगे।"
+                ],
+                correctIdx: 1,
+                comp: "सकारात्मक व्यवहार अपनाना"
+            },
+            {
+                q: "कविता में जलते हुए दीप और तैरते हुए दीपों का वर्णन किस बात को दर्शाता है?",
+                choices: [
+                    "दीप केवल घरों में ही अच्छे लगते हैं।",
+                    "प्रकाश हर स्थान को सुंदर बना सकता है।",
+                    "दीप पानी में नहीं जल सकते।",
+                    "केवल नदियाँ सुंदर होती हैं।"
+                ],
+                correctIdx: 1,
+                comp: "विचारों के बीच संबंध स्थापित करना"
+            },
+            {
+                q: "यदि आपको “जगमग जगमग” कविता में एक नया दृश्य जोड़ना हो, तो आप क्या जोड़ेंगे?",
+                choices: [
+                    "अंधकार और उदासी का दृश्य।",
+                    "लोगों के साथ मिलकर खुशी मनाने का दृश्य।",
+                    "गंदगी फैलाने का दृश्य।",
+                    "लोगों को अलग करने का दृश्य।"
+                ],
+                correctIdx: 1,
+                comp: "रचनात्मक सोच का उपयोग"
+            },
+            {
+                q: "“जगमग जगमग” कविता का मुख्य संदेश क्या है?",
+                choices: [
+                    "केवल घर सजाना महत्वपूर्ण है।",
+                    "प्रकाश, खुशी और मिल-जुलकर रहने का महत्व समझना चाहिए।",
+                    "केवल दीपों की संख्या बढ़ानी चाहिए।",
+                    "त्योहार केवल कुछ लोगों के लिए होते हैं।"
+                ],
+                correctIdx: 1,
+                comp: "मुख्य विचार का मूल्यांकन करना"
+            }
+        ];
+
+        let currentIdx = 0;
+        let score = 0;
+        let attemptsLeft = 2;
+        let isLocked = false;
+
+        // Auto-switch Splash Screen after EXACTLY 5 Seconds
+        window.onload = () => {
+            setTimeout(() => {
+                showPanel('instruction-screen');
+            }, 5000);
+        };
+
+        function showPanel(panelId) {
+            document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(panelId).classList.add('active');
+        }
+
+        function startQuiz() {
+            currentIdx = 0;
+            score = 0;
+            showPanel('gameplay-screen');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            attemptsLeft = 2;
+            isLocked = false;
+            const currentQ = quizDataset[currentIdx];
+
+            document.getElementById('hud-round').innerText = `${String(currentIdx + 1).padStart(2, '0')} / ${quizDataset.length}`;
+            document.getElementById('hud-score').innerText = score;
+            document.getElementById('lbl-competency').innerText = currentQ.comp;
+            document.getElementById('lbl-question').innerText = currentQ.q;
+            document.getElementById('lbl-toast').style.display = 'none';
+
+            const optionsContainer = document.getElementById('container-options');
+            optionsContainer.innerHTML = '';
+
+            const prefixes = ['A', 'B', 'C', 'D'];
+            currentQ.choices.forEach((choiceText, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-option';
+                btn.innerHTML = `<span class="badge-index">${prefixes[index]}</span><span>${choiceText}</span>`;
+                btn.onclick = () => selectOption(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(selectedIndex, buttonElem) {
+            if (isLocked) return;
+            const currentQ = quizDataset[currentIdx];
+            const toast = document.getElementById('lbl-toast');
+
+            if (selectedIndex === currentQ.correctIdx) {
+                // Correct Answer
+                isLocked = true;
+                buttonElem.classList.add('hit-success');
+                score += (attemptsLeft === 2) ? 10 : 5;
+                document.getElementById('hud-score').innerText = score;
+                setTimeout(nextQuestion, 1000);
+            } else {
+                // Wrong Answer
+                attemptsLeft--;
+                buttonElem.classList.add('hit-failed');
+                buttonElem.disabled = true;
+
+                if (attemptsLeft === 1) {
+                    toast.innerText = "⚠️ गलत उत्तर! आपके पास 1 अंतिम प्रयास बचा है।";
+                    toast.style.display = 'block';
+                } else {
+                    isLocked = true;
+                    toast.innerText = "❌ 2 प्रयास समाप्त! सही उत्तर हरा दिखाया गया है।";
+                    toast.style.display = 'block';
+
+                    const allButtons = document.querySelectorAll('.btn-option');
+                    allButtons[currentQ.correctIdx].classList.add('hit-success');
+                    allButtons.forEach(b => b.disabled = true);
+
+                    setTimeout(nextQuestion, 1800);
+                }
+            }
+        }
+
+        function nextQuestion() {
+            currentIdx++;
+            if (currentIdx < quizDataset.length) {
+                loadQuestion();
+            } else {
+                renderEndScreen();
+            }
+        }
+
+        function renderEndScreen() {
+            showPanel('end-screen');
+            document.getElementById('lbl-final-score').innerText = `${score} PTS`;
+            
+            const title = document.getElementById('end-title');
+            const desc = document.getElementById('lbl-final-desc');
+            const icon = document.getElementById('end-icon');
+
+            if (score >= 80) {
+                icon.innerText = "🏆";
+                title.innerText = "उत्कृष्ट प्रदर्शन!";
+                desc.innerText = "शानदार! आपने 'जगमग जगमग' कविता के सभी मुख्य भावों और संदेशों को बहुत अच्छी तरह समझा है।";
+            } else {
+                icon.innerText = "🌟";
+                title.innerText = "बधाई हो!";
+                desc.innerText = "आपने सफलतापूर्वक सभी प्रश्नों को पूरा कर लिया है! निरंतर अभ्यास करते रहें।";
+            }
+
+            launchConfetti();
+        }
+
+        function restartQuiz() {
+            showPanel('instruction-screen');
+        }
+
+        function launchConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            const pieces = [];
+            const colors = ['#2563eb', '#16a34a', '#d97706', '#ec4899', '#8b5cf6'];
+
+            for (let i = 0; i < 60; i++) {
+                pieces.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    size: Math.random() * 8 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    speed: Math.random() * 3 + 2,
+                    angle: Math.random() * 360
+                });
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                pieces.forEach(p => {
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(p.x, p.y, p.size, p.size);
+                    p.y += p.speed;
+                    p.angle += 2;
+                    if (p.y > canvas.height) p.y = -10;
+                });
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+    </script>
+</body>
+</html>
