@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBQ Quiz Application</title>
+<style>
+  :root {
+    --primary: #2563eb;
+    --success: #16a34a;
+    --danger: #dc2626;
+    --warning: #d97706;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --text: #1e293b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+  body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  
+  .screen { display: none; width: 100%; max-width: 650px; background: var(--card); padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); text-align: center; }
+  .screen.active { display: block; }
+
+  /* 1. Centered Single Logo Screen */
+  #logo-screen { 
+    display: none; 
+    min-height: 300px;
+  }
+  #logo-screen.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .app-logo {
+    max-width: 280px;
+    max-height: 160px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* Intro & End Screen */
+  .meta-card { background: #f1f5f9; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: left; }
+  .meta-card p { margin: 8px 0; font-size: 1rem; }
+  button.btn-action { background: var(--primary); color: white; border: none; padding: 12px 24px; font-size: 1rem; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+  button.btn-action:hover { opacity: 0.9; }
+
+  /* Game Area */
+  .game-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 20px; font-weight: bold; }
+  .timer-badge { background: #fee2e2; color: var(--danger); padding: 6px 12px; border-radius: 20px; font-size: 0.9rem; }
+  .scenario-text { text-align: left; font-size: 1.1rem; line-height: 1.5; margin-bottom: 20px; }
+  
+  .options-grid { display: grid; gap: 12px; margin-bottom: 20px; }
+  .btn-option { background: #ffffff; border: 2px solid #cbd5e1; padding: 14px; border-radius: 8px; font-size: 1rem; text-align: left; cursor: pointer; transition: 0.2s; }
+  .btn-option:hover:not(:disabled) { border-color: var(--primary); background: #eff6ff; }
+  .btn-option:disabled { cursor: not-allowed; }
+  .btn-option.correct { background: #dcfce7; border-color: var(--success); color: #14532d; }
+  .btn-option.incorrect { background: #fee2e2; border-color: var(--danger); color: #7f1d1d; }
+
+  .feedback-box, .hint-box { border-radius: 6px; padding: 12px; margin-top: 15px; font-weight: 600; text-align: left; }
+  .hint-box { background: #fef3c7; color: var(--warning); border: 1px solid #fde68a; }
+  .feedback-box.success { background: #dcfce7; color: var(--success); }
+  .feedback-box.danger { background: #fee2e2; color: var(--danger); }
+</style>
+</head>
+<body>
+
+<!-- 1. Logo Screen (Only Logo centered) -->
+<div id="logo-screen" class="screen active">
+  <img src="assets/logo.png" alt="Innovine Logo" class="app-logo">
+</div>
+
+<!-- 2. Intro Screen -->
+<div id="intro-screen" class="screen">
+  <h2>Quiz Overview</h2>
+  <div class="meta-card">
+    <p><strong>Grade:</strong> Class 4</p>
+    <p><strong>Subject:</strong> Hindi</p>
+    <p><strong>Topic:</strong> बड़े सपनों वाला बच्चा (Dr. A.P.J. Abdul Kalam)</p>
+    <p><strong>Total Questions:</strong> <span id="intro-q-count">0</span></p>
+  </div>
+  <button class="btn-action" onclick="startQuiz()">Start Quiz</button>
+</div>
+
+<!-- 3. Game Area Screen -->
+<div id="game-screen" class="screen">
+  <div class="game-header">
+    <span>Score: <span id="live-score">0</span></span>
+    <span class="timer-badge">⏱️ <span id="timer">45</span>s</span>
+    <span>Q: <span id="q-idx">1</span>/<span id="q-total">0</span></span>
+  </div>
+
+  <div id="scenario" class="scenario-text"></div>
+  <div id="options" class="options-grid"></div>
+
+  <div id="hint-box" class="hint-box" style="display: none;"></div>
+  <div id="feedback-box" class="feedback-box" style="display: none;"></div>
+</div>
+
+<!-- 4. End Screen -->
+<div id="end-screen" class="screen">
+  <h2>Quiz Completed!</h2>
+  <div class="meta-card" style="text-align: center;">
+    <p>Your Final Score</p>
+    <h1 id="final-score" style="font-size: 3rem; color: var(--primary); margin: 10px 0;">0/0</h1>
+  </div>
+  <button class="btn-action" onclick="restartQuiz()">Restart Quiz</button>
+</div>
+
+<script>
+const quizData = [
+  {
+    scenario: "जब पंबन पुल बनने और समुद्री तूफान के कारण कलाम के परिवार का नाव व्यवसाय बंद हो गया, तो छोटे कलाम ने अपनी पढ़ाई जारी रखने के लिए क्या रास्ता चुना?",
+    options: [
+      "उन्होंने पढ़ाई छोड़ दी",
+      "वे सुबह-सुबह अखबार बाँटने लगे",
+      "वे नाव चलाना सीखने लगे",
+      "वे ऋषिकेश चले गए"
+    ],
+    answer: 1,
+    hint: "कलाम ने अपनी हिम्मत नहीं हारी और अपनी पढ़ाई का खर्च निकालने के लिए सुबह काम करना शुरू किया।"
+  },
+  {
+    scenario: "10 वर्ष की उम्र में कलाम के मन में 'उड़ने वाली चीजों के बारे में सीखने' का सपना कब जागा?",
+    options: [
+      "जब उन्होंने समुद्र में नावें देखीं",
+      "जब उनके शिक्षक शिव सुब्रमण्यम अय्यर ने उन्हें समुद्र किनारे असली पक्षियों की उड़ान दिखाई",
+      "जब वे मद्रास इंस्टीट्यूट ऑफ टेक्नोलॉजी गए",
+      "जब उन्होंने स्वामी शिवानंद से मुलाकात की"
+    ],
+    answer: 1,
+    hint: "उनके विज्ञान शिक्षक उन्हें प्रयोगशाला के बाहर ले गए और प्रत्यक्ष उदाहरण दिखाया।"
+  },
+  {
+    scenario: "वायुसेना के इंटरव्यू में 9वाँ स्थान आने पर केवल 8 उम्मीदवारों का चयन हुआ, जिससे कलाम उदास हो गए। ऋषिकेश में स्वामी शिवानंद की किस बात ने उन्हें फिर से मेहनत करने की प्रेरणा दी?",
+    options: [
+      "तुम फाइटर पायलट नहीं बन सकते",
+      "तुम्हें तुरंत तमिलनाडु लौट जाना चाहिए",
+      "तुम असफल नहीं हुए हो, भगवान ने तुम्हारे लिए कुछ और बड़ा काम सोचा है",
+      "तुम्हें अखबार बाँटना शुरू कर देना चाहिए"
+    ],
+    answer: 2,
+    hint: "संत ने उन्हें समझाया कि यह असफलता नहीं, बल्कि एक बड़े उद्देश्य का अवसर है।"
+  },
+  {
+    scenario: "डॉ. कलाम ने अग्नि, पृथ्वी, आकाश, नाग और त्रिशूल जैसी मिसाइलों के विकास में योगदान दिया, जिसके कारण उन्हें क्या कहा जाने लगा?",
+    options: [
+      "फ़ाइटर पायलट",
+      "मिसाइल मैन",
+      "पीपुल्स प्रेसिडेंट",
+      "रॉयल इंजीनियर"
+    ],
+    answer: 1,
+    hint: "यह नाम उनके द्वारा देश की रक्षा तकनीक में किए गए महान योगदान के कारण मिला।"
+  },
+  {
+    scenario: "भारत के राष्ट्रपति (2002) बनने के बाद भी डॉ. कलाम आम लोगों और बच्चों से बहुत प्यार से मिलते थे। लोग उन्हें किस नाम से जानते थे?",
+    options: [
+      "पीपुल्स प्रेसिडेंट",
+      "किंग चार्ल्स",
+      "वैज्ञानिक कलाम",
+      "स्वामी कलाम"
+    ],
+    answer: 0,
+    hint: "इतने बड़े पद पर होकर भी वे बहुत सरल रहे और जनता के चहेते बने।"
+  }
+];
+
+let currentQ = 0;
+let score = 0;
+let attempts = 0;
+let timerVal = 45;
+let timerInterval = null;
+
+// Auto switch from Logo Screen to Intro Screen after 5 seconds
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('intro-q-count').textContent = quizData.length;
+  setTimeout(() => {
+    switchScreen('intro-screen');
+  }, 5000);
+});
+
+function switchScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function startQuiz() {
+  currentQ = 0;
+  score = 0;
+  switchScreen('game-screen');
+  loadQuestion();
+}
+
+function loadQuestion() {
+  attempts = 0;
+  timerVal = 45;
+  document.getElementById('live-score').textContent = score;
+  document.getElementById('q-idx').textContent = currentQ + 1;
+  document.getElementById('q-total').textContent = quizData.length;
+  document.getElementById('scenario').textContent = quizData[currentQ].scenario;
+  
+  const hintBox = document.getElementById('hint-box');
+  const feedBox = document.getElementById('feedback-box');
+  hintBox.style.display = 'none';
+  feedBox.style.display = 'none';
+
+  const optionsDiv = document.getElementById('options');
+  optionsDiv.innerHTML = '';
+
+  quizData[currentQ].options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'btn-option';
+    btn.textContent = `${idx + 1}. ${opt}`;
+    btn.onclick = () => handleAnswer(idx, btn);
+    optionsDiv.appendChild(btn);
+  });
+
+  startTimer();
+}
+
+function startTimer() {
+  clearInterval(timerInterval);
+  document.getElementById('timer').textContent = timerVal;
+  timerInterval = setInterval(() => {
+    timerVal--;
+    document.getElementById('timer').textContent = timerVal;
+    if (timerVal <= 0) {
+      clearInterval(timerInterval);
+      handleTimeout();
+    }
+  }, 1000);
+}
+
+function handleAnswer(selectedIdx, btnElement) {
+  const q = quizData[currentQ];
+  const feedBox = document.getElementById('feedback-box');
+  const hintBox = document.getElementById('hint-box');
+
+  if (selectedIdx === q.answer) {
+    clearInterval(timerInterval);
+    btnElement.classList.add('correct');
+    score++;
+    document.getElementById('live-score').textContent = score;
+    disableAllOptions();
+    feedBox.className = 'feedback-box success';
+    feedBox.textContent = 'Correct!';
+    feedBox.style.display = 'block';
+    hintBox.style.display = 'none';
+    setTimeout(nextQuestion, 1000);
+  } else {
+    attempts++;
+    btnElement.classList.add('incorrect');
+    btnElement.disabled = true;
+
+    if (attempts === 1) {
+      hintBox.textContent = `Hint: ${q.hint}`;
+      hintBox.style.display = 'block';
+    } else if (attempts >= 2) {
+      clearInterval(timerInterval);
+      disableAllOptions();
+      highlightCorrectOption();
+      feedBox.className = 'feedback-box danger';
+      feedBox.textContent = `Incorrect! Correct answer: ${q.options[q.answer]}`;
+      feedBox.style.display = 'block';
+      hintBox.style.display = 'none';
+      setTimeout(nextQuestion, 2000);
+    }
+  }
+}
+
+function handleTimeout() {
+  disableAllOptions();
+  highlightCorrectOption();
+  const feedBox = document.getElementById('feedback-box');
+  feedBox.className = 'feedback-box danger';
+  feedBox.textContent = `Time expired! Correct answer: ${quizData[currentQ].options[quizData[currentQ].answer]}`;
+  feedBox.style.display = 'block';
+  setTimeout(nextQuestion, 2000);
+}
+
+function disableAllOptions() {
+  document.querySelectorAll('.btn-option').forEach(b => b.disabled = true);
+}
+
+function highlightCorrectOption() {
+  const options = document.querySelectorAll('.btn-option');
+  options[quizData[currentQ].answer].classList.add('correct');
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ < quizData.length) {
+    loadQuestion();
+  } else {
+    endQuiz();
+  }
+}
+
+function endQuiz() {
+  clearInterval(timerInterval);
+  document.getElementById('final-score').textContent = `${score} / ${quizData.length}`;
+  switchScreen('end-screen');
+}
+
+function restartQuiz() {
+  switchScreen('intro-screen');
+}
+</script>
+</body>
+</html>
