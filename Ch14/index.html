@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .quiz-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            padding: 20px;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .options-container {
+            margin-top: 15px;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            width: 100%;
+            margin-bottom: 10px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        #next-btn {
+            background-color: #28a745;
+            text-align: center;
+            display: none;
+            margin-top: 10px;
+        }
+
+        #next-btn:hover {
+            background-color: #218838;
+        }
+
+        #score-container {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <div id="quiz">
+        <h2 id="question">Question Text</h2>
+        <div id="options" class="options-container">
+            <!-- Option buttons injected here by JS -->
+        </div>
+        <button id="next-btn" onclick="nextQuestion()">Next Question</button>
+    </div>
+
+    <div id="score-container" style="display: none;">
+        <h2>Quiz Finished!</h2>
+        <p id="score-text"></p>
+        <button class="btn" style="text-align: center;" onclick="restartQuiz()">Restart Quiz</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        {
+            question: "What does HTML stand for?",
+            options: [
+                "Hyper Text Markup Language",
+                "High Tech Multi Language",
+                "Hyperlink and Text Marking Language",
+                "Home Tool Markup Language"
+            ],
+            correct: 0
+        },
+        {
+            question: "Which language is used for styling web pages?",
+            options: ["HTML", "JQuery", "CSS", "XML"],
+            correct: 2
+        },
+        {
+            question: "What is the correct syntax for referring to an external script named 'app.js'?",
+            options: [
+                "<script href='app.js'>",
+                "<script src='app.js'>",
+                "<script name='app.js'>",
+                "<script file='app.js'>"
+            ],
+            correct: 1
+        }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    const questionElement = document.getElementById("question");
+    const optionsElement = document.getElementById("options");
+    const nextButton = document.getElementById("next-btn");
+    const quizContainer = document.getElementById("quiz");
+    const scoreContainer = document.getElementById("score-container");
+    const scoreText = document.getElementById("score-text");
+
+    function loadQuestion() {
+        nextButton.style.display = "none";
+        optionsElement.innerHTML = "";
+        
+        const q = quizData[currentQuestion];
+        questionElement.textContent = `${currentQuestion + 1}. ${q.question}`;
+
+        q.options.forEach((option, index) => {
+            const button = document.createElement("button");
+            button.classList.add("btn");
+            button.textContent = option;
+            button.onclick = () => selectOption(index);
+            optionsElement.appendChild(button);
+        });
+    }
+
+    function selectOption(selectedIndex) {
+        const correctIndex = quizData[currentQuestion].correct;
+        const buttons = optionsElement.querySelectorAll(".btn");
+
+        buttons.forEach((button, index) => {
+            button.disabled = true;
+            if (index === correctIndex) {
+                button.style.backgroundColor = "#28a745"; // Green for correct
+            } else if (index === selectedIndex) {
+                button.style.backgroundColor = "#dc3545"; // Red for incorrect
+            }
+        });
+
+        if (selectedIndex === correctIndex) {
+            score++;
+        }
+
+        nextButton.style.display = "block";
+    }
+
+    function nextQuestion() {
+        currentQuestion++;
+        if (currentQuestion < quizData.length) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function showResults() {
+        quizContainer.style.display = "none";
+        scoreContainer.style.display = "block";
+        scoreText.textContent = `You scored ${score} out of ${quizData.length}!`;
+    }
+
+    function restartQuiz() {
+        currentQuestion = 0;
+        score = 0;
+        scoreContainer.style.display = "none";
+        quizContainer.style.display = "block";
+        loadQuestion();
+    }
+
+    // Initialize Quiz
+    loadQuestion();
+</script>
+
+</body>
+</html>
