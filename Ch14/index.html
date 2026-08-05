@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Quiz</title>
+    <title>बचपन के खेल - क्विज़</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,178 +11,268 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         .quiz-container {
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 400px;
-            padding: 20px;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 500px;
         }
 
         h2 {
-            margin-top: 0;
+            font-size: 18px;
+            margin-bottom: 15px;
             color: #333;
+            line-height: 1.4;
         }
 
-        .options-container {
-            margin-top: 15px;
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
 
-        .btn {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            padding: 10px 15px;
+        .option-btn {
             width: 100%;
-            margin-bottom: 10px;
+            background-color: #e7e7e7;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 6px 0;
+            border-radius: 5px;
             cursor: pointer;
             text-align: left;
-            font-size: 14px;
-            transition: background-color 0.2s;
+            font-size: 15px;
+            transition: background 0.2s;
         }
 
-        .btn:hover {
+        .option-btn:hover:not(:disabled) {
+            background-color: #d0d0d0;
+        }
+
+        .next-btn {
+            width: 100%;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .next-btn:hover {
             background-color: #0056b3;
         }
 
-        #next-btn {
-            background-color: #28a745;
+        .score-text {
+            font-size: 20px;
+            font-weight: bold;
             text-align: center;
-            display: none;
-            margin-top: 10px;
-        }
-
-        #next-btn:hover {
-            background-color: #218838;
-        }
-
-        #score-container {
-            text-align: center;
+            color: #28a745;
         }
     </style>
 </head>
 <body>
 
 <div class="quiz-container">
-    <div id="quiz">
-        <h2 id="question">Question Text</h2>
-        <div id="options" class="options-container">
-            <!-- Option buttons injected here by JS -->
-        </div>
-        <button id="next-btn" onclick="nextQuestion()">Next Question</button>
+    <div id="quiz-box">
+        <h2 id="question">प्रश्न लोड हो रहा है...</h2>
+        <div id="options" class="options-list"></div>
+        <button id="next-btn" class="next-btn" onclick="nextQuestion()">अगला प्रश्न</button>
     </div>
-
-    <div id="score-container" style="display: none;">
-        <h2>Quiz Finished!</h2>
-        <p id="score-text"></p>
-        <button class="btn" style="text-align: center;" onclick="restartQuiz()">Restart Quiz</button>
+    <div id="result-box" style="display: none;">
+        <p id="score" class="score-text"></p>
+        <button class="next-btn" style="display: block;" onclick="restartQuiz()">फिर से शुरू करें</button>
     </div>
 </div>
 
 <script>
     const quizData = [
         {
-            question: "What does HTML stand for?",
+            question: "रोहन खेल के मैदान में हारने पर अक्सर गुस्सा हो जाता है और दोस्तों से झगड़ने लगता है। 'बचपन के खेल' कविता के आधार पर बताइए कि खेलों से हमें क्या सीखना चाहिए?",
             options: [
-                "Hyper Text Markup Language",
-                "High Tech Multi Language",
-                "Hyperlink and Text Marking Language",
-                "Home Tool Markup Language"
+                "केवल जीत हासिल करना",
+                "दूसरों को नीचा दिखाना",
+                "आपसी प्यार, सहयोग और हँसते-हँसते आगे बढ़ना",
+                "खेल छोड़ देना"
+            ],
+            correct: 2
+        },
+        {
+            question: "कविता में 'रस्सी खींच' खेल के दौरान \"गिरते-पड़ते, हँसते-हँसते फिर से बढ़ते\" कहा गया है। यह पंक्ति जीवन के किस गुण को दर्शाती है?",
+            options: [
+                "कठिनाइयों से डर जाना",
+                "असफल होने पर भी पुनः प्रयास करना और खुश रहना",
+                "खेल को बीच में छोड़ देना",
+                "दूसरों की सहायता न करना"
+            ],
+            correct: 1
+        },
+        {
+            question: "'गिल्ली-डंडा' खेल से बच्चों में शारीरिक विकास के साथ-साथ कौन-सा प्रमुख कौशल (skill) विकसित होता है?",
+            options: [
+                "तेज़ दौड़ने की क्षमता",
+                "हाथ-आँख का समन्वय और सटीक निशाना लगाना",
+                "रस्सी कूदने का संतुलन",
+                "सोचने और लिखने की गति"
+            ],
+            correct: 1
+        },
+        {
+            question: "कविता के अनुसार खेलों में भाग लेने से बच्चों के बीच के रिश्ते पर क्या प्रभाव पड़ता है?",
+            options: [
+                "बच्चों में आपसी प्रतिस्पर्धा और ईर्ष्या बढ़ती है।",
+                "बच्चे अकेले रहना पसंद करने लगते हैं।",
+                "बच्चों में आपस में प्यार और मेल-जोल बढ़ता है।",
+                "पढ़ाई के प्रति रुचि कम होती है।"
+            ],
+            correct: 2
+        },
+        {
+            question: "\"क्रिकेट खेलें गली के अंदर, चौका-छक्का लगे धड़ाधड़।\" गली में क्रिकेट खेलते समय बच्चों को किस बात का विशेष ध्यान रखना चाहिए?",
+            options: [
+                "गेंद किसी के घर की खिड़की या राहगीर को न लगे।",
+                "खेल को बहुत तेज़ आवाज़ में खेलें।",
+                "चौका-छक्का न मारें।",
+                "दूसरों को गली में न आने दें।"
             ],
             correct: 0
         },
         {
-            question: "Which language is used for styling web pages?",
-            options: ["HTML", "JQuery", "CSS", "XML"],
+            question: "कविता में आया शब्द 'व्यापारी' शब्द का अर्थ है — \"सामान खरीदने और बेचने वाला\"। यदि खेल-खेल में बच्चे 'व्यापारी' बनते हैं, तो यह उनके किस कौशल को बढ़ावा देता है?",
+            options: [
+                "दौड़ने की क्षमता",
+                "व्यावहारिक सोच और लेन-देन की समझ",
+                "निशाना लगाने की कला",
+                "चित्र बनाने की कला"
+            ],
+            correct: 1
+        },
+        {
+            question: "'यह भी जानें' खंड के अनुसार, आधुनिक क्रिकेट का प्राचीन भारतीय संस्करण किस खेल को माना जा सकता है?",
+            options: [
+                "कांचा-गोली",
+                "लूडो",
+                "गिल्ली-डंडा",
+                "कबड्डी"
+            ],
             correct: 2
         },
         {
-            question: "What is the correct syntax for referring to an external script named 'app.js'?",
+            question: "\"साारेे दोोस्त मिलकर खेेलताा हैंं।\" — इस वाक्य में व्याकरण संबंधी अशुद्धि है। इसका सही (शुद्ध) रूप क्या होगा?",
             options: [
-                "<script href='app.js'>",
-                "<script src='app.js'>",
-                "<script name='app.js'>",
-                "<script file='app.js'>"
+                "सारे दोस्त मिलकर खेलता है।",
+                "सारे दोस्त मिलकर खेलते हैं।",
+                "सारे दोस्त मिलकर खेलेंगे।",
+                "सारे दोस्त मिलकर खेल रहा है।"
             ],
             correct: 1
+        },
+        {
+            question: "कविता की पंक्ति \"मस्ती होती भोली-भोली\" में 'भोली' शब्द का अर्थ मासूमियत से है। यहाँ 'भोली मस्ती' से कवि का क्या तात्पर्य है?",
+            options: [
+                "बिना किसी छल-कपट या स्वार्थ के की गई निष्छल मस्ती",
+                "शांत बैठकर पढ़ाई करना",
+                "दूसरों को परेशान करना",
+                "किसी खेल के नियम तोड़ना"
+            ],
+            correct: 0
+        },
+        {
+            question: "एशियाई खेलों (Asian Games) में शामिल किया गया एकमात्र स्वदेशी (भारतीय) खेल कौन-सा है?",
+            options: [
+                "लूडो",
+                "खो-खो",
+                "कबड्डी",
+                "गिल्ली-डंडा"
+            ],
+            correct: 2
         }
     ];
 
-    let currentQuestion = 0;
+    let currentQuestionIndex = 0;
     let score = 0;
 
     const questionElement = document.getElementById("question");
     const optionsElement = document.getElementById("options");
     const nextButton = document.getElementById("next-btn");
-    const quizContainer = document.getElementById("quiz");
-    const scoreContainer = document.getElementById("score-container");
-    const scoreText = document.getElementById("score-text");
+    const quizBox = document.getElementById("quiz-box");
+    const resultBox = document.getElementById("result-box");
+    const scoreElement = document.getElementById("score");
 
     function loadQuestion() {
-        nextButton.style.display = "none";
-        optionsElement.innerHTML = "";
-        
-        const q = quizData[currentQuestion];
-        questionElement.textContent = `${currentQuestion + 1}. ${q.question}`;
+        resetState();
+        let currentQuiz = quizData[currentQuestionIndex];
+        questionElement.innerText = (currentQuestionIndex + 1) + ". " + currentQuiz.question;
 
-        q.options.forEach((option, index) => {
+        currentQuiz.options.forEach((option, index) => {
             const button = document.createElement("button");
-            button.classList.add("btn");
-            button.textContent = option;
-            button.onclick = () => selectOption(index);
+            button.innerText = option;
+            button.classList.add("option-btn");
+            button.onclick = () => selectOption(button, index);
             optionsElement.appendChild(button);
         });
     }
 
-    function selectOption(selectedIndex) {
-        const correctIndex = quizData[currentQuestion].correct;
-        const buttons = optionsElement.querySelectorAll(".btn");
+    function resetState() {
+        nextButton.style.display = "none";
+        optionsElement.innerHTML = "";
+    }
 
-        buttons.forEach((button, index) => {
-            button.disabled = true;
-            if (index === correctIndex) {
-                button.style.backgroundColor = "#28a745"; // Green for correct
-            } else if (index === selectedIndex) {
-                button.style.backgroundColor = "#dc3545"; // Red for incorrect
-            }
-        });
+    function selectOption(selectedBtn, selectedIndex) {
+        let correctIndex = quizData[currentQuestionIndex].correct;
+        let allButtons = optionsElement.children;
+
+        for (let btn of allButtons) {
+            btn.disabled = true;
+        }
 
         if (selectedIndex === correctIndex) {
+            selectedBtn.style.backgroundColor = "#28a745";
+            selectedBtn.style.color = "white";
             score++;
+        } else {
+            selectedBtn.style.backgroundColor = "#dc3545";
+            selectedBtn.style.color = "white";
+            allButtons[correctIndex].style.backgroundColor = "#28a745";
+            allButtons[correctIndex].style.color = "white";
         }
 
         nextButton.style.display = "block";
     }
 
     function nextQuestion() {
-        currentQuestion++;
-        if (currentQuestion < quizData.length) {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
             loadQuestion();
         } else {
-            showResults();
+            showResult();
         }
     }
 
-    function showResults() {
-        quizContainer.style.display = "none";
-        scoreContainer.style.display = "block";
-        scoreText.textContent = `You scored ${score} out of ${quizData.length}!`;
+    function showResult() {
+        quizBox.style.display = "none";
+        resultBox.style.display = "block";
+        scoreElement.innerText = `आपका कुल स्कोर: ${score} / ${quizData.length}`;
     }
 
     function restartQuiz() {
-        currentQuestion = 0;
+        currentQuestionIndex = 0;
         score = 0;
-        scoreContainer.style.display = "none";
-        quizContainer.style.display = "block";
+        resultBox.style.display = "none";
+        quizBox.style.display = "block";
         loadQuestion();
     }
 
-    // Initialize Quiz
     loadQuestion();
 </script>
 
