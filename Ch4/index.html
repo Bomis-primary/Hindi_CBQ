@@ -73,7 +73,7 @@
             display: flex;
         }
 
-        /* SCREEN 1: SPLASH SCREEN - LOGO ONLY */
+        /* SCREEN 1: SPLASH SCREEN (INNOVINE LOGO) */
         #splash-screen {
             background: #FFFFFF;
             justify-content: center;
@@ -360,7 +360,7 @@
 
     <div class="quiz-container">
         
-        <!-- Screen 1: Splash Screen -->
+        <!-- Screen 1: Splash Screen (Innovine Logo) -->
         <div id="splash-screen" class="view-panel active" onclick="goToInstructions()">
             <div class="splash-logo-box">
                 <img 
@@ -440,7 +440,7 @@
             }
         }
 
-        // Updated Dataset for "Hawa Mahal" Questions
+        // Question Dataset for "Hawa Mahal"
         const quizDataset = [
             {
                 q: "यदि आप किसी ऐतिहासिक स्थान पर घूमने जाएँ, तो वहाँ की सुंदरता के साथ-साथ आपको क्या करना चाहिए?",
@@ -565,12 +565,13 @@
             document.getElementById(panelId).classList.add('active');
         }
 
+        // Screen 1 Transition Handler: Move to Instruction Screen
         function goToInstructions() {
             if (splashTimer) clearTimeout(splashTimer);
             showPanel('instruction-screen');
         }
 
-        // Auto-switch Splash Screen after 2.5 seconds or on click
+        // Automatic switch from Splash Screen (Screen 1) to Instructions (Screen 2)
         splashTimer = setTimeout(() => {
             goToInstructions();
         }, 2500);
