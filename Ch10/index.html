@@ -1,368 +1,490 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CBQ Quiz Application</title>
-<style>
-  :root {
-    --primary: #2563eb;
-    --success: #16a34a;
-    --danger: #dc2626;
-    --warning: #d97706;
-    --bg: #f8fafc;
-    --card: #ffffff;
-    --text: #1e293b;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>डॉ. ए.पी.जे. अब्दुल कलाम - क्विज़</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success: #16a34a;
+      --success-bg: #dcfce7;
+      --danger: #dc2626;
+      --danger-bg: #fee2e2;
+      --warning-bg: #fef3c7;
+      --warning-border: #fde68a;
+      --warning-text: #92400e;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 12px;
+      --shadow: 0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04);
+    }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-  body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-  
-  .screen { display: none; width: 100%; max-width: 650px; background: var(--card); padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); text-align: center; }
-  .screen.active { display: block; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
 
-  /* 1. Centered Single Logo Screen */
-  #logo-screen { 
-    display: none; 
-    min-height: 300px;
-  }
-  #logo-screen.active {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .app-logo {
-    max-width: 280px;
-    max-height: 160px;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    display: block;
-    margin: 0 auto;
-  }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
 
-  /* Intro & End Screen */
-  .meta-card { background: #f1f5f9; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: left; }
-  .meta-card p { margin: 8px 0; font-size: 1rem; }
-  button.btn-action { background: var(--primary); color: white; border: none; padding: 12px 24px; font-size: 1rem; border-radius: 6px; cursor: pointer; transition: 0.2s; }
-  button.btn-action:hover { opacity: 0.9; }
+    .screen {
+      display: none;
+      width: 100%;
+      max-width: 600px;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      padding: 32px 24px;
+      position: relative;
+    }
 
-  /* Game Area */
-  .game-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 20px; font-weight: bold; }
-  .timer-badge { background: #fee2e2; color: var(--danger); padding: 6px 12px; border-radius: 20px; font-size: 0.9rem; }
-  .scenario-text { text-align: left; font-size: 1.1rem; line-height: 1.5; margin-bottom: 20px; }
-  
-  .options-grid { display: grid; gap: 12px; margin-bottom: 20px; }
-  .btn-option { background: #ffffff; border: 2px solid #cbd5e1; padding: 14px; border-radius: 8px; font-size: 1rem; text-align: left; cursor: pointer; transition: 0.2s; }
-  .btn-option:hover:not(:disabled) { border-color: var(--primary); background: #eff6ff; }
-  .btn-option:disabled { cursor: not-allowed; }
-  .btn-option.correct { background: #dcfce7; border-color: var(--success); color: #14532d; }
-  .btn-option.incorrect { background: #fee2e2; border-color: var(--danger); color: #7f1d1d; }
+    .screen.active {
+      display: block;
+    }
 
-  .feedback-box, .hint-box { border-radius: 6px; padding: 12px; margin-top: 15px; font-weight: 600; text-align: left; }
-  .hint-box { background: #fef3c7; color: var(--warning); border: 1px solid #fde68a; }
-  .feedback-box.success { background: #dcfce7; color: var(--success); }
-  .feedback-box.danger { background: #fee2e2; color: var(--danger); }
-</style>
+    /* Logo Screen Styling */
+    #logo-screen {
+      display: none;
+      min-height: 300px;
+      text-align: center;
+    }
+
+    #logo-screen.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .app-logo {
+      max-width: 280px;
+      max-height: 160px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* Meta / Overview Screen */
+    .meta-card {
+      background: #f1f5f9;
+      padding: 16px;
+      border-radius: 8px;
+      margin: 20px 0;
+      text-align: left;
+    }
+
+    .meta-card p {
+      margin: 8px 0;
+      font-size: 15px;
+      color: var(--text);
+    }
+
+    /* Quiz Header */
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .question {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.5;
+      margin-bottom: 24px;
+      text-align: left;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option-btn {
+      background: #ffffff;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: 100%;
+    }
+
+    .option-btn:hover:not([disabled]) {
+      border-color: var(--primary);
+      background: #eff6ff;
+    }
+
+    .option-btn:disabled {
+      cursor: default;
+    }
+
+    .option-btn.correct {
+      background-color: var(--success-bg) !important;
+      border-color: var(--success) !important;
+      color: #14532d !important;
+      font-weight: 700;
+    }
+
+    .option-btn.wrong {
+      background-color: var(--danger-bg) !important;
+      border-color: var(--danger) !important;
+      color: #7f1d1d !important;
+      opacity: 0.8;
+    }
+
+    .hint-box {
+      margin-top: 16px;
+      padding: 14px 16px;
+      background-color: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--warning-text);
+      line-height: 1.4;
+      display: none;
+      text-align: left;
+    }
+
+    .footer-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 24px;
+      gap: 12px;
+    }
+
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      background: #cbd5e1;
+    }
+
+    .score-screen {
+      text-align: center;
+      padding: 12px 0;
+    }
+
+    .score-screen h2 {
+      font-size: 26px;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .score-screen p {
+      font-size: 18px;
+      margin-bottom: 24px;
+      color: var(--text);
+    }
+  </style>
 </head>
 <body>
 
-<!-- 1. Logo Screen (Only Logo centered) -->
-<div id="logo-screen" class="screen active">
-  <img src="assets/logo.png" alt="Innovine Logo" class="app-logo">
-</div>
-
-<!-- 2. Intro Screen -->
-<div id="intro-screen" class="screen">
-  <h2>Quiz Overview</h2>
-  <div class="meta-card">
-    <p><strong>Grade:</strong> Class 4</p>
-    <p><strong>Subject:</strong> Hindi</p>
-    <p><strong>Topic:</strong> तेनालीराम की चतुराई</p>
-    <p><strong>Total Questions:</strong> <span id="intro-q-count">0</span></p>
-  </div>
-  <button class="btn-action" onclick="startQuiz()">Start Quiz</button>
-</div>
-
-<!-- 3. Game Area Screen -->
-<div id="game-screen" class="screen">
-  <div class="game-header">
-    <span>Score: <span id="live-score">0</span></span>
-    <span class="timer-badge">⏱️ <span id="timer">45</span>s</span>
-    <span>Q: <span id="q-idx">1</span>/<span id="q-total">0</span></span>
+  <!-- 1. Logo Screen -->
+  <div id="logo-screen" class="screen active">
+    <img src="assets/logo.png" alt="Innovine Logo" class="app-logo">
   </div>
 
-  <div id="scenario" class="scenario-text"></div>
-  <div id="options" class="options-grid"></div>
-
-  <div id="hint-box" class="hint-box" style="display: none;"></div>
-  <div id="feedback-box" class="feedback-box" style="display: none;"></div>
-</div>
-
-<!-- 4. End Screen -->
-<div id="end-screen" class="screen">
-  <h2>Quiz Completed!</h2>
-  <div class="meta-card" style="text-align: center;">
-    <p>Your Final Score</p>
-    <h1 id="final-score" style="font-size: 3rem; color: var(--primary); margin: 10px 0;">0/0</h1>
+  <!-- 2. Intro Screen -->
+  <div id="intro-screen" class="screen">
+    <h2 style="text-align: center; color: var(--primary);">क्विज़ विवरण (Overview)</h2>
+    <div class="meta-card">
+      <p><strong>विषय (Subject):</strong> हिंदी (Hindi)</p>
+      <p><strong>शीर्षक (Topic):</strong> डॉ. ए.पी.जे. अब्दुल कलाम</p>
+      <p><strong>कुल प्रश्न (Total Questions):</strong> <span id="intro-q-count">0</span></p>
+    </div>
+    <div style="text-align: center;">
+      <button class="btn" onclick="startQuiz()">क्विज़ शुरू करें</button>
+    </div>
   </div>
-  <button class="btn-action" onclick="restartQuiz()">Restart Quiz</button>
-</div>
 
-<script>
-const quizData = [
-  {
-    scenario: "विजयनगर के राजमहल में अचानक हड़कंप मच गया और राजा कृष्णदेवराय बहुत चिंतित हो गए। राजकोष से कौन-कौन सी वस्तुएँ गायब हो गई थीं?",
-    options: [
-      "सोने के सिक्के और कीमती आभूषण",
-      "किताबें और कपड़े",
-      "हथियार और भोजन",
-      "फूल और फल"
-    ],
-    answer: 0,
-    hint: "राजकोष से राजा का खजाना और गहने गायब हो गए थे।"
-  },
-  {
-    scenario: "राजा कृष्णदेवराय ने चोरी की समस्या सुलझाने के लिए तेनालीराम को कितना समय दिया था?",
-    options: [
-      "दो दिन का",
-      "एक दिन का",
-      "एक सप्ताह का",
-      "एक महीने का"
-    ],
-    answer: 1,
-    hint: "राजा ने तेनालीराम को योजना बनाने और चोर पकड़ने के लिए 24 घंटे यानी एक दिन दिया।"
-  },
-  {
-    scenario: "तेनालीराम ने चोर को पकड़ने के लिए दरबार में एक मिट्टी की मूर्ति प्रस्तुत की। उस मूर्ति पर क्या लगाया गया था?",
-    options: [
-      "जादुई पानी",
-      "सोने की परत",
-      "काला रंग",
-      "फूलों की माला"
-    ],
-    answer: 2,
-    hint: "तेनालीराम ने ऐसा रंग लगाया जिससे छूने वाले के हाथ पर निशान पड़ जाए।"
-  },
-  {
-    scenario: "तेनालीराम ने घोषणा की कि जो भी चोर होगा और मूर्ति को छुएगा, उसके हाथ काले हो जाएँगे। असली चोर की पहचान कैसे हुई?",
-    options: [
-      "उसके हाथ पूरी तरह काले थे",
-      "डर के कारण उसने मूर्ति को छुआ ही नहीं और उसके हाथ साफ थे",
-      "वह मूर्ति देखकर रोने लगा",
-      "उसने दरबार से भागने की कोशिश की"
-    ],
-    answer: 1,
-    hint: "चोर को लगा कि मूर्ति सचमुच जादुई है, इसलिए उसने पकड़े जाने के डर से उसे छुआ ही नहीं।"
-  },
-  {
-    scenario: "यदि चोर ने भी अन्य दरबारियों की तरह मूर्ति को छू लिया होता, तो तेनालीराम की योजना पर क्या प्रभाव पड़ता?",
-    options: [
-      "चोर के हाथ भी काले हो जाते और उसे पहचानना कठिन हो जाता",
-      "मूर्ति तुरंत टूट जाती",
-      "राजा सभी दरबारियों को छोड़ देते",
-      "महल के सभी लोगों के हाथ काले हो जाते"
-    ],
-    answer: 0,
-    hint: "अगर चोर मूर्ति छू लेता, तो उसके हाथ भी बाकी सब की तरह काले हो जाते।"
-  },
-  {
-    scenario: "चोरी का अपराध साबित होने पर राजा कृष्णदेवराय ने चोर दरबारी के साथ क्या करने का आदेश दिया?",
-    options: [
-      "उसे इनाम दिया",
-      "उसे राज्य से बाहर निकाल दिया",
-      "सैनिकों को उसे तुरंत बंदी बनाने और दंड देने का आदेश दिया",
-      "उसे माफ कर दिया"
-    ],
-    answer: 2,
-    hint: "राजा ने चोरी को बड़ा अपराध मानते हुए सैनिकों को कड़ा आदेश दिया।"
-  },
-  {
-    scenario: "तेनालीराम की सूझ-बूझ से चोर के पकड़े जाने पर राजा कृष्णदेवराय ने उन्हें इनाम दिया। इस कहानी से हमें क्या सीख मिलती है?",
-    options: [
-      "जादू से हर समस्या हल हो जाती है",
-      "बुद्धिमानी और धैर्य से कठिन समस्याओं का समाधान किया जा सकता है",
-      "चोरी करना अच्छी बात है",
-      "हमेशा ताकत का प्रयोग करना चाहिए"
-    ],
-    answer: 1,
-    hint: "तेनालीराम ने अपनी समझदारी और शांति से काम लेकर बड़ी समस्या हल की।"
-  },
-  {
-    scenario: "कहानी की शुरुआत में अमृता की प्लास्टिक की गेंद एक गहरे गड्ढे में गिर गई। उसने बिना गड्ढे में उतरे गेंद निकालने के लिए पास रखी बाल्टी के पानी का उपयोग किया। यहाँ उसने किस चीज़ का परिचय दिया?",
-    options: [
-      "केवल शारीरिक बल का",
-      "सूझ-बूझ और बुद्धिमानी का",
-      "जादू का",
-      "दूसरों की सहायता का"
-    ],
-    answer: 1,
-    hint: "पानी डालने पर हल्की प्लास्टिक की गेंद तैरकर ऊपर आ जाती है, यह दिमाग लगाने से संभव हुआ।"
-  },
-  {
-    scenario: "विजयनगर साम्राज्य के अवशेष और प्रसिद्ध विरुपाक्ष मंदिर आज भारत के किस राज्य के 'हंपी' नामक स्थान में स्थित हैं?",
-    options: [
-      "राजस्थान",
-      "उत्तर प्रदेश",
-      "कर्नाटक",
-      "गुजरात"
-    ],
-    answer: 2,
-    hint: "यह दक्षिण भारत का एक प्रसिद्ध ऐतिहासिक राज्य है।"
-  },
-  {
-    scenario: "दुनिया के अलग-अलग हिस्सों में तेनालीराम जैसी चतुर पात्रों की लोक-कथाएँ प्रसिद्ध हैं। मध्य पूर्व (Middle East) की लोक-कथाओं में कौन-सा चतुर पात्र प्रसिद्ध है?",
-    options: [
-      "रेनार्ड लोमड़ी",
-      "जुहा",
-      "अनांसी",
-      "शेरखान"
-    ],
-    answer: 1,
-    hint: "यूरोप में 'रेनार्ड लोमड़ी', अफ्रीका में 'अनांसी' और मध्य पूर्व में यह पात्र प्रसिद्ध है।"
-  }
-];
+  <!-- 3. Game Area Screen -->
+  <div id="game-screen" class="screen">
+    <div class="quiz-header">
+      <span id="progress">प्रश्न 1 / 10</span>
+      <span id="scoreTracker">अंक: 0</span>
+    </div>
+    
+    <div class="question" id="questionText">प्रश्न यहाँ दिखाई देगा</div>
+    
+    <div class="options" id="optionsContainer" role="radiogroup" aria-label="उत्तर विकल्प"></div>
 
-let currentQ = 0;
-let score = 0;
-let attempts = 0;
-let timerVal = 45;
-let timerInterval = null;
+    <div class="hint-box" id="hintBox" aria-live="polite"></div>
 
-// Auto switch from Logo Screen to Intro Screen after 5 seconds
-window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('intro-q-count').textContent = quizData.length;
-  setTimeout(() => {
-    switchScreen('intro-screen');
-  }, 5000);
-});
+    <div class="footer-actions">
+      <button class="btn btn-secondary" id="hintBtn" onclick="toggleHint()">संकेत (Hint)</button>
+      <button class="btn" id="nextBtn" onclick="nextQuestion()" style="display: none;">अगला प्रश्न</button>
+    </div>
+  </div>
 
-function switchScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
+  <!-- 4. End Screen -->
+  <div id="end-screen" class="screen">
+    <div class="score-screen">
+      <h2>क्विज़ समाप्त!</h2>
+      <p>आपका कुल स्कोर: <strong id="finalScore">0 / 10</strong></p>
+      <button class="btn" onclick="restartQuiz()">पुनः प्रयास करें</button>
+    </div>
+  </div>
 
-function startQuiz() {
-  currentQ = 0;
-  score = 0;
-  switchScreen('game-screen');
-  loadQuestion();
-}
+  <script>
+    const newQuizQuestions = [
+      {
+        scenario: "डॉ. ए.पी.जे. अब्दुल कलाम का जन्म कब और किस स्थान पर हुआ था?",
+        options: [
+          "15 अक्टूबर 1931 को रामेश्वरम में",
+          "27 जुलाई 2015 को शिलांग में",
+          "15 अगस्त 1947 को चेन्नई में",
+          "26 जनवरी 1950 को तिरुचिरापल्ली में"
+        ],
+        answer: 0,
+        hint: "उनका जन्म तमिलनाडु के एक छोटे से द्वीप शहर में हुआ था।"
+      },
+      {
+        scenario: "अब्दुल कलाम के पिता जैनुलाब्दीन का मुख्य काम-धंधा क्या था?",
+        options: [
+          "अखबार बेचना",
+          "मछुआरों को नाव किराए पर देना",
+          "शिक्षक के रूप में पढ़ाना",
+          "वैज्ञानिक अनुसंधान करना"
+        ],
+        answer: 1,
+        hint: "वे समुद्र से जुड़े व्यवसाय में लोगों को साधन किराए पर देते थे।"
+      },
+      {
+        scenario: "1914 में पंबन पुल बनने से पहले कलाम का परिवार कौन-सा समृद्ध व्यवसाय करता था?",
+        options: [
+          "मछली पकड़ने का व्यवसाय",
+          "तीर्थयात्रियों को नाव से रामेश्वरम और धनुषकोडी ले जाना",
+          "अखबार छापने और बाँटने का कार्य",
+          "हवाई जहाज के उपकरण बनाने का काम"
+        ],
+        answer: 1,
+        hint: "वे श्रद्धालुओं को एक स्थान से दूसरे स्थान नाव द्वारा पहुँचाते थे।"
+      },
+      {
+        scenario: "डॉ. कलाम ने 1954 में सेंट जोसेफ कॉलेज, तिरुचिरापल्ली से किस विषय में स्नातक की डिग्री प्राप्त की?",
+        options: [
+          "वैमानिकी इंजीनियरिंग (Aeronautical Engineering)",
+          "भौतिकी (Physics)",
+          "गणित (Mathematics)",
+          "रसायन विज्ञान (Chemistry)"
+        ],
+        answer: 1,
+        hint: "यह विज्ञान की वह शाखा है जिसमें पदार्थ और ऊर्जा का अध्ययन किया जाता है।"
+      },
+      {
+        scenario: "1955 में मद्रास इंस्टीट्यूट ऑफ टेक्नोलॉजी (MIT) में दाखिला लेकर कलाम ने किस विषय की पढ़ाई की?",
+        options: [
+          "वैमानिकी इंजीनियरिंग (Aeronautical Engineering)",
+          "कंप्यूटर साइंस (Computer Science)",
+          "सिविल इंजीनियरिंग (Civil Engineering)",
+          "मैकेनिकल इंजीनियरिंग (Mechanical Engineering)"
+        ],
+        answer: 0,
+        hint: "यह पढ़ाई हवाई जहाज़ बनाने और उड़ाने से जुड़ी होती है।"
+      },
+      {
+        scenario: "वायुसेना के इंटरव्यू में कुल 25 उम्मीदवारों में से कलाम किस स्थान पर आए थे?",
+        options: [
+          "8वें स्थान पर",
+          "9वें स्थान पर",
+          "10वें स्थान पर",
+          "15वें स्थान पर"
+        ],
+        answer: 1,
+        hint: "केवल 8 लोगों का चयन हुआ था और वे चयन सूची में ठीक उनके पीछे थे।"
+      },
+      {
+        scenario: "डॉ. कलाम के अनुसार 'सपना' क्या होता है?",
+        options: [
+          "सपना वह है जो आप सोते समय देखते हैं",
+          "सपना वह है जो आपको सोने नहीं देता / जगाए रखता है",
+          "सपना वह है जो कभी पूरा नहीं हो सकता",
+          "सपना वह है जो केवल दिन में देखा जाता है"
+        ],
+        answer: 1,
+        hint: "यह वह प्रेरणा है जो आपको निरंतर जागृत और कार्यशील रखती है।"
+      },
+      {
+        scenario: "वर्ष 2007 में इंग्लैंड की रॉयल सोसाइटी ने डॉ. कलाम को किस सम्मान से नवाजा?",
+        options: [
+          "अंतरराष्ट्रीय पदक",
+          "किंग चार्ल्स द्वितीय पदक",
+          "नोबेल पुरस्कार",
+          "रॉयल इंजीनियरिंग मेडल"
+        ],
+        answer: 1,
+        hint: "यह पदक एक प्रसिद्ध ब्रिटिश राजा के नाम पर है।"
+      },
+      {
+        scenario: "डॉ. कलाम को अपने खाली समय में कौन-सा संगीत वाद्ययंत्र बजाना पसंद था?",
+        options: [
+          "सितार",
+          "वीणा",
+          "बांसुरी",
+          "तबला"
+        ],
+        answer: 1,
+        hint: "यह भारत का एक प्राचीन तार वाला वाद्ययंत्र (string instrument) है।"
+      },
+      {
+        scenario: "डॉ. कलाम द्वारा लिखित प्रसिद्ध आत्मकथा (Autobiography) का क्या नाम है?",
+        options: [
+          "माई जर्नी (My Journey)",
+          "इग्नाइटेड माइंड्स (Ignited Minds)",
+          "विंग्स ऑफ फायर (Wings of Fire)",
+          "सपनों की उड़ान"
+        ],
+        answer: 2,
+        hint: "इस पुस्तक के शीर्षक का अर्थ 'अग्नि की उड़ान' है।"
+      }
+    ];
 
-function loadQuestion() {
-  attempts = 0;
-  timerVal = 45;
-  document.getElementById('live-score').textContent = score;
-  document.getElementById('q-idx').textContent = currentQ + 1;
-  document.getElementById('q-total').textContent = quizData.length;
-  document.getElementById('scenario').textContent = quizData[currentQ].scenario;
-  
-  const hintBox = document.getElementById('hint-box');
-  const feedBox = document.getElementById('feedback-box');
-  hintBox.style.display = 'none';
-  feedBox.style.display = 'none';
+    let currentQuestionIndex = 0;
+    let score = 0;
 
-  const optionsDiv = document.getElementById('options');
-  optionsDiv.innerHTML = '';
+    const questionText = document.getElementById('questionText');
+    const optionsContainer = document.getElementById('optionsContainer');
+    const progress = document.getElementById('progress');
+    const scoreTracker = document.getElementById('scoreTracker');
+    const hintBox = document.getElementById('hintBox');
+    const hintBtn = document.getElementById('hintBtn');
+    const nextBtn = document.getElementById('nextBtn');
 
-  quizData[currentQ].options.forEach((opt, idx) => {
-    const btn = document.createElement('button');
-    btn.className = 'btn-option';
-    btn.textContent = `${idx + 1}. ${opt}`;
-    btn.onclick = () => handleAnswer(idx, btn);
-    optionsDiv.appendChild(btn);
-  });
+    // Auto switch from Logo Screen to Intro Screen after 5 seconds
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('intro-q-count').textContent = newQuizQuestions.length;
+      setTimeout(() => {
+        switchScreen('intro-screen');
+      }, 5000);
+    });
 
-  startTimer();
-}
-
-function startTimer() {
-  clearInterval(timerInterval);
-  document.getElementById('timer').textContent = timerVal;
-  timerInterval = setInterval(() => {
-    timerVal--;
-    document.getElementById('timer').textContent = timerVal;
-    if (timerVal <= 0) {
-      clearInterval(timerInterval);
-      handleTimeout();
+    function switchScreen(id) {
+      document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
     }
-  }, 1000);
-}
 
-function handleAnswer(selectedIdx, btnElement) {
-  const q = quizData[currentQ];
-  const feedBox = document.getElementById('feedback-box');
-  const hintBox = document.getElementById('hint-box');
+    function startQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      switchScreen('game-screen');
+      loadQuestion();
+    }
 
-  if (selectedIdx === q.answer) {
-    clearInterval(timerInterval);
-    btnElement.classList.add('correct');
-    score++;
-    document.getElementById('live-score').textContent = score;
-    disableAllOptions();
-    feedBox.className = 'feedback-box success';
-    feedBox.textContent = 'Correct!';
-    feedBox.style.display = 'block';
-    hintBox.style.display = 'none';
-    setTimeout(nextQuestion, 1000);
-  } else {
-    attempts++;
-    btnElement.classList.add('incorrect');
-    btnElement.disabled = true;
-
-    if (attempts === 1) {
-      hintBox.textContent = `Hint: ${q.hint}`;
-      hintBox.style.display = 'block';
-    } else if (attempts >= 2) {
-      clearInterval(timerInterval);
-      disableAllOptions();
-      highlightCorrectOption();
-      feedBox.className = 'feedback-box danger';
-      feedBox.textContent = `Incorrect! Correct answer: ${q.options[q.answer]}`;
-      feedBox.style.display = 'block';
+    function loadQuestion() {
+      const currentQ = newQuizQuestions[currentQuestionIndex];
+      questionText.textContent = `${currentQuestionIndex + 1}. ${currentQ.scenario}`;
+      progress.textContent = `प्रश्न ${currentQuestionIndex + 1} / ${newQuizQuestions.length}`;
+      scoreTracker.textContent = `अंक: ${score}`;
+      
+      optionsContainer.innerHTML = '';
       hintBox.style.display = 'none';
-      setTimeout(nextQuestion, 2000);
+      hintBox.textContent = `संकेत: ${currentQ.hint}`;
+      nextBtn.style.display = 'none';
+      hintBtn.style.display = 'inline-block';
+
+      currentQ.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = opt;
+        btn.onclick = () => selectAnswer(idx);
+        optionsContainer.appendChild(btn);
+      });
     }
-  }
-}
 
-function handleTimeout() {
-  disableAllOptions();
-  highlightCorrectOption();
-  const feedBox = document.getElementById('feedback-box');
-  feedBox.className = 'feedback-box danger';
-  feedBox.textContent = `Time expired! Correct answer: ${quizData[currentQ].options[quizData[currentQ].answer]}`;
-  feedBox.style.display = 'block';
-  setTimeout(nextQuestion, 2000);
-}
+    function selectAnswer(selectedIndex) {
+      const currentQ = newQuizQuestions[currentQuestionIndex];
+      const buttons = optionsContainer.children;
 
-function disableAllOptions() {
-  document.querySelectorAll('.btn-option').forEach(b => b.disabled = true);
-}
+      for (let i = 0; i < buttons.length; i++) {
+        buttons[i].disabled = true;
+        if (i === currentQ.answer) {
+          buttons[i].classList.add('correct');
+        }
+      }
 
-function highlightCorrectOption() {
-  const options = document.querySelectorAll('.btn-option');
-  options[quizData[currentQ].answer].classList.add('correct');
-}
+      if (selectedIndex === currentQ.answer) {
+        score++;
+        scoreTracker.textContent = `अंक: ${score}`;
+      } else {
+        buttons[selectedIndex].classList.add('wrong');
+      }
 
-function nextQuestion() {
-  currentQ++;
-  if (currentQ < quizData.length) {
-    loadQuestion();
-  } else {
-    endQuiz();
-  }
-}
+      nextBtn.style.display = 'inline-block';
+    }
 
-function endQuiz() {
-  clearInterval(timerInterval);
-  document.getElementById('final-score').textContent = `${score} / ${quizData.length}`;
-  switchScreen('end-screen');
-}
+    function toggleHint() {
+      if (hintBox.style.display === 'none' || hintBox.style.display === '') {
+        hintBox.style.display = 'block';
+      } else {
+        hintBox.style.display = 'none';
+      }
+    }
 
-function restartQuiz() {
-  switchScreen('intro-screen');
-}
-</script>
+    function nextQuestion() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < newQuizQuestions.length) {
+        loadQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      document.getElementById('finalScore').textContent = `${score} / ${newQuizQuestions.length}`;
+      switchScreen('end-screen');
+    }
+
+    function restartQuiz() {
+      switchScreen('intro-screen');
+    }
+  </script>
 </body>
 </html>
