@@ -1,844 +1,475 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>इंटरैक्टिव अभ्यास</title>
-    <style>
-        :root {
-            --bg-main: #ffffff;
-            --panel-bg: #f8fafc;
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --success: #16a34a;
-            --error: #dc2626;
-            --warning: #d97706;
-            --border: #e2e8f0;
-            --text-dark: #0f172a;
-            --text-muted: #64748b;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>अध्याय 2: लकड़हारा और पेड़ - अभ्यास प्रश्नोत्तरी</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-        }
+    body {
+      background-color: #f4f7f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
 
-        body {
-            background-color: #f1f5f9;
-            color: var(--text-dark);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 12px;
-        }
+    .quiz-container {
+      background: #ffffff;
+      width: 100%;
+      max-width: 650px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      text-align: center;
+    }
 
-        /* Responsive Container */
-        .quiz-container {
-            width: 100%;
-            max-width: 650px;
-            min-height: 550px;
-            background: var(--bg-main);
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
+    .logo {
+      max-width: 180px;
+      height: auto;
+      margin-bottom: 20px;
+    }
 
-        .view-panel {
-            display: none;
-            width: 100%;
-            height: 100%;
-            flex-direction: column;
-            padding: 24px;
-            flex-grow: 1;
-            position: relative;
-        }
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
 
-        .view-panel.active {
-            display: flex;
-        }
+    h3 {
+      color: #16a085;
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
 
-        /* SCREEN 1: SPLASH SCREEN (Only Logo for 5 Seconds) */
-        #splash-screen {
-            background: #ffffff;
-            justify-content: center;
-            align-items: center;
-            display: flex;
-            cursor: pointer;
-            flex-direction: column;
-            gap: 15px;
-        }
+    .instructions {
+      text-align: left;
+      background: #eef9f6;
+      border-left: 5px solid #16a085;
+      padding: 18px 20px;
+      border-radius: 6px;
+      margin-bottom: 25px;
+    }
 
-        .splash-logo-box {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            max-width: 280px;
-            height: 180px;
-        }
+    .instructions h4 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
 
-        .splash-logo {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            animation: softPulse 2s infinite ease-in-out;
-        }
+    .instructions ul {
+      padding-left: 20px;
+      color: #555;
+      line-height: 1.6;
+    }
 
-        .logo-fallback-badge {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 20px;
-            background: #f0f7ff;
-            border-radius: 16px;
-            border: 2px solid #bfdbfe;
-            color: var(--primary);
-            font-weight: 800;
-            font-size: 24px;
-            letter-spacing: 1px;
-        }
+    .btn {
+      background-color: #16a085;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
 
-        .logo-fallback-badge svg {
-            width: 60px;
-            height: 60px;
-            fill: var(--primary);
-        }
+    .btn:hover {
+      background-color: #117864;
+    }
 
-        .splash-hint {
-            font-size: 12px;
-            color: var(--text-muted);
-            animation: fadeInOut 2s infinite;
-        }
+    .hidden {
+      display: none !important;
+    }
 
-        @keyframes softPulse {
-            0%, 100% { transform: scale(0.97); opacity: 0.95; }
-            50% { transform: scale(1.03); opacity: 1; }
-        }
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      font-weight: bold;
+      color: #7f8c8d;
+    }
 
-        @keyframes fadeInOut {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 1; }
-        }
+    .progress-bar-container {
+      width: 100%;
+      background-color: #e0e0e0;
+      height: 8px;
+      border-radius: 4px;
+      margin-bottom: 25px;
+      overflow: hidden;
+    }
 
-        /* SCREEN 2: INSTRUCTIONS (No Logo) */
-        #instruction-screen {
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
+    .progress-bar {
+      height: 100%;
+      background-color: #16a085;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
 
-        .screen-title {
-            font-size: 26px;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 20px;
-        }
+    .question-text {
+      font-size: 19px;
+      color: #2c3e50;
+      margin-bottom: 20px;
+      text-align: left;
+      line-height: 1.5;
+    }
 
-        .instruction-card {
-            background: var(--panel-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 20px;
-            width: 100%;
-            text-align: left;
-            margin-bottom: 28px;
-        }
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
 
-        .instruction-item {
-            font-size: 15px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: #334155;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            line-height: 1.4;
-        }
+    .option-btn {
+      background: #f8f9fa;
+      border: 2px solid #e9ecef;
+      padding: 14px 18px;
+      border-radius: 8px;
+      text-align: left;
+      font-size: 16px;
+      color: #333;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
 
-        .instruction-item:last-child {
-            margin-bottom: 0;
-        }
+    .option-btn:hover:not([disabled]) {
+      background: #eef9f6;
+      border-color: #16a085;
+    }
 
-        .btn-action {
-            background: var(--primary);
-            color: #ffffff;
-            border: none;
-            padding: 14px 40px;
-            font-size: 18px;
-            font-weight: 700;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
-            transition: all 0.2s ease;
-        }
+    .option-btn.correct {
+      background-color: #d4edda;
+      border-color: #28a745;
+      color: #155724;
+      font-weight: bold;
+    }
 
-        .btn-action:hover {
-            background: var(--primary-hover);
-            transform: translateY(-1px);
-        }
+    .option-btn.wrong {
+      background-color: #f8d7da;
+      border-color: #dc3545;
+      color: #721c24;
+    }
 
-        .btn-action:active {
-            transform: translateY(1px);
-        }
+    .rationale-box {
+      margin-top: 15px;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: left;
+      font-size: 15px;
+      line-height: 1.4;
+      margin-bottom: 20px;
+    }
 
-        /* SCREEN 3: GAMEPLAY CONSOLE (No Logo) */
-        .hud-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--panel-bg);
-            padding: 12px 18px;
-            border-radius: 14px;
-            border: 1px solid var(--border);
-            margin-bottom: 16px;
-        }
+    .rationale-box.correct {
+      background-color: #e2f0d9;
+      color: #2e6b27;
+      border: 1px solid #c3e6cb;
+    }
 
-        .hud-box {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-        }
+    .rationale-box.wrong {
+      background-color: #fce8e6;
+      color: #a94442;
+      border: 1px solid #f5c6cb;
+    }
 
-        .hud-box span {
-            display: block;
-            font-size: 16px;
-            color: var(--text-dark);
-            font-weight: 800;
-        }
+    .result-card {
+      padding: 20px 0;
+    }
 
-        .question-card {
-            background: var(--panel-bg);
-            border: 1px solid var(--border);
-            padding: 20px;
-            border-radius: 16px;
-            margin-bottom: 18px;
-            position: relative;
-        }
-
-        .tag-competency {
-            display: inline-block;
-            background: #e0e7ff;
-            color: #3730a3;
-            font-size: 11px;
-            padding: 3px 10px;
-            border-radius: 8px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .question-text {
-            font-size: 16px;
-            font-weight: 700;
-            line-height: 1.5;
-            color: var(--text-dark);
-        }
-
-        .options-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-
-        .btn-option {
-            background: #ffffff;
-            border: 2px solid var(--border);
-            border-radius: 14px;
-            padding: 14px 16px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #334155;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-align: left;
-        }
-
-        .btn-option:hover:not(:disabled) {
-            border-color: var(--primary);
-            background: #f8fafc;
-        }
-
-        .badge-index {
-            width: 26px;
-            height: 26px;
-            background: #f1f5f9;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: var(--text-muted);
-            flex-shrink: 0;
-            font-weight: 800;
-        }
-
-        /* Feedback States */
-        .btn-option.hit-success {
-            background: #f0fdf4 !important;
-            border-color: var(--success) !important;
-            color: var(--success) !important;
-        }
-
-        .btn-option.hit-success .badge-index {
-            background: var(--success);
-            color: #ffffff;
-        }
-
-        .btn-option.hit-failed {
-            background: #fef2f2 !important;
-            border-color: var(--error) !important;
-            color: var(--error) !important;
-            opacity: 0.7;
-        }
-
-        .btn-option.hit-failed .badge-index {
-            background: var(--error);
-            color: #ffffff;
-        }
-
-        .toast-msg {
-            background: #fffbeeb0;
-            border: 1px solid #fde68a;
-            color: var(--warning);
-            padding: 10px;
-            border-radius: 10px;
-            text-align: center;
-            font-size: 13px;
-            font-weight: 700;
-            margin-top: auto;
-            display: none;
-        }
-
-        /* SCREEN 4: CREATIVE CONGRATULATIONS PAGE (No Logo) */
-        #end-screen {
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            background: #ffffff;
-        }
-
-        .celebration-badge {
-            font-size: 70px;
-            margin-bottom: 10px;
-            animation: bounceIcon 1.2s infinite alternate ease-in-out;
-        }
-
-        @keyframes bounceIcon {
-            from { transform: translateY(0); }
-            to { transform: translateY(-12px); }
-        }
-
-        .congrats-title {
-            font-size: 30px;
-            font-weight: 900;
-            color: var(--success);
-            margin-bottom: 8px;
-        }
-
-        .score-banner {
-            font-size: 42px;
-            font-weight: 900;
-            color: var(--primary);
-            margin: 15px 0;
-        }
-
-        .final-desc {
-            font-size: 15px;
-            color: var(--text-muted);
-            line-height: 1.5;
-            max-width: 380px;
-            margin-bottom: 25px;
-        }
-
-        #confetti-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-    </style>
+    .score-text {
+      font-size: 24px;
+      color: #2c3e50;
+      margin: 15px 0;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="quiz-container">
-        
-        <div id="splash-screen" class="view-panel active" onclick="skipSplash()">
-            <div class="splash-logo-box" id="logo-container">
-                <img 
-                    src="assets/image_9d321f.png" 
-                    alt="Innovine Logo" 
-                    class="splash-logo"
-                    onerror="handleLogoError(this)"
-                />
-            </div>
-            <div class="splash-hint">आगे बढ़ने के लिए कहीं भी क्लिक करें ➔</div>
-        </div>
+  <div class="quiz-container">
+    
+    <div id="start-screen">
+      <img src="assets/innovine-logo 1.png" alt="Innovine Logo" class="logo">
+      <h2>अध्याय 2: लकड़हारा और पेड़</h2>
+      <h3>अभ्यास प्रश्नोत्तरी</h3>
+      
+      <div class="instructions">
+        <h4>निर्देश (Instructions):</h4>
+        <ul>
+          <li>इस प्रश्नोत्तरी में कुल 10 बहुविकल्पीय प्रश्न हैं।</li>
+          <li>प्रत्येक प्रश्न के लिए सही उत्तर का चयन करें।</li>
+          <li>सही उत्तर चुनने पर सही ध्वनि और गलत चुनने पर बजर सुनाई देगा।</li>
+          <li>उत्तर देने के बाद सही उत्तर का कारण/स्पष्टीकरण दिखाया जाएगा।</li>
+          <li>अंत में आपका कुल अंक (Score) दिखाया जाएगा।</li>
+        </ul>
+      </div>
 
-        <div id="instruction-screen" class="view-panel">
-            <div class="screen-title">निर्देश</div>
-            
-            <div class="instruction-card">
-                <div class="instruction-item">🎯 <span>प्रत्येक प्रश्न का उत्तर देने के लिए <b>2 अवसर</b> मिलेंगे।</span></div>
-                <div class="instruction-item">⭐ <span>सही उत्तर चुनने पर अंक प्राप्त होंगे।</span></div>
-                <div class="instruction-item">💡 <span>2 बार गलत उत्तर देने पर सही उत्तर दिखाया जाएगा।</span></div>
-                <div class="instruction-item">🏆 <span>सभी प्रश्नों को पूरा करके अपना अंतिम स्कोर देखें।</span></div>
-            </div>
-            
-            <button class="btn-action" onclick="startQuiz()">शुरू करें 🚀</button>
-        </div>
-
-        <div id="gameplay-screen" class="view-panel">
-            <div class="hud-header">
-                <div class="hud-box">
-                    प्रगति
-                    <span id="hud-round">01 / 10</span>
-                </div>
-                <div class="hud-box" style="text-align: right;">
-                    कुल अंक
-                    <span id="hud-score" style="color: var(--success);">0</span>
-                </div>
-            </div>
-
-            <div class="question-card">
-                <div class="tag-competency" id="lbl-competency">दक्षता</div>
-                <div class="question-text" id="lbl-question">प्रश्न लोड हो रहा है...</div>
-            </div>
-
-            <div class="options-list" id="container-options">
-            </div>
-
-            <div class="toast-msg" id="lbl-toast"></div>
-        </div>
-
-        <div id="end-screen" class="view-panel">
-            <canvas id="confetti-canvas"></canvas>
-            <div class="celebration-badge" id="end-icon">🎉</div>
-            <div class="congrats-title" id="end-title">बहुत-बहुत बधाई!</div>
-            <div class="score-banner" id="lbl-final-score">0 PTS</div>
-            <div class="final-desc" id="lbl-final-desc">आपने सफलतापूर्वक सभी प्रश्नों के उत्तर दे दिए हैं!</div>
-            <button class="btn-action" onclick="restartQuiz()">पुनः खेलें 🔄</button>
-        </div>
-
+      <button class="btn" onclick="startQuiz()">प्रश्नोत्तरी शुरू करें</button>
     </div>
 
-    <script>
-        // WEB AUDIO API SOUND EFFECTS (Clapping & Wrong Buzzer)
-        let audioCtx = null;
+    <div id="quiz-screen" class="hidden">
+      <div class="quiz-header">
+        <span id="question-count">प्रश्न 1 / 10</span>
+        <span id="score-display">अंक: 0</span>
+      </div>
 
-        function getAudioContext() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-            return audioCtx;
-        }
+      <div class="progress-bar-container">
+        <div id="progress" class="progress-bar"></div>
+      </div>
 
-        // Clapping & Cheer Sound for Correct Answer
-        function playClappingSound() {
-            try {
-                const ctx = getAudioContext();
+      <div id="question-text" class="question-text"></div>
 
-                // 1. Victory Chime Tone
-                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
-                notes.forEach((freq, idx) => {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.value = freq;
-                    
-                    const startTime = ctx.currentTime + idx * 0.07;
-                    gain.gain.setValueAtTime(0, startTime);
-                    gain.gain.linearRampToValueAtTime(0.2, startTime + 0.02);
-                    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.35);
-                    
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    
-                    osc.start(startTime);
-                    osc.stop(startTime + 0.35);
-                });
+      <div id="options-container" class="options-grid"></div>
 
-                // 2. Synthesized Clapping Noise Burst
-                const duration = 1.2;
-                const bufferSize = ctx.sampleRate * duration;
-                const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-                const data = buffer.getChannelData(0);
+      <div id="rationale-box" class="rationale-box hidden"></div>
 
-                for (let i = 0; i < bufferSize; i++) {
-                    data[i] = (Math.random() * 2 - 1);
-                }
+      <button id="next-btn" class="btn hidden" onclick="nextQuestion()">अगला प्रश्न</button>
+    </div>
 
-                const noise = ctx.createBufferSource();
-                noise.buffer = buffer;
+    <div id="result-screen" class="hidden result-card">
+      <img src="assets/innovine-logo 1.png" alt="Innovine Logo" class="logo">
+      <h2>प्रश्नोत्तरी समाप्त!</h2>
+      <div class="score-text" id="final-score">आपका कुल अंक: 0 / 10</div>
+      <p id="result-message" style="margin-bottom: 25px; color: #555;"></p>
+      <button class="btn" onclick="restartQuiz()">पुनः प्रयास करें</button>
+    </div>
 
-                const filter = ctx.createBiquadFilter();
-                filter.type = 'bandpass';
-                filter.frequency.value = 1100;
-                filter.Q.value = 1.2;
+  </div>
 
-                const gain = ctx.createGain();
-                const startTime = ctx.currentTime + 0.1;
+  <audio id="sound-correct" src="assets/correct 1.mp3"></audio>
+  <audio id="sound-wrong" src="assets/wrong 1.mp3"></audio>
+  <audio id="sound-clapping" src="assets/clapping 1.mp3"></audio>
 
-                // Create rhythmic clap pulses
-                for (let t = 0; t < 1.0; t += 0.075) {
-                    gain.gain.setValueAtTime(0.25, startTime + t);
-                    gain.gain.exponentialRampToValueAtTime(0.01, startTime + t + 0.05);
-                }
+  <script>
+    const questions = [
+      {
+        questionNumber: 1,
+        question: "यदि कोई व्यक्ति आपसे मदद माँगता है, तो कहानी के अनुसार आपको क्या करना चाहिए?",
+        options: [
+          { text: "क) बिना सोचे तुरंत मदद कर देनी चाहिए।", rationale: "बिना सोचे-समझे मदद करने से कभी-कभी बड़ा नुकसान हो सकता है।", isCorrect: false },
+          { text: "ख) मदद करने से पहले परिस्थिति को समझना चाहिए।", rationale: "मदद करने से पहले परिस्थिति और परिणामों का सही मूल्यांकन करना समझदारी है।", isCorrect: true },
+          { text: "ग) किसी की भी मदद नहीं करनी चाहिए।", rationale: "किसी की भी मदद न करना संवेदनहीनता है, जो सही व्यवहार नहीं है।", isCorrect: false },
+          { text: "घ) केवल अपने बारे में सोचना चाहिए।", rationale: "केवल अपने बारे में सोचना स्वार्थ है, जिससे सामाजिक सहयोग समाप्त हो जाता है।", isCorrect: false }
+        ]
+      },
+      {
+        questionNumber: 2,
+        question: "आम के पेड़ का स्वभाव दयालु था, लेकिन उसकी एक गलती से जंगल को नुकसान हुआ। इससे क्या सीख मिलती है?",
+        options: [
+          { text: "क) दया करना हमेशा गलत होता है।", rationale: "दया एक बहुत अच्छा गुण है, इसे पूरी तरह गलत नहीं माना जा सकता।", isCorrect: false },
+          { text: "ख) दया के साथ समझदारी भी आवश्यक है।", rationale: "सच्ची सहायता वही है जो दया और विवेक दोनों के संतुलन से की जाए।", isCorrect: true },
+          { text: "ग) किसी की सहायता नहीं करनी चाहिए।", rationale: "दूसरों की सहायता करना मानवीय गुण है, इसलिए सहायता बंद नहीं करनी चाहिए।", isCorrect: false },
+          { text: "घ) पेड़ों को दूसरों पर विश्वास नहीं करना चाहिए।", rationale: "विश्वास और सहयोग जीवन के लिए ज़रूरी हैं, पर विवेक के साथ।", isCorrect: false }
+        ]
+      },
+      {
+        questionNumber: 3,
+        question: "यदि आपका मित्र बिना सोचे किसी अजनबी पर विश्वास कर ले, तो आप उसे क्या सलाह देंगे?",
+        options: [
+          { text: "क) उसे ऐसा ही करते रहने देंगे।", rationale: "मित्र को सही रास्ता न दिखाना और चुप रहना मित्रधर्म नहीं है।", isCorrect: false },
+          { text: "ख) उसे सावधानी से निर्णय लेने के लिए समझाएँगे।", rationale: "सच्चा मित्र वही है जो सही और गलत की पहचान कराकर सचेत करे।", isCorrect: true },
+          { text: "ग) उससे बात करना बंद कर देंगे।", rationale: "बात बंद करने से मित्र की समस्या दूर नहीं होगी।", isCorrect: false },
+          { text: "घ) उसकी मदद नहीं करेंगे।", rationale: "मित्र को मुसीबत या गलत निर्णय से बचाना हमारी ज़िम्मेदारी है।", isCorrect: false }
+        ]
+      },
+      {
+        questionNumber: 4,
+        question: "यदि आम का पेड़ लकड़हारे को लकड़ी न देता, तो क्या हो सकता था?",
+        options: [
+          { text: "क) लकड़हारा पेड़ों को काटने में सक्षम नहीं होता।", rationale: "लकड़ी का हत्था न मिलने से वह कुल्हाड़ी से पेड़ों को काट नहीं पाता।", isCorrect: true },
+          { text: "ख) जंगल तुरंत नष्ट हो जाता।", rationale: "कुल्हाड़ी का हत्था न होने से लकड़हारा पेड़ नहीं काट पाता, अतः जंगल नष्ट नहीं होता।", isCorrect: false },
+          { text: "ग) सभी पेड़ सूख जाते।", rationale: "लकड़हारे के पास साधन न होने से पेड़ सुरक्षित रहते।", isCorrect: false },
+          { text: "घ) पक्षी जंगल छोड़ देते।", rationale: "जंगल सुरक्षित रहने पर पक्षियों के आवास को कोई खतरा नहीं होता।", isCorrect: false }
+        ]
+      },
+      {
+        questionNumber: 5,
+        question: "यदि किसी जंगल में पेड़ों की कटाई लगातार होती रहे, तो उसका क्या प्रभाव होगा?",
+        options: [
+          { text: "क) जानवरों को अधिक घर मिलेंगे।", rationale: "पेड़ कटने से जानवरों के प्राकृतिक आवास नष्ट हो जाते हैं।", isCorrect: false },
+          { text: "ख) जंगल में हरियाली और जीवन कम हो जाएगा।", rationale: "वृक्षों की कमी से पर्यावरण का संतुलन बिगड़ता है और हरियाली समाप्त होती है।", isCorrect: true },
+          { text: "ग) बारिश अधिक होने लगेगी।", rationale: "पेड़ वर्षा लाने में सहायक होते हैं, अतः कटाई से बारिश कम होगी।", isCorrect: false },
+          { text: "घ) पक्षियों की संख्या बढ़ जाएगी।", rationale: "आश्रय नष्ट होने से पक्षियों की संख्या घट जाएगी।", isCorrect: false }
+        ]
+      },
+      {
+        questionNumber: 6,
+        question: "नीम और पीपल के पेड़ की सोच आम के पेड़ से किस प्रकार अलग थी?",
+        options: [
+          { text: "क) वे किसी की मदद नहीं करना चाहते थे।", rationale: "वे पूरी तरह स्वार्थी नहीं थे, बल्कि संभावित खतरे के प्रति सतर्क थे।", isCorrect: false },
+          { text: "ख) वे मदद करने से पहले सोच-विचार करना चाहते थे।", rationale: "वे परिस्थिति और परिणामों का सही आकलन करके निर्णय लेना चाहते थे।", isCorrect: true },
+          { text: "ग) वे जंगल छोड़ना चाहते थे।", rationale: "कहानी में उनके जंगल छोड़ने की बात नहीं है।", isCorrect: false },
+          { text: "घ) वे लकड़हारे से डरते थे।", rationale: "डर के बजाय वे विवेक और समझदारी का परिचय दे रहे थे।", isCorrect: false }
+        ]
+      },
+      {
+        questionNumber: 7,
+        question: "यदि आप उस समय जंगल में मौजूद होते, जब लकड़हारा पेड़ काटने आया, तो आप क्या करते?",
+        options: [
+          { text: "क) लकड़हारे को रोकने और पेड़ों को बचाने का प्रयास करते।", rationale: "पेड़ों और पर्यावरण की रक्षा करना हम सभी का परम कर्तव्य है।", isCorrect: true },
+          { text: "ख) चुपचाप वहाँ से चले जाते।", rationale: "गलत काम होते देखकर चुप रहना या भाग जाना सही नहीं है।", isCorrect: false },
+          { text: "ग) उसे और लकड़ी देते।", rationale: "पर्यावरण के विनाश में सहयोग देना अनुचित है।", isCorrect: false },
+          { text: "घ) पेड़ों को काटने में उसकी सहायता करते।", rationale: "पेड़ों की कटाई में मदद करना प्रकृति के प्रतिकूल है।", isCorrect: false }
+        ]
+      },
+      {
+        questionNumber: 8,
+        question: "“दया करो, पर समझदारी के साथ” कहानी की इस सीख का सही अर्थ क्या है?",
+        options: [
+          { text: "क) किसी की सहायता कभी नहीं करनी चाहिए।", rationale: "सहायता न करने से समाज में सहानुभूति समाप्त हो जाएगी।", isCorrect: false },
+          { text: "ख) सहायता करते समय परिणामों के बारे में भी सोचना चाहिए।", rationale: "मदद करते समय यह ध्यान रखना ज़रूरी है कि इससे किसी बड़े नुकसान का मार्ग न खुले।", isCorrect: true },
+          { text: "ग) केवल अपने लाभ के लिए काम करना चाहिए।", rationale: "केवल स्वार्थ देखना सही जीवन-मूल्य नहीं है।", isCorrect: false },
+          { text: "घ) दूसरों पर कभी विश्वास नहीं करना चाहिए।", rationale: "विश्वास आवश्यक है, पर अंधविश्वास नहीं।", isCorrect: false }
+        ]
+      },
+      {
+        questionNumber: 9,
+        question: "यदि कोई विद्यार्थी अपनी गलती स्वीकार करके उससे सीखता है, तो वह किस पात्र की सीख को अपनाता है?",
+        options: [
+          { text: "क) लकड़हारा", rationale: "लकड़हारा लालची और अनुचित आचरण का प्रतीक था।", isCorrect: false },
+          { text: "ख) बरगद", rationale: "बरगद का पेड़ केवल एक मूकदर्शक पात्र था।", isCorrect: false },
+          { text: "ग) आम का पेड़", rationale: "आम के पेड़ ने अपनी भूल महसूस की और उससे जीवन भर के लिए सबक सीखा।", isCorrect: true },
+          { text: "घ) पक्षी", rationale: "पक्षी इस सीख के मुख्य आधार पात्र नहीं थे।", isCorrect: false }
+        ]
+      },
+      {
+        questionNumber: 10,
+        question: "कहानी का मुख्य संदेश क्या है?",
+        options: [
+          { text: "क) सभी से डरकर रहना चाहिए।", rationale: "डर में जीना कहानी का संदेश नहीं है।", isCorrect: false },
+          { text: "ख) केवल दयालु होना ही पर्याप्त है।", rationale: "बिना समझदारी की दया कभी-कभी अहित कर सकती है।", isCorrect: false },
+          { text: "ग) निर्णय लेते समय दया और समझदारी दोनों आवश्यक हैं।", rationale: "दया और बुद्धिमत्ता का सही संतुलन ही जीवन में सही निर्णय लेने में मदद करता है।", isCorrect: true },
+          { text: "घ) पेड़ों को मनुष्यों से दूर रहना चाहिए।", rationale: "मनुष्य और प्रकृति का सह-अस्तित्व अनिवार्य है।", isCorrect: false }
+        ]
+      }
+    ];
 
-                noise.connect(filter);
-                filter.connect(gain);
-                gain.connect(ctx.destination);
+    let currentQuestionIndex = 0;
+    let score = 0;
 
-                noise.start(startTime);
-                noise.stop(startTime + duration);
+    const startScreen = document.getElementById("start-screen");
+    const quizScreen = document.getElementById("quiz-screen");
+    const resultScreen = document.getElementById("result-screen");
 
-            } catch (e) {
-                console.log('Audio error:', e);
-            }
-        }
+    const questionText = document.getElementById("question-text");
+    const optionsContainer = document.getElementById("options-container");
+    const rationaleBox = document.getElementById("rationale-box");
+    const nextBtn = document.getElementById("next-btn");
 
-        // Wrong Buzzer Sound for Incorrect Answer
-        function playWrongBuzzer() {
-            try {
-                const ctx = getAudioContext();
+    const questionCount = document.getElementById("question-count");
+    const scoreDisplay = document.getElementById("score-display");
+    const progressBar = document.getElementById("progress");
 
-                // Double Low Sawtooth Buzz
-                [0, 0.18].forEach(delay => {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
+    const soundCorrect = document.getElementById("sound-correct");
+    const soundWrong = document.getElementById("sound-wrong");
+    const soundClapping = document.getElementById("sound-clapping");
 
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(150, ctx.currentTime + delay);
-                    osc.frequency.linearRampToValueAtTime(100, ctx.currentTime + delay + 0.15);
+    function startQuiz() {
+      startScreen.classList.add("hidden");
+      quizScreen.classList.remove("hidden");
+      currentQuestionIndex = 0;
+      score = 0;
+      loadQuestion();
+    }
 
-                    gain.gain.setValueAtTime(0.25, ctx.currentTime + delay);
-                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + delay + 0.15);
+    function loadQuestion() {
+      resetState();
+      const currentQ = questions[currentQuestionIndex];
+      
+      questionCount.innerText = `प्रश्न ${currentQuestionIndex + 1} / ${questions.length}`;
+      scoreDisplay.innerText = `अंक: ${score}`;
+      progressBar.style.width = `${((currentQuestionIndex + 1) / questions.length) * 100}%`;
+      
+      questionText.innerText = `प्रश्न ${currentQ.questionNumber}. ${currentQ.question}`;
 
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
+      currentQ.options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.classList.add("option-btn");
+        btn.innerText = opt.text;
+        btn.onclick = () => selectOption(btn, opt);
+        optionsContainer.appendChild(btn);
+      });
+    }
 
-                    osc.start(ctx.currentTime + delay);
-                    osc.stop(ctx.currentTime + delay + 0.15);
-                });
-            } catch (e) {
-                console.log('Audio error:', e);
-            }
-        }
+    function resetState() {
+      nextBtn.classList.add("hidden");
+      rationaleBox.classList.add("hidden");
+      rationaleBox.className = "rationale-box hidden";
+      optionsContainer.innerHTML = "";
+    }
 
-        // Logo Fallback Handler
-        function handleLogoError(imgElem) {
-            if (imgElem.dataset.failed) return;
-            imgElem.dataset.failed = "true";
-            
-            // Try secondary image path
-            imgElem.src = "image_9d321f.png";
+    function selectOption(selectedBtn, optionData) {
+      const allBtns = optionsContainer.querySelectorAll(".option-btn");
+      allBtns.forEach(btn => btn.disabled = true);
 
-            // If secondary image path fails, display SVG Logo
-            imgElem.onerror = function() {
-                const container = document.getElementById('logo-container');
-                container.innerHTML = `
-                    <div class="logo-fallback-badge">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-                        </svg>
-                        <span>INNOVINE</span>
-                    </div>
-                `;
-            };
-        }
+      if (optionData.isCorrect) {
+        selectedBtn.classList.add("correct");
+        score++;
+        scoreDisplay.innerText = `अंक: ${score}`;
+        soundCorrect.currentTime = 0;
+        soundCorrect.play();
 
-        // Quiz Dataset
-        const quizDataset = [
-            {
-                q: "यदि कोई व्यक्ति आपसे मदद माँगता है, तो कहानी के अनुसार आपको क्या करना चाहिए?",
-                choices: [
-                    "बिना सोचे तुरंत मदद कर देनी चाहिए।",
-                    "मदद करने से पहले परिस्थिति को समझना चाहिए।",
-                    "किसी की भी मदद नहीं करनी चाहिए।",
-                    "केवल अपने बारे में सोचना चाहिए।"
-                ],
-                correctIdx: 1,
-                comp: "परिस्थिति के अनुसार सही निर्णय लेना"
-            },
-            {
-                q: "आम के पेड़ का स्वभाव दयालु था, लेकिन उसकी एक गलती से जंगल को नुकसान हुआ। इससे क्या सीख मिलती है?",
-                choices: [
-                    "दया करना हमेशा गलत होता है।",
-                    "दया के साथ समझदारी भी आवश्यक है।",
-                    "किसी की सहायता नहीं करनी चाहिए।",
-                    "पेड़ों को दूसरों पर विश्वास नहीं करना चाहिए।"
-                ],
-                correctIdx: 1,
-                comp: "पात्र के गुण और कार्यों का विश्लेषण करना"
-            },
-            {
-                q: "यदि आपका मित्र बिना सोचे किसी अजनबी पर विश्वास कर ले, तो आप उसे क्या सलाह देंगे?",
-                choices: [
-                    "उसे ऐसा ही करते रहने देंगे।",
-                    "उसे सावधानी से निर्णय लेने के लिए समझाएँगे।",
-                    "उससे बात करना बंद कर देंगे।",
-                    "उसकी मदद नहीं करेंगे।"
-                ],
-                correctIdx: 1,
-                comp: "कहानी की सीख को जीवन में लागू करना"
-            },
-            {
-                q: "यदि आम का पेड़ लकड़हारे को लकड़ी न देता, तो क्या हो सकता था?",
-                choices: [
-                    "लकड़हारा पेड़ों को काटने में सक्षम नहीं होता।",
-                    "जंगल तुरंत नष्ट हो जाता।",
-                    "सभी पेड़ सूख जाते।",
-                    "पक्षी जंगल छोड़ देते।"
-                ],
-                correctIdx: 0,
-                comp: "कारण और परिणाम को समझना"
-            },
-            {
-                q: "यदि किसी जंगल में पेड़ों की कटाई लगातार होती रहे, तो उसका क्या प्रभाव होगा?",
-                choices: [
-                    "जानवरों को अधिक घर मिलेंगे।",
-                    "जंगल में हरियाली और जीवन कम हो जाएगा।",
-                    "बारिश अधिक होने लगेगी।",
-                    "पक्षियों की संख्या बढ़ जाएगी।"
-                ],
-                correctIdx: 1,
-                comp: "पर्यावरणीय समस्याओं का समाधान समझना"
-            },
-            {
-                q: "नीम और पीपल के पेड़ की सोच आम के पेड़ से किस प्रकार अलग थी?",
-                choices: [
-                    "वे किसी की मदद नहीं करना चाहते थे।",
-                    "वे मदद करने से पहले सोच-विचार करना चाहते थे।",
-                    "वे जंगल छोड़ना चाहते थे।",
-                    "वे लकड़हारे से डरते थे।"
-                ],
-                correctIdx: 1,
-                comp: "विभिन्न दृष्टिकोणों की तुलना करना"
-            },
-            {
-                q: "यदि आप उस समय जंगल में मौजूद होते, जब लकड़हारा पेड़ काटने आया, तो आप क्या करते?",
-                choices: [
-                    "लकड़हारे को रोकने और पेड़ों को बचाने का प्रयास करते।",
-                    "चुपचाप वहाँ से चले जाते।",
-                    "उसे और लकड़ी देते।",
-                    "पेड़ों को काटने में उसकी सहायता करते।"
-                ],
-                correctIdx: 0,
-                comp: "समस्या समाधान और जिम्मेदारी निभाना"
-            },
-            {
-                q: "“दया करो, पर समझदारी के साथ” कहानी की इस सीख का सही अर्थ क्या है?",
-                choices: [
-                    "किसी की सहायता कभी नहीं करनी चाहिए।",
-                    "सहायता करते समय परिणामों के बारे में भी सोचना चाहिए।",
-                    "केवल अपने लाभ के लिए काम करना चाहिए।",
-                    "दूसरों पर कभी विश्वास नहीं करना चाहिए।"
-                ],
-                correctIdx: 1,
-                comp: "मुख्य संदेश की व्याख्या करना"
-            },
-            {
-                q: "यदि कोई विद्यार्थी अपनी गलती स्वीकार करके उससे सीखता है, तो वह किस पात्र की सीख को अपनाता है?",
-                choices: [
-                    "लकड़हारा",
-                    "बरगद",
-                    "आम का पेड़",
-                    "पक्षी"
-                ],
-                correctIdx: 2,
-                comp: "सीख को व्यक्तिगत विकास से जोड़ना"
-            },
-            {
-                q: "कहानी का मुख्य संदेश क्या है?",
-                choices: [
-                    "सभी से डरकर रहना चाहिए।",
-                    "केवल दयालु होना ही पर्याप्त है।",
-                    "निर्णय लेते समय दया और समझदारी दोनों आवश्यक हैं।",
-                    "पेड़ों को मनुष्यों से दूर रहना चाहिए।"
-                ],
-                correctIdx: 2,
-                comp: "पाठ के मुख्य विचार का मूल्यांकन करना"
-            }
-        ];
+        rationaleBox.classList.add("correct");
+        rationaleBox.innerHTML = `<strong>✅ सही उत्तर!</strong><br>${optionData.rationale}`;
+      } else {
+        selectedBtn.classList.add("wrong");
+        soundWrong.currentTime = 0;
+        soundWrong.play();
 
-        let currentIdx = 0;
-        let score = 0;
-        let attemptsLeft = 2;
-        let isLocked = false;
-        let splashTimer = null;
+        // Highlight correct answer
+        const currentQ = questions[currentQuestionIndex];
+        const correctIndex = currentQ.options.findIndex(o => o.isCorrect);
+        allBtns[correctIndex].classList.add("correct");
 
-        // Auto-switch Splash Screen after 5 Seconds
-        window.onload = () => {
-            splashTimer = setTimeout(() => {
-                showPanel('instruction-screen');
-            }, 5000);
-        };
+        rationaleBox.classList.add("wrong");
+        rationaleBox.innerHTML = `<strong>❌ गलत उत्तर!</strong><br>${optionData.rationale}`;
+      }
 
-        function skipSplash() {
-            if (splashTimer) clearTimeout(splashTimer);
-            showPanel('instruction-screen');
-        }
+      rationaleBox.classList.remove("hidden");
+      nextBtn.classList.remove("hidden");
+    }
 
-        function showPanel(panelId) {
-            document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
-            document.getElementById(panelId).classList.add('active');
-        }
+    function nextQuestion() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        loadQuestion();
+      } else {
+        showResult();
+      }
+    }
 
-        function startQuiz() {
-            getAudioContext(); // Enable AudioContext on click
-            currentIdx = 0;
-            score = 0;
-            showPanel('gameplay-screen');
-            loadQuestion();
-        }
+    function showResult() {
+      quizScreen.classList.add("hidden");
+      resultScreen.classList.remove("hidden");
 
-        function loadQuestion() {
-            attemptsLeft = 2;
-            isLocked = false;
-            const currentQ = quizDataset[currentIdx];
+      document.getElementById("final-score").innerText = `आपका कुल अंक: ${score} / ${questions.length}`;
 
-            document.getElementById('hud-round').innerText = `${String(currentIdx + 1).padStart(2, '0')} / ${quizDataset.length}`;
-            document.getElementById('hud-score').innerText = score;
-            document.getElementById('lbl-competency').innerText = currentQ.comp;
-            document.getElementById('lbl-question').innerText = currentQ.q;
-            document.getElementById('lbl-toast').style.display = 'none';
+      const msg = document.getElementById("result-message");
+      if (score === 10) {
+        msg.innerText = "अति उत्तम! आपने सभी प्रश्नों के सही उत्तर दिए हैं।";
+      } else if (score >= 7) {
+        msg.innerText = "बहुत अच्छा प्रयास! आपकी समझ सराहनीय है।";
+      } else {
+        msg.innerText = "अच्छा प्रयास! कहानी को एक बार फिर से पढ़ें और पुनः प्रयास करें।";
+      }
 
-            const optionsContainer = document.getElementById('container-options');
-            optionsContainer.innerHTML = '';
+      soundClapping.currentTime = 0;
+      soundClapping.play();
+    }
 
-            const prefixes = ['A', 'B', 'C', 'D'];
-            currentQ.choices.forEach((choiceText, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'btn-option';
-                btn.innerHTML = `<span class="badge-index">${prefixes[index]}</span><span>${choiceText}</span>`;
-                btn.onclick = () => selectOption(index, btn);
-                optionsContainer.appendChild(btn);
-            });
-        }
-
-        function selectOption(selectedIndex, buttonElem) {
-            if (isLocked) return;
-            const currentQ = quizDataset[currentIdx];
-            const toast = document.getElementById('lbl-toast');
-
-            if (selectedIndex === currentQ.correctIdx) {
-                // Correct Answer
-                isLocked = true;
-                playClappingSound(); // ताली और जीत की ध्वनि
-                buttonElem.classList.add('hit-success');
-                score += (attemptsLeft === 2) ? 10 : 5;
-                document.getElementById('hud-score').innerText = score;
-                setTimeout(nextQuestion, 1200);
-            } else {
-                // Wrong Answer
-                playWrongBuzzer(); // गलत उत्तर पर बज़र
-                attemptsLeft--;
-                buttonElem.classList.add('hit-failed');
-                buttonElem.disabled = true;
-
-                if (attemptsLeft === 1) {
-                    toast.innerText = "⚠️ गलत उत्तर! आपके पास 1 अंतिम प्रयास बचा है।";
-                    toast.style.display = 'block';
-                } else {
-                    isLocked = true;
-                    toast.innerText = "❌ 2 प्रयास समाप्त! सही उत्तर हरा दिखाया गया है।";
-                    toast.style.display = 'block';
-
-                    const allButtons = document.querySelectorAll('.btn-option');
-                    allButtons[currentQ.correctIdx].classList.add('hit-success');
-                    allButtons.forEach(b => b.disabled = true);
-
-                    setTimeout(nextQuestion, 1800);
-                }
-            }
-        }
-
-        function nextQuestion() {
-            currentIdx++;
-            if (currentIdx < quizDataset.length) {
-                loadQuestion();
-            } else {
-                renderEndScreen();
-            }
-        }
-
-        function renderEndScreen() {
-            showPanel('end-screen');
-            document.getElementById('lbl-final-score').innerText = `${score} PTS`;
-            
-            const title = document.getElementById('end-title');
-            const desc = document.getElementById('lbl-final-desc');
-            const icon = document.getElementById('end-icon');
-
-            if (score >= 80) {
-                icon.innerText = "🏆";
-                title.innerText = "उत्कृष्ट प्रदर्शन!";
-                desc.innerText = "शानदार! आपने पाठ की सभी संकल्पनाओं और मूल्यों को बहुत अच्छी तरह समझा है।";
-            } else {
-                icon.innerText = "🌟";
-                title.innerText = "बधाई हो!";
-                desc.innerText = "आपने सफलतापूर्वक सभी प्रश्नों को पूरा कर लिया है! निरंतर अभ्यास करते रहें।";
-            }
-
-            launchConfetti();
-        }
-
-        function restartQuiz() {
-            showPanel('instruction-screen');
-        }
-
-        function launchConfetti() {
-            const canvas = document.getElementById('confetti-canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = canvas.parentElement.clientWidth;
-            canvas.height = canvas.parentElement.clientHeight;
-
-            const pieces = [];
-            const colors = ['#2563eb', '#16a34a', '#d97706', '#ec4899', '#8b5cf6'];
-
-            for (let i = 0; i < 60; i++) {
-                pieces.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height - canvas.height,
-                    size: Math.random() * 8 + 4,
-                    color: colors[Math.floor(Math.random() * colors.length)],
-                    speed: Math.random() * 3 + 2,
-                    angle: Math.random() * 360
-                });
-            }
-
-            function draw() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                pieces.forEach(p => {
-                    ctx.fillStyle = p.color;
-                    ctx.fillRect(p.x, p.y, p.size, p.size);
-                    p.y += p.speed;
-                    p.angle += 2;
-                    if (p.y > canvas.height) p.y = -10;
-                });
-                requestAnimationFrame(draw);
-            }
-            draw();
-        }
-    </script>
+    function restartQuiz() {
+      resultScreen.classList.add("hidden");
+      startScreen.classList.remove("hidden");
+    }
+  </script>
 </body>
 </html>
