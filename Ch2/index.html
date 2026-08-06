@@ -6,14 +6,14 @@
   <title>अभ्यास प्रश्नोत्तरी</title>
   <style>
     :root {
-      --primary-color: #4a90e2;
-      --primary-hover: #357abd;
-      --bg-color: #f0f4f8;
+      --primary-color: #7b9acc;
+      --primary-hover: #6382b3;
+      --bg-color: #f4f7f6;
       --card-bg: #ffffff;
-      --text-color: #2c3e50;
-      --correct-color: #2ecc71;
-      --incorrect-color: #e74c3c;
-      --disabled-color: #bdc3c7;
+      --text-color: #4a5568;
+      --correct-color: #82c99b;
+      --incorrect-color: #f89898;
+      --disabled-color: #cbd5e1;
     }
 
     * {
@@ -35,45 +35,48 @@
 
     .screen {
       background-color: var(--card-bg);
-      border-radius: 16px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(148, 163, 184, 0.15);
       width: 100%;
       max-width: 600px;
-      padding: 30px 24px;
+      padding: 36px 28px;
       text-align: center;
       display: none;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 380px;
+      min-height: 400px;
     }
 
     .active {
       display: flex;
     }
 
-    /* 1. Splash Screen (Logo Only) */
-    .logo-title {
-      font-size: 3.2rem;
-      font-weight: 800;
-      color: var(--primary-color);
-      letter-spacing: -1px;
+    /* 1. Splash Screen (Logo Image Only) */
+    .logo-img {
+      max-width: 220px;
+      height: auto;
+      object-fit: contain;
       user-select: none;
     }
 
     /* 2. Instruction Screen */
     .instruction-title {
       font-size: 1.5rem;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
       color: var(--text-color);
       font-weight: 700;
     }
 
     .instruction-text {
       font-size: 1.05rem;
-      line-height: 1.6;
-      color: #555;
-      margin-bottom: 28px;
+      line-height: 1.7;
+      color: #64748b;
+      margin-bottom: 30px;
+      background: #f8fafc;
+      padding: 20px;
+      border-radius: 12px;
+      width: 100%;
     }
 
     /* 3. Quiz Screen */
@@ -84,7 +87,7 @@
       align-items: center;
       margin-bottom: 20px;
       font-size: 0.95rem;
-      color: #7f8c8d;
+      color: #94a3b8;
       font-weight: 600;
     }
 
@@ -95,6 +98,7 @@
       width: 100%;
       text-align: left;
       line-height: 1.5;
+      color: #334155;
     }
 
     .options-container {
@@ -108,7 +112,7 @@
     .option-btn {
       background-color: #f8fafc;
       border: 2px solid #e2e8f0;
-      border-radius: 10px;
+      border-radius: 12px;
       padding: 14px 18px;
       font-size: 1rem;
       text-align: left;
@@ -121,20 +125,20 @@
 
     .option-btn:hover:not([disabled]) {
       border-color: var(--primary-color);
-      background-color: #edf5ff;
+      background-color: #f1f5f9;
     }
 
     .option-btn.correct {
-      background-color: #e8f8f0 !important;
+      background-color: #e8f5e9 !important;
       border-color: var(--correct-color) !important;
-      color: #1e7e34;
+      color: #2e7d32;
       font-weight: 600;
     }
 
     .option-btn.incorrect {
-      background-color: #fdeaea !important;
+      background-color: #ffebee !important;
       border-color: var(--incorrect-color) !important;
-      color: #bd2130;
+      color: #c62828;
     }
 
     .status-msg {
@@ -144,31 +148,31 @@
       min-height: 22px;
     }
 
-    .status-msg.error { color: var(--incorrect-color); }
-    .status-msg.success { color: var(--correct-color); }
+    .status-msg.error { color: #e57373; }
+    .status-msg.success { color: #81c784; }
 
     /* Rationale Box */
     .rationale-box {
       width: 100%;
-      padding: 14px 16px;
-      border-radius: 8px;
+      padding: 16px;
+      border-radius: 12px;
       text-align: left;
       font-size: 0.95rem;
-      line-height: 1.4;
+      line-height: 1.5;
       margin-bottom: 20px;
       display: none;
     }
 
     .rationale-box.correct {
-      background-color: #e8f8f0;
-      color: #1e7e34;
-      border: 1px solid #b7e4c7;
+      background-color: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #c8e6c9;
     }
 
     .rationale-box.wrong {
-      background-color: #fdeaea;
-      color: #bd2130;
-      border: 1px solid #f5c6cb;
+      background-color: #ffebee;
+      color: #c62828;
+      border: 1px solid #ffcdd2;
     }
 
     /* General Button */
@@ -176,12 +180,13 @@
       background-color: var(--primary-color);
       color: white;
       border: none;
-      padding: 12px 28px;
-      border-radius: 8px;
+      padding: 14px 32px;
+      border-radius: 12px;
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
       transition: background-color 0.2s;
+      box-shadow: 0 4px 12px rgba(123, 154, 204, 0.3);
     }
 
     .btn:hover {
@@ -191,6 +196,7 @@
     .btn:disabled {
       background-color: var(--disabled-color);
       cursor: not-allowed;
+      box-shadow: none;
     }
 
     /* 4. Completion Screen */
@@ -208,16 +214,16 @@
 
     .completion-msg {
       font-size: 1.1rem;
-      color: #555;
-      margin-bottom: 24px;
+      color: #64748b;
+      margin-bottom: 28px;
     }
 
     @media (max-width: 480px) {
       .screen {
-        padding: 20px 16px;
-        min-height: 320px;
+        padding: 24px 18px;
+        min-height: 340px;
       }
-      .logo-title { font-size: 2.5rem; }
+      .logo-img { max-width: 180px; }
       .question-text { font-size: 1.05rem; }
       .option-btn { padding: 12px 14px; font-size: 0.95rem; }
     }
@@ -227,7 +233,7 @@
 
   <!-- Screen 1: Logo Splash ONLY (5 Seconds) -->
   <div id="screen-splash" class="screen active">
-    <div class="logo-title">Innovine</div>
+    <img src="assets/innovine-logo 1.png" alt="Innovine Logo" class="logo-img">
   </div>
 
   <!-- Screen 2: Instructions (No Logo, Simple & Precise) -->
@@ -268,7 +274,7 @@
   </div>
 
   <audio id="sound-wrong" src="assets/wrong 1.mp3"></audio>
-  <audio id="sound-clapping" src="assets/clapping 1.mp3"></audio>
+  <audio id="sound-correct" src="assets/correct 1.mp3"></audio>
 
   <script>
     const questions = [
@@ -395,7 +401,7 @@
 
     // Audio Elements
     const soundWrong = document.getElementById('sound-wrong');
-    const soundClapping = document.getElementById('sound-clapping');
+    const soundCorrect = document.getElementById('sound-correct');
 
     // 5-second Splash screen transition
     window.addEventListener('DOMContentLoaded', () => {
@@ -454,8 +460,8 @@
         statusMsg.className = "status-msg success";
         
         try {
-          soundClapping.currentTime = 0;
-          soundClapping.play();
+          soundCorrect.currentTime = 0;
+          soundCorrect.play();
         } catch(e) {}
 
         showRationale(true, optionData.rationale);
