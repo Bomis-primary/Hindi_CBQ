@@ -5,276 +5,395 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>बचपन के खेल - क्विज़</title>
     <style>
-        body {
+        :root {
+            --primary: #007bff;
+            --primary-hover: #0056b3;
+            --success: #28a745;
+            --danger: #dc3545;
+            --bg: #f4f4f9;
+            --card-bg: #ffffff;
+            --text: #333333;
+            --border: #cccccc;
+            --radius: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
             padding: 20px;
-            box-sizing: border-box;
         }
 
-        .quiz-container {
-            background: #ffffff;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        .screen {
+            display: none;
             width: 100%;
-            max-width: 500px;
+            max-width: 550px;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            text-align: center;
         }
 
-        h2 {
-            font-size: 18px;
+        .screen.active {
+            display: block;
+        }
+
+        /* 1. Logo Screen */
+        #logo-screen {
+            display: none;
+            min-height: 300px;
+        }
+
+        #logo-screen.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-logo {
+            max-width: 280px;
+            max-height: 160px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* 2. Intro Screen & Meta Cards */
+        .meta-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .meta-card p {
+            margin: 8px 0;
+            font-size: 15px;
+        }
+
+        /* Game Area */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #666;
             margin-bottom: 15px;
-            color: #333;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .question-text {
+            font-size: 17px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: left;
             line-height: 1.4;
         }
 
         .options-list {
             list-style: none;
-            padding: 0;
-            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
         .option-btn {
             width: 100%;
             background-color: #e7e7e7;
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 6px 0;
+            border: 1px solid var(--border);
+            padding: 12px;
             border-radius: 5px;
             cursor: pointer;
             text-align: left;
             font-size: 15px;
-            transition: background 0.2s;
+            transition: background 0.2s, color 0.2s;
+            color: var(--text);
         }
 
         .option-btn:hover:not(:disabled) {
             background-color: #d0d0d0;
         }
 
-        .next-btn {
+        .option-btn.correct {
+            background-color: var(--success) !important;
+            color: white !important;
+            border-color: var(--success) !important;
+        }
+
+        .option-btn.incorrect {
+            background-color: var(--danger) !important;
+            color: white !important;
+            border-color: var(--danger) !important;
+        }
+
+        /* Actions & Buttons */
+        .btn-action {
             width: 100%;
-            background-color: #007bff;
+            background-color: var(--primary);
             color: white;
             border: none;
             padding: 12px;
-            margin-top: 15px;
             border-radius: 5px;
             font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
-            display: none;
+            transition: background 0.2s;
         }
 
-        .next-btn:hover {
-            background-color: #0056b3;
+        .btn-action:hover {
+            background-color: var(--primary-hover);
         }
 
         .score-text {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
-            text-align: center;
-            color: #28a745;
+            color: var(--success);
+            margin: 20px 0;
         }
     </style>
 </head>
 <body>
 
-<div class="quiz-container">
-    <div id="quiz-box">
-        <h2 id="question">प्रश्न लोड हो रहा है...</h2>
-        <div id="options" class="options-list"></div>
-        <button id="next-btn" class="next-btn" onclick="nextQuestion()">अगला प्रश्न</button>
+    <!-- 1. Logo Splash Screen -->
+    <div id="logo-screen" class="screen active">
+        <img src="assets/logo.png" alt="Innovine Logo" class="app-logo">
     </div>
-    <div id="result-box" style="display: none;">
-        <p id="score" class="score-text"></p>
-        <button class="next-btn" style="display: block;" onclick="restartQuiz()">फिर से शुरू करें</button>
+
+    <!-- 2. Intro Screen -->
+    <div id="intro-screen" class="screen">
+        <h2 style="color: var(--primary);">क्विज़ विवरण (Overview)</h2>
+        <div class="meta-card">
+            <p><strong>विषय (Subject):</strong> हिंदी</p>
+            <p><strong>पाठ (Topic):</strong> बचपन के खेल</p>
+            <p><strong>कुल प्रश्न (Total Questions):</strong> <span id="intro-total-q">0</span></p>
+        </div>
+        <button class="btn-action" onclick="startQuiz()">क्विज़ शुरू करें</button>
     </div>
-</div>
 
-<script>
-    const quizData = [
-        {
-            question: "रोहन खेल के मैदान में हारने पर अक्सर गुस्सा हो जाता है और दोस्तों से झगड़ने लगता है। 'बचपन के खेल' कविता के आधार पर बताइए कि खेलों से हमें क्या सीखना चाहिए?",
-            options: [
-                "केवल जीत हासिल करना",
-                "दूसरों को नीचा दिखाना",
-                "आपसी प्यार, सहयोग और हँसते-हँसते आगे बढ़ना",
-                "खेल छोड़ देना"
-            ],
-            correct: 2
-        },
-        {
-            question: "कविता में 'रस्सी खींच' खेल के दौरान \"गिरते-पड़ते, हँसते-हँसते फिर से बढ़ते\" कहा गया है। यह पंक्ति जीवन के किस गुण को दर्शाती है?",
-            options: [
-                "कठिनाइयों से डर जाना",
-                "असफल होने पर भी पुनः प्रयास करना और खुश रहना",
-                "खेल को बीच में छोड़ देना",
-                "दूसरों की सहायता न करना"
-            ],
-            correct: 1
-        },
-        {
-            question: "'गिल्ली-डंडा' खेल से बच्चों में शारीरिक विकास के साथ-साथ कौन-सा प्रमुख कौशल (skill) विकसित होता है?",
-            options: [
-                "तेज़ दौड़ने की क्षमता",
-                "हाथ-आँख का समन्वय और सटीक निशाना लगाना",
-                "रस्सी कूदने का संतुलन",
-                "सोचने और लिखने की गति"
-            ],
-            correct: 1
-        },
-        {
-            question: "कविता के अनुसार खेलों में भाग लेने से बच्चों के बीच के रिश्ते पर क्या प्रभाव पड़ता है?",
-            options: [
-                "बच्चों में आपसी प्रतिस्पर्धा और ईर्ष्या बढ़ती है।",
-                "बच्चे अकेले रहना पसंद करने लगते हैं।",
-                "बच्चों में आपस में प्यार और मेल-जोल बढ़ता है।",
-                "पढ़ाई के प्रति रुचि कम होती है।"
-            ],
-            correct: 2
-        },
-        {
-            question: "\"क्रिकेट खेलें गली के अंदर, चौका-छक्का लगे धड़ाधड़।\" गली में क्रिकेट खेलते समय बच्चों को किस बात का विशेष ध्यान रखना चाहिए?",
-            options: [
-                "गेंद किसी के घर की खिड़की या राहगीर को न लगे।",
-                "खेल को बहुत तेज़ आवाज़ में खेलें।",
-                "चौका-छक्का न मारें।",
-                "दूसरों को गली में न आने दें।"
-            ],
-            correct: 0
-        },
-        {
-            question: "कविता में आया शब्द 'व्यापारी' शब्द का अर्थ है — \"सामान खरीदने और बेचने वाला\"। यदि खेल-खेल में बच्चे 'व्यापारी' बनते हैं, तो यह उनके किस कौशल को बढ़ावा देता है?",
-            options: [
-                "दौड़ने की क्षमता",
-                "व्यावहारिक सोच और लेन-देन की समझ",
-                "निशाना लगाने की कला",
-                "चित्र बनाने की कला"
-            ],
-            correct: 1
-        },
-        {
-            question: "'यह भी जानें' खंड के अनुसार, आधुनिक क्रिकेट का प्राचीन भारतीय संस्करण किस खेल को माना जा सकता है?",
-            options: [
-                "कांचा-गोली",
-                "लूडो",
-                "गिल्ली-डंडा",
-                "कबड्डी"
-            ],
-            correct: 2
-        },
-        {
-            question: "\"साारेे दोोस्त मिलकर खेेलताा हैंं।\" — इस वाक्य में व्याकरण संबंधी अशुद्धि है। इसका सही (शुद्ध) रूप क्या होगा?",
-            options: [
-                "सारे दोस्त मिलकर खेलता है।",
-                "सारे दोस्त मिलकर खेलते हैं।",
-                "सारे दोस्त मिलकर खेलेंगे।",
-                "सारे दोस्त मिलकर खेल रहा है।"
-            ],
-            correct: 1
-        },
-        {
-            question: "कविता की पंक्ति \"मस्ती होती भोली-भोली\" में 'भोली' शब्द का अर्थ मासूमियत से है। यहाँ 'भोली मस्ती' से कवि का क्या तात्पर्य है?",
-            options: [
-                "बिना किसी छल-कपट या स्वार्थ के की गई निष्छल मस्ती",
-                "शांत बैठकर पढ़ाई करना",
-                "दूसरों को परेशान करना",
-                "किसी खेल के नियम तोड़ना"
-            ],
-            correct: 0
-        },
-        {
-            question: "एशियाई खेलों (Asian Games) में शामिल किया गया एकमात्र स्वदेशी (भारतीय) खेल कौन-सा है?",
-            options: [
-                "लूडो",
-                "खो-खो",
-                "कबड्डी",
-                "गिल्ली-डंडा"
-            ],
-            correct: 2
-        }
-    ];
+    <!-- 3. Game Area Screen -->
+    <div id="game-screen" class="screen">
+        <div class="quiz-header">
+            <span id="progress-text">प्रश्न 1 / 10</span>
+            <span id="score-tracker">अंक: 0</span>
+        </div>
+        <div class="question-text" id="questionText">प्रश्न यहाँ दिखाई देगा...</div>
+        <div class="options-list" id="optionsContainer"></div>
+        <button id="next-btn" class="btn-action" style="display: none;" onclick="nextQuestion()">अगला प्रश्न</button>
+    </div>
 
-    let currentQuestionIndex = 0;
-    let score = 0;
+    <!-- 4. End Screen -->
+    <div id="end-screen" class="screen">
+        <h2>क्विज़ समाप्त!</h2>
+        <div class="score-text" id="finalScore">आपका स्कोर: 0 / 10</div>
+        <button class="btn-action" onclick="restartQuiz()">फिर से शुरू करें</button>
+    </div>
 
-    const questionElement = document.getElementById("question");
-    const optionsElement = document.getElementById("options");
-    const nextButton = document.getElementById("next-btn");
-    const quizBox = document.getElementById("quiz-box");
-    const resultBox = document.getElementById("result-box");
-    const scoreElement = document.getElementById("score");
+    <script>
+        const quizData = [
+            {
+                question: "रोहन खेल के मैदान में हारने पर अक्सर गुस्सा हो जाता है और दोस्तों से झगड़ने लगता है। 'बचपन के खेल' कविता के आधार पर बताइए कि खेलों से हमें क्या सीखना चाहिए?",
+                options: [
+                    "केवल जीत हासिल करना",
+                    "दूसरों को नीचा दिखाना",
+                    "आपसी प्यार, सहयोग और हँसते-हँसते आगे बढ़ना",
+                    "खेल छोड़ देना"
+                ],
+                correct: 2
+            },
+            {
+                question: "कविता में 'रस्सी खींच' खेल के दौरान \"गिरते-पड़ते, हँसते-हँसते फिर से बढ़ते\" कहा गया है। यह पंक्ति जीवन के किस गुण को दर्शाती है?",
+                options: [
+                    "कठिनाइयों से डर जाना",
+                    "असफल होने पर भी पुनः प्रयास करना और खुश रहना",
+                    "खेल को बीच में छोड़ देना",
+                    "दूसरों की सहायता न करना"
+                ],
+                correct: 1
+            },
+            {
+                question: "'गिल्ली-डंडा' खेल से बच्चों में शारीरिक विकास के साथ-साथ कौन-सा प्रमुख कौशल (skill) विकसित होता है?",
+                options: [
+                    "तेज़ दौड़ने की क्षमता",
+                    "हाथ-आँख का समन्वय और सटीक निशाना लगाना",
+                    "रस्सी कूदने का संतुलन",
+                    "सोचने और लिखने की गति"
+                ],
+                correct: 1
+            },
+            {
+                question: "कविता के अनुसार खेलों में भाग लेने से बच्चों के बीच के रिश्ते पर क्या प्रभाव पड़ता है?",
+                options: [
+                    "बच्चों में आपसी प्रतिस्पर्धा और ईर्ष्या बढ़ती है।",
+                    "बच्चे अकेले रहना पसंद करने लगते हैं।",
+                    "बच्चों में आपस में प्यार और मेल-जोल बढ़ता है।",
+                    "पढ़ाई के प्रति रुचि कम होती है।"
+                ],
+                correct: 2
+            },
+            {
+                question: "\"क्रिकेट खेलें गली के अंदर, चौका-छक्का लगे धड़ाधड़।\" गली में क्रिकेट खेलते समय बच्चों को किस बात का विशेष ध्यान रखना चाहिए?",
+                options: [
+                    "गेंद किसी के घर की खिड़की या राहगीर को न लगे।",
+                    "खेल को बहुत तेज़ आवाज़ में खेलें।",
+                    "चौका-छक्का न मारें।",
+                    "दूसरों को गली में न आने दें।"
+                ],
+                correct: 0
+            },
+            {
+                question: "कविता में आया शब्द 'व्यापारी' शब्द का अर्थ है — \"सामान खरीदने और बेचने वाला\"। यदि खेल-खेल में बच्चे 'व्यापारी' बनते हैं, तो यह उनके किस कौशल को बढ़ावा देता है?",
+                options: [
+                    "दौड़ने की क्षमता",
+                    "व्यावहारिक सोच और लेन-देन की समझ",
+                    "निशाना लगाने की कला",
+                    "चित्र बनाने की कला"
+                ],
+                correct: 1
+            },
+            {
+                question: "'यह भी जानें' खंड के अनुसार, आधुनिक क्रिकेट का प्राचीन भारतीय संस्करण किस खेल को माना जा सकता है?",
+                options: [
+                    "कांचा-गोली",
+                    "लूडो",
+                    "गिल्ली-डंडा",
+                    "कबड्डी"
+                ],
+                correct: 2
+            },
+            {
+                question: "\"सारे दोस्त मिलकर खेलता हैं।\" — इस वाक्य में व्याकरण संबंधी अशुद्धि है। इसका सही (शुद्ध) रूप क्या होगा?",
+                options: [
+                    "सारे दोस्त मिलकर खेलता है।",
+                    "सारे दोस्त मिलकर खेलते हैं।",
+                    "सारे दोस्त मिलकर खेलेंगे।",
+                    "सारे दोस्त मिलकर खेल रहा है।"
+                ],
+                correct: 1
+            },
+            {
+                question: "कविता की पंक्ति \"मस्ती होती भोली-भोली\" में 'भोली' शब्द का अर्थ मासूमियत से है। यहाँ 'भोली मस्ती' से कवि का क्या तात्पर्य है?",
+                options: [
+                    "बिना किसी छल-कपट या स्वार्थ के की गई निष्छल मस्ती",
+                    "शांत बैठकर पढ़ाई करना",
+                    "दूसरों को परेशान करना",
+                    "किसी खेल के नियम तोड़ना"
+                ],
+                correct: 0
+            },
+            {
+                question: "एशियाई खेलों (Asian Games) में शामिल किया गया एकमात्र स्वदेशी (भारतीय) खेल कौन-सा है?",
+                options: [
+                    "लूडो",
+                    "खो-खो",
+                    "कबड्डी",
+                    "गिल्ली-डंडा"
+                ],
+                correct: 2
+            }
+        ];
 
-    function loadQuestion() {
-        resetState();
-        let currentQuiz = quizData[currentQuestionIndex];
-        questionElement.innerText = (currentQuestionIndex + 1) + ". " + currentQuiz.question;
+        let currentQuestionIndex = 0;
+        let score = 0;
 
-        currentQuiz.options.forEach((option, index) => {
-            const button = document.createElement("button");
-            button.innerText = option;
-            button.classList.add("option-btn");
-            button.onclick = () => selectOption(button, index);
-            optionsElement.appendChild(button);
+        const questionText = document.getElementById("questionText");
+        const optionsContainer = document.getElementById("optionsContainer");
+        const nextButton = document.getElementById("next-btn");
+        const progressText = document.getElementById("progress-text");
+        const scoreTracker = document.getElementById("score-tracker");
+
+        // Automatically transition from Logo Screen to Intro Screen after 5 seconds
+        window.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("intro-total-q").textContent = quizData.length;
+            setTimeout(() => {
+                switchScreen("intro-screen");
+            }, 5000);
         });
-    }
 
-    function resetState() {
-        nextButton.style.display = "none";
-        optionsElement.innerHTML = "";
-    }
-
-    function selectOption(selectedBtn, selectedIndex) {
-        let correctIndex = quizData[currentQuestionIndex].correct;
-        let allButtons = optionsElement.children;
-
-        for (let btn of allButtons) {
-            btn.disabled = true;
+        function switchScreen(screenId) {
+            document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+            document.getElementById(screenId).classList.add("active");
         }
 
-        if (selectedIndex === correctIndex) {
-            selectedBtn.style.backgroundColor = "#28a745";
-            selectedBtn.style.color = "white";
-            score++;
-        } else {
-            selectedBtn.style.backgroundColor = "#dc3545";
-            selectedBtn.style.color = "white";
-            allButtons[correctIndex].style.backgroundColor = "#28a745";
-            allButtons[correctIndex].style.color = "white";
-        }
-
-        nextButton.style.display = "block";
-    }
-
-    function nextQuestion() {
-        currentQuestionIndex++;
-        if (currentQuestionIndex < quizData.length) {
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            switchScreen("game-screen");
             loadQuestion();
-        } else {
-            showResult();
         }
-    }
 
-    function showResult() {
-        quizBox.style.display = "none";
-        resultBox.style.display = "block";
-        scoreElement.innerText = `आपका कुल स्कोर: ${score} / ${quizData.length}`;
-    }
+        function loadQuestion() {
+            nextButton.style.display = "none";
+            optionsContainer.innerHTML = "";
+            
+            const currentQuiz = quizData[currentQuestionIndex];
+            questionText.innerText = `${currentQuestionIndex + 1}. ${currentQuiz.question}`;
+            progressText.innerText = `प्रश्न ${currentQuestionIndex + 1} / ${quizData.length}`;
+            scoreTracker.innerText = `अंक: ${score}`;
 
-    function restartQuiz() {
-        currentQuestionIndex = 0;
-        score = 0;
-        resultBox.style.display = "none";
-        quizBox.style.display = "block";
-        loadQuestion();
-    }
+            currentQuiz.options.forEach((option, index) => {
+                const button = document.createElement("button");
+                button.innerText = option;
+                button.classList.add("option-btn");
+                button.onclick = () => selectOption(button, index);
+                optionsContainer.appendChild(button);
+            });
+        }
 
-    loadQuestion();
-</script>
+        function selectOption(selectedBtn, selectedIndex) {
+            const correctIndex = quizData[currentQuestionIndex].correct;
+            const buttons = optionsContainer.children;
 
+            for (let btn of buttons) {
+                btn.disabled = true;
+            }
+
+            if (selectedIndex === correctIndex) {
+                selectedBtn.classList.add("correct");
+                score++;
+                scoreTracker.innerText = `अंक: ${score}`;
+            } else {
+                selectedBtn.classList.add("incorrect");
+                buttons[correctIndex].classList.add("correct");
+            }
+
+            nextButton.style.display = "block";
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById("finalScore").innerText = `आपका कुल स्कोर: ${score} / ${quizData.length}`;
+            switchScreen("end-screen");
+        }
+
+        function restartQuiz() {
+            switchScreen("intro-screen");
+        }
+    </script>
 </body>
 </html>
