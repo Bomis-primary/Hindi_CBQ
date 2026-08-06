@@ -56,8 +56,9 @@
             flex-direction: column;
         }
 
+        /* Hide all view panels by default */
         .view-panel {
-            display: none;
+            display: none !important;
             width: 100%;
             height: 100%;
             min-height: 550px;
@@ -68,8 +69,9 @@
             background: var(--bg-main);
         }
 
+        /* Show active panel ONLY */
         .view-panel.active {
-            display: flex;
+            display: flex !important;
         }
 
         /* SCREEN 1: SPLASH SCREEN */
@@ -79,16 +81,11 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 100;
+            z-index: 1000;
             background: var(--bg-main);
             justify-content: center;
             align-items: center;
-            display: none; /* Controlled by active class */
             cursor: pointer;
-        }
-
-        #splash-screen.active {
-            display: flex;
         }
 
         .splash-logo-box {
@@ -264,7 +261,7 @@
             font-weight: 800;
         }
 
-        /* Feedback States */
+        /* Pastel Feedback States */
         .btn-option.hit-success {
             background: var(--success-bg) !important;
             border-color: var(--success) !important;
@@ -568,9 +565,15 @@
             } catch (e) {}
         }
 
+        // Switching panels smoothly
         function showPanel(panelId) {
-            document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
-            document.getElementById(panelId).classList.add('active');
+            const panels = document.querySelectorAll('.view-panel');
+            panels.forEach(p => p.classList.remove('active'));
+            
+            const target = document.getElementById(panelId);
+            if (target) {
+                target.classList.add('active');
+            }
         }
 
         function goToInstructions() {
@@ -581,12 +584,10 @@
             showPanel('instruction-screen');
         }
 
-        // Auto-hide logo after 5 seconds
-        window.addEventListener('DOMContentLoaded', () => {
-            splashTimer = setTimeout(() => {
-                goToInstructions();
-            }, 5000);
-        });
+        // Run timer immediately after script loads
+        splashTimer = setTimeout(() => {
+            goToInstructions();
+        }, 5000);
 
         function startQuiz() {
             currentIdx = 0;
