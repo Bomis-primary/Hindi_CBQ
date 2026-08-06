@@ -42,7 +42,6 @@
             padding: 12px;
         }
 
-        /* Responsive Container */
         .quiz-container {
             width: 100%;
             max-width: 650px;
@@ -84,8 +83,12 @@
             background: var(--bg-main);
             justify-content: center;
             align-items: center;
-            display: flex;
+            display: none; /* Controlled by active class */
             cursor: pointer;
+        }
+
+        #splash-screen.active {
+            display: flex;
         }
 
         .splash-logo-box {
@@ -167,10 +170,6 @@
             transform: translateY(-1px);
         }
 
-        .btn-action:active {
-            transform: translateY(1px);
-        }
-
         /* SCREEN 3: GAMEPLAY CONSOLE */
         .hud-header {
             display: flex;
@@ -188,7 +187,6 @@
             font-weight: 700;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         .hud-box span {
@@ -204,7 +202,6 @@
             padding: 22px;
             border-radius: 20px;
             margin-bottom: 18px;
-            position: relative;
         }
 
         .tag-competency {
@@ -267,7 +264,7 @@
             font-weight: 800;
         }
 
-        /* Pastel Feedback States */
+        /* Feedback States */
         .btn-option.hit-success {
             background: var(--success-bg) !important;
             border-color: var(--success) !important;
@@ -363,7 +360,7 @@
         <div id="splash-screen" class="view-panel active" onclick="goToInstructions()">
             <div class="splash-logo-box">
                 <img 
-                    src="assets/innovine-logo.png" 
+                    src="assets/innovine-logo 1.png" 
                     alt="Innovine Logo" 
                     class="splash-logo"
                     onerror="this.onerror=null; this.src='assets/innovine-logo 1.png';"
@@ -421,8 +418,8 @@
     </div>
 
     <!-- Audio Elements -->
-    <audio id="snd-correct" src="correct.mp3" preload="auto"></audio>
-    <audio id="snd-wrong" src="wrong.mp3" preload="auto"></audio>
+    <audio id="snd-correct" src="correct 1.mp3" preload="auto"></audio>
+    <audio id="snd-wrong" src="wrong 1.mp3" preload="auto"></audio>
 
     <script>
         const quizDataset = [
@@ -544,14 +541,12 @@
         let isLocked = false;
         let splashTimer = null;
 
-        // Audio helper logic
         function playSound(type) {
             const id = type === 'correct' ? 'snd-correct' : 'snd-wrong';
             const audio = document.getElementById(id);
             if (audio) {
                 audio.currentTime = 0;
                 audio.play().catch(() => {
-                    // Fallback synthesizer tone if audio file path is missing or blocked
                     playSynthTone(type === 'correct' ? 587.33 : 220);
                 });
             }
@@ -579,15 +574,19 @@
         }
 
         function goToInstructions() {
-            if (splashTimer) clearTimeout(splashTimer);
+            if (splashTimer) {
+                clearTimeout(splashTimer);
+                splashTimer = null;
+            }
             showPanel('instruction-screen');
         }
 
-        window.onload = () => {
+        // Auto-hide logo after 5 seconds
+        window.addEventListener('DOMContentLoaded', () => {
             splashTimer = setTimeout(() => {
                 goToInstructions();
             }, 5000);
-        };
+        });
 
         function startQuiz() {
             currentIdx = 0;
