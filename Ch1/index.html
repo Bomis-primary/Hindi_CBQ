@@ -45,7 +45,7 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Container Responsive for Mobile, Tablet & Desktop */
+        /* Fully Responsive Container for Laptop, Desktop, Mobile, Tablet */
         .quiz-container {
             width: 100%;
             max-width: 650px;
@@ -74,7 +74,7 @@
             display: flex;
         }
 
-        /* SCREEN 1: SPLASH SCREEN (Only Logo, 5 Seconds) */
+        /* SCREEN 1: SPLASH SCREEN (Only Logo for 5 Seconds, Nothing Else) */
         #splash-screen {
             background: #ffffff;
             justify-content: center;
@@ -93,7 +93,7 @@
             50% { transform: scale(1.03); opacity: 1; }
         }
 
-        /* SCREEN 2: INSTRUCTIONS (Simple & Precise, No Logo) */
+        /* SCREEN 2: INSTRUCTIONS SCREEN (No Logo, Simple & Precise) */
         #instruction-screen {
             justify-content: center;
             align-items: center;
@@ -101,7 +101,7 @@
         }
 
         .screen-title {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 800;
             color: var(--text-dark);
             margin-bottom: 20px;
@@ -150,7 +150,7 @@
             transform: translateY(-1px);
         }
 
-        /* SCREEN 3: GAMEPLAY SCREEN */
+        /* SCREEN 3: GAMEPLAY SCREEN (No Logo) */
         .hud-header {
             display: flex;
             justify-content: space-between;
@@ -269,7 +269,7 @@
             display: none;
         }
 
-        /* SCREEN 4: END SCREEN */
+        /* SCREEN 4: CREATIVE CONGRATULATIONS PAGE */
         #end-screen {
             justify-content: center;
             align-items: center;
@@ -329,16 +329,17 @@
         </div>
 
         <div id="instruction-screen" class="view-panel">
-            <div class="screen-title">खेल के निर्देश</div>
+            <div class="screen-title">निर्देश</div>
             
             <div class="instruction-card">
-                <div class="instruction-item">🎯 <span>प्रत्येक प्रश्न के लिए <b>2 अवसर (Attempts)</b> मिलेंगे।</span></div>
-                <div class="instruction-item">👏 <span>सही उत्तर चुनने पर तालियाँ बजेंगी और अंक प्राप्त होंगे।</span></div>
-                <div class="instruction-item">💡 <span>2 बार गलत उत्तर देने पर सही उत्तर दिखा दिया जाएगा।</span></div>
-                <div class="instruction-item">🏆 <span>सभी 10 प्रश्नों को पूरा करें और अपना अंतिम स्कोर देखें।</span></div>
+                <div class="instruction-item">🎯 <span>प्रत्येक प्रश्न के लिए आपको <b>2 अवसर (Attempts)</b> मिलेंगे।</span></div>
+                <div class="instruction-item">👏 <span>सही उत्तर चुनने पर तालियाँ बजेंगी और अंक मिलेंगे।</span></div>
+                <div class="instruction-item">🔔 <span>गलत उत्तर चुनने पर बजर की आवाज़ आएगी।</span></div>
+                <div class="instruction-item">💡 <span>2 गलत प्रयासों के बाद सही उत्तर हरा दिखाई देगा।</span></div>
+                <div class="instruction-item">🏆 <span>सभी 10 प्रश्नों को पूरा करके अपना अंतिम स्कोर देखें।</span></div>
             </div>
             
-            <button class="btn-action" onclick="startQuiz()">शुरू करें 🚀</button>
+            <button class="btn-action" onclick="startQuiz()">खेल शुरू करें 🚀</button>
         </div>
 
         <div id="gameplay-screen" class="view-panel">
@@ -384,107 +385,107 @@
             audioObj.play().catch(() => {});
         }
 
-        // 10 Competency Questions Dataset
+        // 10 Direct Competency Questions specifically for Chapter "कोयल" (Koyal)
         const quizDataset = [
             {
-                q: "कोयल अपनी मधुर आवाज़ से सबका मन प्रसन्न करती है। यदि आप अपने मित्रों को खुश करना चाहते हैं, तो आपको क्या करना चाहिए?",
+                q: "'कोयल' कविता के अनुसार, कोयल ने अपनी मीठी आवाज़ में कूक-कूक कर आमों में क्या घोला है?",
                 choices: [
-                    "कठोर शब्दों का प्रयोग करना चाहिए।",
-                    "मीठी और विनम्र भाषा में बात करनी चाहिए।",
-                    "केवल अपनी बात सुनानी चाहिए।",
-                    "दूसरों की बातों को अनदेखा करना चाहिए।"
-                ],
-                correctIdx: 1
-            },
-            {
-                q: "कविता में कोयल का रंग काला बताया गया है, फिर भी उसे सब चिड़ियों की रानी कहा गया है। इसका कारण क्या है?",
-                choices: [
-                    "उसका आकार सबसे बड़ा है।",
-                    "उसकी मधुर बोली और अच्छे गुण उसे विशेष बनाते हैं।",
-                    "वह सबसे तेज उड़ती है।",
-                    "वह सबसे ऊँचे पेड़ पर रहती है।"
-                ],
-                correctIdx: 1
-            },
-            {
-                q: "यदि आपका कोई मित्र गुस्से में कठोर शब्द बोलता है, तो कोयल की सीख के अनुसार आप उसे क्या समझाएँगे?",
-                choices: [
-                    "हमेशा गुस्से में बोलना चाहिए।",
-                    "मीठे शब्दों का प्रयोग करना चाहिए।",
-                    "किसी से बात नहीं करनी चाहिए।",
-                    "दूसरों को दोष देना चाहिए।"
-                ],
-                correctIdx: 1
-            },
-            {
-                q: "“आमों में मिश्री घोली” पंक्ति का क्या अर्थ है?",
-                choices: [
-                    "कोयल आमों में सचमुच मिश्री डालती है।",
-                    "कोयल की मीठी आवाज़ वातावरण को आनंदमय बना देती है।",
-                    "कोयल केवल आम खाती है।",
-                    "आम का स्वाद बदल जाता है।"
-                ],
-                correctIdx: 1
-            },
-            {
-                q: "यदि आपके आसपास पक्षियों की संख्या कम हो रही है, तो आप कोयल और अन्य पक्षियों की सहायता के लिए क्या कर सकते हैं?",
-                choices: [
-                    "पेड़ काट सकते हैं।",
-                    "पेड़ लगा सकते हैं और पक्षियों के लिए पानी रख सकते हैं।",
-                    "पक्षियों को परेशान कर सकते हैं।",
-                    "उनके घोंसले हटा सकते हैं।"
-                ],
-                correctIdx: 1
-            },
-            {
-                q: "दो पक्षियों में से एक सुंदर दिखता है लेकिन कठोर आवाज़ में बोलता है और दूसरा साधारण दिखता है लेकिन मधुर बोलता है। कविता के अनुसार कौन अधिक पसंद किया जाएगा?",
-                choices: [
-                    "सुंदर दिखने वाला पक्षी",
-                    "मधुर बोलने वाला पक्षी",
-                    "दोनों को कोई पसंद नहीं करेगा",
-                    "बड़ा पक्षी"
-                ],
-                correctIdx: 1
-            },
-            {
-                q: "कोयल अपनी माँ से क्या सीखती है? इससे हमें क्या सीख मिलती है?",
-                choices: [
-                    "हमें दूसरों से कठोर व्यवहार करना चाहिए।",
-                    "हमें बड़ों की अच्छी सीख माननी चाहिए।",
-                    "हमें किसी की बात नहीं सुननी चाहिए।",
-                    "हमें केवल अपनी इच्छा के अनुसार काम करना चाहिए।"
-                ],
-                correctIdx: 1
-            },
-            {
-                q: "यदि कोयल मीठा न बोलती, तो क्या प्रभाव पड़ता?",
-                choices: [
-                    "लोग उसे कम पसंद करते क्योंकि उसकी मधुर आवाज़ उसकी विशेषता है।",
-                    "वह सबसे प्रसिद्ध पक्षी बन जाती।",
-                    "सभी पक्षी उससे डरते।",
-                    "मौसम बदल जाता।"
+                    "मिश्री",
+                    "नमक",
+                    "पानी",
+                    "शहद"
                 ],
                 correctIdx: 0
             },
             {
-                q: "यदि आपको कोयल की ओर से एक संदेश लिखना हो, तो कौन-सा संदेश सबसे उपयुक्त होगा?",
+                q: "कविता 'कोयल' की प्रसिद्ध कवयित्री कौन हैं?",
                 choices: [
-                    "हमेशा दूसरों से कठोर भाषा में बात करो।",
-                    "मीठा बोलो और सबको खुश रखो।",
-                    "पेड़ों और पक्षियों को नुकसान पहुँचाओ।",
-                    "केवल अपने बारे में सोचो।"
+                    "महादेवी वर्मा",
+                    "सुभद्रा कुमारी चौहान",
+                    "सरोजिनी नायडू",
+                    "सुमित्रा नंदन पंत"
                 ],
                 correctIdx: 1
             },
             {
-                q: "“कोयल” कविता का मुख्य संदेश क्या है?",
+                q: "कोयल अपनी प्यासी धरती के लिए बादलों (मेघों) से क्या माँगती है?",
                 choices: [
-                    "केवल पक्षियों के रंगों का वर्णन करना।",
-                    "मधुर वाणी, अच्छे गुणों और प्रकृति प्रेम का महत्व समझाना।",
-                    "केवल गर्मी के मौसम के बारे में बताना।",
-                    "केवल आमों के बारे में जानकारी देना।"
+                    "हवा",
+                    "पानी",
+                    "धूप",
+                    "फल"
                 ],
                 correctIdx: 1
+            },
+            {
+                q: "कोयल को मीठा बोलना और डाल-डाल पर उड़ना किसने सिखाया है?",
+                choices: [
+                    "उसकी माँ ने",
+                    "उसके दोस्तों ने",
+                    "कौए ने",
+                    "हवा ने"
+                ],
+                correctIdx: 0
+            },
+            {
+                q: "माँ की बात सदा मानने और मीठा बोलने के कारण कोयल को क्या कहा जाता है?",
+                choices: [
+                    "फूलों की रानी",
+                    "चिड़ियों की रानी",
+                    "जंगलों की रानी",
+                    "नदियों की रानी"
+                ],
+                correctIdx: 1
+            },
+            {
+                q: "पाठ में दी गई जानकारी के अनुसार, चतुर कोयल अपना घोंसला स्वयं न बनाकर किसके घोंसले का उपयोग करती है?",
+                choices: [
+                    "तोते के",
+                    "कौए के",
+                    "कबूतर के",
+                    "चिड़िया के"
+                ],
+                correctIdx: 1
+            },
+            {
+                q: "कविता में आए 'संदेशा' शब्द का सही अर्थ क्या है?",
+                choices: [
+                    "खबर या सूचना",
+                    "उपहार",
+                    "मीठी मिठाई",
+                    "गाना"
+                ],
+                correctIdx: 0
+            },
+            {
+                q: "कोयल का रंग काला होने पर भी सब लोग उसे प्यार क्यों करते हैं?",
+                choices: [
+                    "क्योंकि वह आकार में बहुत बड़ी होती है।",
+                    "क्योंकि उसकी बोली मीठी होती है और उसमें अच्छे गुण होते हैं।",
+                    "क्योंकि वह बहुत तेज़ उड़ती है।",
+                    "क्योंकि वह केवल रात में गाती है।"
+                ],
+                correctIdx: 1
+            },
+            {
+                q: "यदि आपका कोई मित्र गुस्से में बात करता है, तो कोयल की सीख के अनुसार आपको क्या करना चाहिए?",
+                choices: [
+                    "खुद भी गुस्से में बोलना चाहिए।",
+                    "मीठी और नम्र भाषा में बात करके समझाना चाहिए।",
+                    "उससे बात करना बंद कर देना चाहिए।",
+                    "दूसरों से झगड़ा करना चाहिए।"
+                ],
+                correctIdx: 1
+            },
+            {
+                q: "'कोयल' कविता से हमें मुख्य रूप से क्या सीख मिलती है?",
+                choices: [
+                    "हमेशा बड़ों की सीख माननी चाहिए और सबसे मीठा बोलना चाहिए।",
+                    "केवल अपने रंग और रूप पर ध्यान देना चाहिए।",
+                    "दूसरों की बातों को अनसुना कर देना चाहिए।",
+                    "पक्षियों को परेशान करना चाहिए।"
+                ],
+                correctIdx: 0
             }
         ];
 
@@ -493,7 +494,7 @@
         let attemptsLeft = 2;
         let isLocked = false;
 
-        // Auto switch Splash Screen after 5 Seconds
+        // Auto switch Splash Screen to Instruction Screen strictly after 5 Seconds
         window.onload = () => {
             setTimeout(() => {
                 showPanel('instruction-screen');
@@ -544,7 +545,7 @@
                 // Correct Choice
                 isLocked = true;
                 buttonElem.classList.add('hit-success');
-                playSound(soundClapping); // Clapping sound on correct answer
+                playSound(soundClapping); // Clapping sound
                 
                 score += (attemptsLeft === 2) ? 10 : 5;
                 document.getElementById('hud-score').innerText = score;
@@ -594,11 +595,11 @@
             if (score >= 80) {
                 icon.innerText = "🏆";
                 title.innerText = "शानदार प्रदर्शन!";
-                desc.innerText = "बहुत बढ़िया! आपने सभी प्रश्नों को समझदारी से हल किया है।";
+                desc.innerText = "अद्भुत! आपने सभी प्रश्नों को बहुत ही समझदारी से हल किया है।";
             } else {
                 icon.innerText = "🌟";
                 title.innerText = "बहुत-बहुत बधाई!";
-                desc.innerText = "आपने सफलतापूर्वक खेल पूरा कर लिया है! निरंतर अभ्यास करते रहें।";
+                desc.innerText = "आपने सफलतापूर्वक खेल पूरा कर लिया है! निरंतर प्रयास करते रहें।";
             }
 
             launchConfetti();
@@ -608,7 +609,7 @@
             showPanel('instruction-screen');
         }
 
-        // Confetti Celebration Effect
+        // Celebration Confetti Canvas
         function launchConfetti() {
             const canvas = document.getElementById('confetti-canvas');
             const ctx = canvas.getContext('2d');
