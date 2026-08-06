@@ -3,245 +3,268 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>लकड़हारा और पेड़ - अभ्यास प्रश्नोत्तरी</title>
+  <title>अभ्यास प्रश्नोत्तरी</title>
   <style>
+    :root {
+      --primary-color: #4a90e2;
+      --primary-hover: #357abd;
+      --bg-color: #f0f4f8;
+      --card-bg: #ffffff;
+      --text-color: #2c3e50;
+      --correct-color: #2ecc71;
+      --incorrect-color: #e74c3c;
+      --disabled-color: #bdc3c7;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
     body {
-      background-color: #f4f7f6;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      padding: 20px;
+      padding: 15px;
     }
 
-    .quiz-container {
-      background: #ffffff;
+    .screen {
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
       width: 100%;
-      max-width: 650px;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-      padding: 30px;
+      max-width: 600px;
+      padding: 30px 24px;
       text-align: center;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 380px;
     }
 
-    .logo {
-      max-width: 180px;
-      height: auto;
-      margin-bottom: 20px;
+    .active {
+      display: flex;
     }
 
-    h2 {
-      color: #2c3e50;
-      margin-bottom: 10px;
-      font-size: 24px;
+    /* 1. Splash Screen (Logo Only) */
+    .logo-title {
+      font-size: 3.2rem;
+      font-weight: 800;
+      color: var(--primary-color);
+      letter-spacing: -1px;
+      user-select: none;
     }
 
-    h3 {
-      color: #16a085;
-      margin-bottom: 20px;
-      font-size: 18px;
+    /* 2. Instruction Screen */
+    .instruction-title {
+      font-size: 1.5rem;
+      margin-bottom: 16px;
+      color: var(--text-color);
+      font-weight: 700;
     }
 
-    .instructions {
-      text-align: left;
-      background: #eef9f6;
-      border-left: 5px solid #16a085;
-      padding: 18px 20px;
-      border-radius: 6px;
-      margin-bottom: 25px;
-    }
-
-    .instructions h4 {
-      color: #2c3e50;
-      margin-bottom: 10px;
-    }
-
-    .instructions ul {
-      padding-left: 20px;
-      color: #555;
+    .instruction-text {
+      font-size: 1.05rem;
       line-height: 1.6;
+      color: #555;
+      margin-bottom: 28px;
     }
 
-    .btn {
-      background-color: #16a085;
-      color: white;
-      border: none;
-      padding: 12px 30px;
-      font-size: 16px;
-      font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .btn:hover {
-      background-color: #117864;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
+    /* 3. Quiz Screen */
     .quiz-header {
+      width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 15px;
-      font-weight: bold;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
       color: #7f8c8d;
-    }
-
-    .progress-bar-container {
-      width: 100%;
-      background-color: #e0e0e0;
-      height: 8px;
-      border-radius: 4px;
-      margin-bottom: 25px;
-      overflow: hidden;
-    }
-
-    .progress-bar {
-      height: 100%;
-      background-color: #16a085;
-      width: 0%;
-      transition: width 0.3s ease;
+      font-weight: 600;
     }
 
     .question-text {
-      font-size: 19px;
-      color: #2c3e50;
-      margin-bottom: 20px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      width: 100%;
       text-align: left;
       line-height: 1.5;
     }
 
-    .options-grid {
+    .options-container {
       display: flex;
       flex-direction: column;
       gap: 12px;
+      width: 100%;
       margin-bottom: 20px;
     }
 
     .option-btn {
-      background: #f8f9fa;
-      border: 2px solid #e9ecef;
+      background-color: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
       padding: 14px 18px;
-      border-radius: 8px;
+      font-size: 1rem;
       text-align: left;
-      font-size: 16px;
-      color: #333;
       cursor: pointer;
       transition: all 0.2s ease;
+      color: var(--text-color);
+      width: 100%;
+      line-height: 1.4;
     }
 
     .option-btn:hover:not([disabled]) {
-      background: #eef9f6;
-      border-color: #16a085;
+      border-color: var(--primary-color);
+      background-color: #edf5ff;
     }
 
     .option-btn.correct {
-      background-color: #d4edda;
-      border-color: #28a745;
-      color: #155724;
-      font-weight: bold;
+      background-color: #e8f8f0 !important;
+      border-color: var(--correct-color) !important;
+      color: #1e7e34;
+      font-weight: 600;
     }
 
-    .option-btn.wrong {
-      background-color: #f8d7da;
-      border-color: #dc3545;
-      color: #721c24;
+    .option-btn.incorrect {
+      background-color: #fdeaea !important;
+      border-color: var(--incorrect-color) !important;
+      color: #bd2130;
     }
 
+    .status-msg {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      min-height: 22px;
+    }
+
+    .status-msg.error { color: var(--incorrect-color); }
+    .status-msg.success { color: var(--correct-color); }
+
+    /* Rationale Box */
     .rationale-box {
-      margin-top: 15px;
-      padding: 15px;
+      width: 100%;
+      padding: 14px 16px;
       border-radius: 8px;
       text-align: left;
-      font-size: 15px;
+      font-size: 0.95rem;
       line-height: 1.4;
       margin-bottom: 20px;
+      display: none;
     }
 
     .rationale-box.correct {
-      background-color: #e2f0d9;
-      color: #2e6b27;
-      border: 1px solid #c3e6cb;
+      background-color: #e8f8f0;
+      color: #1e7e34;
+      border: 1px solid #b7e4c7;
     }
 
     .rationale-box.wrong {
-      background-color: #fce8e6;
-      color: #a94442;
+      background-color: #fdeaea;
+      color: #bd2130;
       border: 1px solid #f5c6cb;
     }
 
-    .result-card {
-      padding: 20px 0;
+    /* General Button */
+    .btn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
     }
 
-    .score-text {
-      font-size: 24px;
-      color: #2c3e50;
-      margin: 15px 0;
-      font-weight: bold;
+    .btn:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn:disabled {
+      background-color: var(--disabled-color);
+      cursor: not-allowed;
+    }
+
+    /* 4. Completion Screen */
+    .completion-icon {
+      font-size: 4rem;
+      margin-bottom: 16px;
+    }
+
+    .completion-title {
+      font-size: 2rem;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .completion-msg {
+      font-size: 1.1rem;
+      color: #555;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 480px) {
+      .screen {
+        padding: 20px 16px;
+        min-height: 320px;
+      }
+      .logo-title { font-size: 2.5rem; }
+      .question-text { font-size: 1.05rem; }
+      .option-btn { padding: 12px 14px; font-size: 0.95rem; }
     }
   </style>
 </head>
 <body>
 
-  <div class="quiz-container">
+  <!-- Screen 1: Logo Splash ONLY (5 Seconds) -->
+  <div id="screen-splash" class="screen active">
+    <div class="logo-title">Innovine</div>
+  </div>
+
+  <!-- Screen 2: Instructions (No Logo, Simple & Precise) -->
+  <div id="screen-instructions" class="screen">
+    <div class="instruction-title">निर्देश (Instructions)</div>
+    <div class="instruction-text">
+      प्रत्येक प्रश्न का उत्तर ध्यानपूर्वक दें।<br>
+      आपको प्रति प्रश्न <strong>2 प्रयास (Attempts)</strong> मिलेंगे।<br>
+      दोनों प्रयास गलत होने पर सही उत्तर प्रदर्शित किया जाएगा।
+    </div>
+    <button class="btn" onclick="startQuiz()">प्रश्नोत्तरी शुरू करें</button>
+  </div>
+
+  <!-- Screen 3: Quiz -->
+  <div id="screen-quiz" class="screen">
+    <div class="quiz-header">
+      <span id="question-progress">प्रश्न 1/10</span>
+      <span id="attempts-left">प्रयास शेष: 2</span>
+    </div>
     
-    <div id="start-screen">
-      <img src="assets/innovine-logo 1.png" alt="Innovine Logo" class="logo">
-      <h2>लकड़हारा और पेड़</h2>
-      <h3>अभ्यास प्रश्नोत्तरी</h3>
-      
-      <div class="instructions">
-        <h4>निर्देश (Instructions):</h4>
-        <ul>
-          <li>इस प्रश्नोत्तरी में कुल 10 बहुविकल्पीय प्रश्न हैं।</li>
-          <li>प्रत्येक प्रश्न के लिए सही उत्तर का चयन करें।</li>
-          <li>सही उत्तर चुनने पर तालियों की गूँज तथा गलत उत्तर चुनने पर बजर सुनाई देगा।</li>
-          <li>प्रत्येक उत्तर के बाद सही विकल्प का कारण/स्पष्टीकरण दिखाया जाएगा।</li>
-          <li>अंत में आपका कुल अंक (Score) प्रदर्शित होगा।</li>
-        </ul>
-      </div>
+    <div id="question-text" class="question-text">Loading question...</div>
+    
+    <div id="options-container" class="options-container"></div>
+    
+    <div id="status-msg" class="status-msg"></div>
 
-      <button class="btn" onclick="startQuiz()">प्रश्नोत्तरी शुरू करें</button>
-    </div>
+    <div id="rationale-box" class="rationale-box"></div>
+    
+    <button id="next-btn" class="btn" onclick="handleNext()" disabled>अगला प्रश्न</button>
+  </div>
 
-    <div id="quiz-screen" class="hidden">
-      <div class="quiz-header">
-        <span id="question-count">प्रश्न 1 / 10</span>
-        <span id="score-display">अंक: 0</span>
-      </div>
-
-      <div class="progress-bar-container">
-        <div id="progress" class="progress-bar"></div>
-      </div>
-
-      <div id="question-text" class="question-text"></div>
-
-      <div id="options-container" class="options-grid"></div>
-
-      <div id="rationale-box" class="rationale-box hidden"></div>
-
-      <button id="next-btn" class="btn hidden" onclick="nextQuestion()">अगला प्रश्न</button>
-    </div>
-
-    <div id="result-screen" class="hidden result-card">
-      <h2>प्रश्नोत्तरी समाप्त!</h2>
-      <div class="score-text" id="final-score">आपका कुल अंक: 0 / 10</div>
-      <p id="result-message" style="margin-bottom: 25px; color: #555;"></p>
-      <button class="btn" onclick="restartQuiz()">पुनः प्रयास करें</button>
-    </div>
-
+  <!-- Screen 4: Creative Completion Page -->
+  <div id="screen-completion" class="screen">
+    <div class="completion-icon">🎉</div>
+    <div class="completion-title">बधाई हो! (Congratulations!)</div>
+    <div class="completion-msg">आपने सफलतापूर्वक प्रश्नोत्तरी पूरी कर ली है!</div>
+    <button class="btn" onclick="restartQuiz()">पुनः प्रयास करें</button>
   </div>
 
   <audio id="sound-wrong" src="assets/wrong 1.mp3"></audio>
@@ -294,7 +317,7 @@
         question: "यदि किसी जंगल में पेड़ों की कटाई लगातार होती रहे, तो उसका क्या प्रभाव होगा?",
         options: [
           { text: "क) जानवरों को अधिक घर मिलेंगे।", rationale: "पेड़ कटने से जानवरों के प्राकृतिक आवास नष्ट हो जाते हैं।", isCorrect: false },
-          { text: "ख) जंगल में हरियाली और जीवन कम हो जाएगा।", rationale: "वृक्षों की कमी से पर्यावरण का संतुलन बिगड़ता है और हरियाली समाप्त होती है।", isCorrect: true },
+          { text: "ख) जंगल में हरियाली और जीवन कम हो जाएगा।", rationale: "वृक्षों की कमी से पर्यावरण का संतुलन बिगड़ता है और हरियाली समाप्त होती है।", isCorrect: true },
           { text: "ग) बारिश अधिक होने लगेगी।", rationale: "पेड़ वर्षा लाने में सहायक होते हैं, अतः कटाई से बारिश कम होगी।", isCorrect: false },
           { text: "घ) पक्षियों की संख्या बढ़ जाएगी।", rationale: "आश्रय नष्ट होने से पक्षियों की संख्या घट जाएगी।", isCorrect: false }
         ]
@@ -305,7 +328,7 @@
         options: [
           { text: "क) वे किसी की मदद नहीं करना चाहते थे।", rationale: "वे पूरी तरह स्वार्थी नहीं थे, बल्कि संभावित खतरे के प्रति सतर्क थे।", isCorrect: false },
           { text: "ख) वे मदद करने से पहले सोच-विचार करना चाहते थे।", rationale: "वे परिस्थिति और परिणामों का सही आकलन करके निर्णय लेना चाहते थे।", isCorrect: true },
-          { text: "ग) वे जंगल छोड़ना चाहते थे।", rationale: "कहानी में उनके जंगल छोड़ने की बात नहीं है।", isCorrect: false },
+          { text: "ग) वे जंगल छोड़ना चाहते थे।", rationale: "कहानी में उनके जंगल छोड़ने की बात नहीं है।", isCorrect: false },
           { text: "घ) वे लकड़हारे से डरते थे।", rationale: "डर के बजाय वे विवेक और समझदारी का परिचय दे रहे थे।", isCorrect: false }
         ]
       },
@@ -352,121 +375,164 @@
     ];
 
     let currentQuestionIndex = 0;
-    let score = 0;
+    let attemptsLeft = 2;
+    let questionResolved = false;
 
-    const startScreen = document.getElementById("start-screen");
-    const quizScreen = document.getElementById("quiz-screen");
-    const resultScreen = document.getElementById("result-screen");
+    // Screens
+    const screenSplash = document.getElementById('screen-splash');
+    const screenInstructions = document.getElementById('screen-instructions');
+    const screenQuiz = document.getElementById('screen-quiz');
+    const screenCompletion = document.getElementById('screen-completion');
 
-    const questionText = document.getElementById("question-text");
-    const optionsContainer = document.getElementById("options-container");
-    const rationaleBox = document.getElementById("rationale-box");
-    const nextBtn = document.getElementById("next-btn");
+    // Quiz UI Elements
+    const questionProgress = document.getElementById('question-progress');
+    const attemptsLeftText = document.getElementById('attempts-left');
+    const questionText = document.getElementById('question-text');
+    const optionsContainer = document.getElementById('options-container');
+    const statusMsg = document.getElementById('status-msg');
+    const rationaleBox = document.getElementById('rationale-box');
+    const nextBtn = document.getElementById('next-btn');
 
-    const questionCount = document.getElementById("question-count");
-    const scoreDisplay = document.getElementById("score-display");
-    const progressBar = document.getElementById("progress");
+    // Audio Elements
+    const soundWrong = document.getElementById('sound-wrong');
+    const soundClapping = document.getElementById('sound-clapping');
 
-    const soundWrong = document.getElementById("sound-wrong");
-    const soundClapping = document.getElementById("sound-clapping");
+    // 5-second Splash screen transition
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        screenSplash.classList.remove('active');
+        screenInstructions.classList.add('active');
+      }, 5000);
+    });
 
     function startQuiz() {
-      startScreen.classList.add("hidden");
-      quizScreen.classList.remove("hidden");
       currentQuestionIndex = 0;
-      score = 0;
+      screenInstructions.classList.remove('active');
+      screenQuiz.classList.add('active');
       loadQuestion();
     }
 
     function loadQuestion() {
-      resetState();
-      const currentQ = questions[currentQuestionIndex];
+      attemptsLeft = 2;
+      questionResolved = false;
       
-      questionCount.innerText = `प्रश्न ${currentQuestionIndex + 1} / ${questions.length}`;
-      scoreDisplay.innerText = `अंक: ${score}`;
-      progressBar.style.width = `${((currentQuestionIndex + 1) / questions.length) * 100}%`;
+      const q = questions[currentQuestionIndex];
       
-      questionText.innerText = `प्रश्न ${currentQ.questionNumber}. ${currentQ.question}`;
+      questionProgress.innerText = `प्रश्न ${currentQuestionIndex + 1}/${questions.length}`;
+      attemptsLeftText.innerText = `प्रयास शेष: ${attemptsLeft}`;
+      questionText.innerText = `${q.question}`;
+      
+      statusMsg.innerText = "";
+      statusMsg.className = "status-msg";
+      
+      rationaleBox.style.display = "none";
+      rationaleBox.className = "rationale-box";
+      rationaleBox.innerHTML = "";
 
-      currentQ.options.forEach(opt => {
-        const btn = document.createElement("button");
-        btn.classList.add("option-btn");
+      nextBtn.disabled = true;
+
+      optionsContainer.innerHTML = "";
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
         btn.innerText = opt.text;
-        btn.onclick = () => selectOption(btn, opt);
+        btn.onclick = () => handleOptionSelect(idx, btn, opt);
         optionsContainer.appendChild(btn);
       });
     }
 
-    function resetState() {
-      nextBtn.classList.add("hidden");
-      rationaleBox.classList.add("hidden");
-      rationaleBox.className = "rationale-box hidden";
-      optionsContainer.innerHTML = "";
-    }
+    function handleOptionSelect(index, btn, optionData) {
+      if (questionResolved) return;
 
-    function selectOption(selectedBtn, optionData) {
-      const allBtns = optionsContainer.querySelectorAll(".option-btn");
-      allBtns.forEach(btn => btn.disabled = true);
+      const q = questions[currentQuestionIndex];
+      const optionButtons = optionsContainer.querySelectorAll('.option-btn');
 
       if (optionData.isCorrect) {
-        selectedBtn.classList.add("correct");
-        score++;
-        scoreDisplay.innerText = `अंक: ${score}`;
+        // Correct Answer
+        btn.classList.add('correct');
+        statusMsg.innerText = "सही उत्तर!";
+        statusMsg.className = "status-msg success";
         
-        // Correct Answer -> Clapping Sound
-        soundClapping.currentTime = 0;
-        soundClapping.play();
+        try {
+          soundClapping.currentTime = 0;
+          soundClapping.play();
+        } catch(e) {}
 
-        rationaleBox.classList.add("correct");
-        rationaleBox.innerHTML = `<strong>✅ सही उत्तर!</strong><br>${optionData.rationale}`;
+        showRationale(true, optionData.rationale);
+        resolveQuestion();
       } else {
-        selectedBtn.classList.add("wrong");
+        // Incorrect Answer
+        attemptsLeft--;
+        btn.classList.add('incorrect');
+        btn.disabled = true;
 
-        // Wrong Answer -> Wrong Buzzer Sound
-        soundWrong.currentTime = 0;
-        soundWrong.play();
+        try {
+          soundWrong.currentTime = 0;
+          soundWrong.play();
+        } catch(e) {}
 
-        // Highlight correct answer
-        const currentQ = questions[currentQuestionIndex];
-        const correctIndex = currentQ.options.findIndex(o => o.isCorrect);
-        allBtns[correctIndex].classList.add("correct");
+        if (attemptsLeft > 0) {
+          attemptsLeftText.innerText = `प्रयास शेष: ${attemptsLeft}`;
+          statusMsg.innerText = "गलत उत्तर! 1 प्रयास और शेष है।";
+          statusMsg.className = "status-msg error";
+        } else {
+          // Out of attempts
+          attemptsLeftText.innerText = `प्रयास शेष: 0`;
+          statusMsg.innerText = "गलत उत्तर! सही उत्तर नीचे दिखाया गया है।";
+          statusMsg.className = "status-msg error";
 
-        rationaleBox.classList.add("wrong");
-        rationaleBox.innerHTML = `<strong>❌ गलत उत्तर!</strong><br>${optionData.rationale}`;
+          // Find correct option and highlight it
+          const correctIdx = q.options.findIndex(o => o.isCorrect);
+          optionButtons[correctIdx].classList.add('correct');
+
+          showRationale(false, q.options[correctIdx].rationale);
+          resolveQuestion();
+        }
       }
-
-      rationaleBox.classList.remove("hidden");
-      nextBtn.classList.remove("hidden");
     }
 
-    function nextQuestion() {
+    function showRationale(isCorrect, rationaleText) {
+      rationaleBox.style.display = "block";
+      if (isCorrect) {
+        rationaleBox.className = "rationale-box correct";
+        rationaleBox.innerHTML = `<strong>✅ सही उत्तर!</strong><br>${rationaleText}`;
+      } else {
+        rationaleBox.className = "rationale-box wrong";
+        rationaleBox.innerHTML = `<strong>❌ स्पष्टीकरण:</strong><br>${rationaleText}`;
+      }
+    }
+
+    function resolveQuestion() {
+      questionResolved = true;
+      nextBtn.disabled = false;
+      
+      const optionButtons = optionsContainer.querySelectorAll('.option-btn');
+      optionButtons.forEach(btn => btn.disabled = true);
+
+      if (currentQuestionIndex === questions.length - 1) {
+        nextBtn.innerText = "समाप्त करें";
+      } else {
+        nextBtn.innerText = "अगला प्रश्न";
+      }
+    }
+
+    function handleNext() {
       currentQuestionIndex++;
       if (currentQuestionIndex < questions.length) {
         loadQuestion();
       } else {
-        showResult();
+        showCompletion();
       }
     }
 
-    function showResult() {
-      quizScreen.classList.add("hidden");
-      resultScreen.classList.remove("hidden");
-
-      document.getElementById("final-score").innerText = `आपका कुल अंक: ${score} / ${questions.length}`;
-
-      const msg = document.getElementById("result-message");
-      if (score === 10) {
-        msg.innerText = "अति उत्तम! आपने सभी प्रश्नों के सही उत्तर दिए हैं।";
-      } else if (score >= 7) {
-        msg.innerText = "बहुत अच्छा प्रयास! आपकी समझ सराहनीय है।";
-      } else {
-        msg.innerText = "अच्छा प्रयास! कहानी को एक बार फिर से पढ़ें और पुनः प्रयास करें।";
-      }
+    function showCompletion() {
+      screenQuiz.classList.remove('active');
+      screenCompletion.classList.add('active');
     }
 
     function restartQuiz() {
-      resultScreen.classList.add("hidden");
-      startScreen.classList.remove("hidden");
+      screenCompletion.classList.remove('active');
+      screenInstructions.classList.add('active');
     }
   </script>
 </body>
