@@ -7,7 +7,7 @@
     <style>
         :root {
             /* Pastel Color Palette */
-            --bg-main: #FAF5FF;         /* Very soft pastel lavender/cream */
+            --bg-main: #FAF5FF;         /* Soft pastel lavender/cream */
             --card-bg: #FFFFFF;
             --panel-bg: #F3E8FF;       /* Soft pastel purple container */
             --primary: #A855F7;        /* Soft pastel violet */
@@ -73,12 +73,16 @@
             display: flex;
         }
 
-        /* SCREEN 1: SPLASH SCREEN (Logo ONLY) */
+        /* SCREEN 1: SPLASH SCREEN - STRICTLY LOGO ONLY */
         #splash-screen {
             background: #FFFFFF;
             justify-content: center;
             align-items: center;
             display: flex;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            height: 100%;
         }
 
         .splash-logo-box {
@@ -86,8 +90,9 @@
             justify-content: center;
             align-items: center;
             width: 100%;
-            max-width: 300px;
-            height: 200px;
+            max-width: 320px;
+            height: 220px;
+            padding: 20px;
         }
 
         .splash-logo {
@@ -354,12 +359,12 @@
 
     <div class="quiz-container">
         
-        <!-- Screen 1: Splash Screen (Innovine Logo ONLY) -->
+        <!-- Screen 1: Splash Screen (Innovine Logo ONLY - Zero Text) -->
         <div id="splash-screen" class="view-panel active">
             <div class="splash-logo-box">
                 <img 
                     src="assets/innovine-logo 1.png" 
-                    alt="Innovine Logo" 
+                    alt="Logo" 
                     class="splash-logo"
                     onerror="this.onerror=null; this.src='innovine-logo 1.png';"
                 />
@@ -547,11 +552,11 @@
         let attemptsLeft = 2;
         let isLocked = false;
 
-        // Auto-switch Splash Screen (Logo ONLY) after EXACTLY 5 Seconds
+        // Auto-switch Splash Screen (Logo ONLY) after 3 Seconds
         window.onload = () => {
             setTimeout(() => {
                 showPanel('instruction-screen');
-            }, 5000);
+            }, 3000);
         };
 
         function showPanel(panelId) {
