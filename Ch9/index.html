@@ -41,17 +41,61 @@
       padding: 16px;
     }
 
-    .quiz-container {
+    .screen {
+      display: none;
+      width: 100%;
+      max-width: 600px;
       background: var(--card-bg);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       border: 1px solid var(--border);
-      width: 100%;
-      max-width: 600px;
       padding: 32px 24px;
       position: relative;
     }
 
+    .screen.active {
+      display: block;
+    }
+
+    /* Logo Screen Styling */
+    #logo-screen {
+      display: none;
+      min-height: 300px;
+      text-align: center;
+    }
+
+    #logo-screen.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .app-logo {
+      max-width: 280px;
+      max-height: 160px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* Meta / Overview Screen */
+    .meta-card {
+      background: #f1f5f9;
+      padding: 16px;
+      border-radius: 8px;
+      margin: 20px 0;
+      text-align: left;
+    }
+
+    .meta-card p {
+      margin: 8px 0;
+      font-size: 15px;
+      color: var(--text);
+    }
+
+    /* Quiz Header */
     .quiz-header {
       display: flex;
       justify-content: space-between;
@@ -70,6 +114,7 @@
       color: var(--text);
       line-height: 1.5;
       margin-bottom: 24px;
+      text-align: left;
     }
 
     .options {
@@ -126,6 +171,7 @@
       color: var(--warning-text);
       line-height: 1.4;
       display: none;
+      text-align: left;
     }
 
     .footer-actions {
@@ -181,7 +227,26 @@
 </head>
 <body>
 
-  <div class="quiz-container" id="quizContainer">
+  <!-- 1. Logo Screen -->
+  <div id="logo-screen" class="screen active">
+    <img src="assets/logo.png" alt="Innovine Logo" class="app-logo">
+  </div>
+
+  <!-- 2. Intro Screen -->
+  <div id="intro-screen" class="screen">
+    <h2 style="text-align: center; color: var(--primary);">क्विज़ विवरण (Overview)</h2>
+    <div class="meta-card">
+      <p><strong>विषय (Subject):</strong> हिंदी (Hindi)</p>
+      <p><strong>शीर्षक (Topic):</strong> डॉ. ए.पी.जे. अब्दुल कलाम</p>
+      <p><strong>कुल प्रश्न (Total Questions):</strong> <span id="intro-q-count">0</span></p>
+    </div>
+    <div style="text-align: center;">
+      <button class="btn" onclick="startQuiz()">क्विज़ शुरू करें</button>
+    </div>
+  </div>
+
+  <!-- 3. Game Area Screen -->
+  <div id="game-screen" class="screen">
     <div class="quiz-header">
       <span id="progress">प्रश्न 1 / 10</span>
       <span id="scoreTracker">अंक: 0</span>
@@ -196,6 +261,15 @@
     <div class="footer-actions">
       <button class="btn btn-secondary" id="hintBtn" onclick="toggleHint()">संकेत (Hint)</button>
       <button class="btn" id="nextBtn" onclick="nextQuestion()" style="display: none;">अगला प्रश्न</button>
+    </div>
+  </div>
+
+  <!-- 4. End Screen -->
+  <div id="end-screen" class="screen">
+    <div class="score-screen">
+      <h2>क्विज़ समाप्त!</h2>
+      <p>आपका कुल स्कोर: <strong id="finalScore">0 / 10</strong></p>
+      <button class="btn" onclick="restartQuiz()">पुनः प्रयास करें</button>
     </div>
   </div>
 
@@ -323,7 +397,26 @@
     const hintBox = document.getElementById('hintBox');
     const hintBtn = document.getElementById('hintBtn');
     const nextBtn = document.getElementById('nextBtn');
-    const quizContainer = document.getElementById('quizContainer');
+
+    // Auto switch from Logo Screen to Intro Screen after 5 seconds
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('intro-q-count').textContent = newQuizQuestions.length;
+      setTimeout(() => {
+        switchScreen('intro-screen');
+      }, 5000);
+    });
+
+    function switchScreen(id) {
+      document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function startQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      switchScreen('game-screen');
+      loadQuestion();
+    }
 
     function loadQuestion() {
       const currentQ = newQuizQuestions[currentQuestionIndex];
@@ -384,46 +477,14 @@
       }
     }
 
-    function resetQuiz() {
-      currentQuestionIndex = 0;
-      score = 0;
-      quizContainer.innerHTML = `
-        <div class="quiz-header">
-          <span id="progress">प्रश्न 1 / 10</span>
-          <span id="scoreTracker">अंक: 0</span>
-        </div>
-        <div class="question" id="questionText">प्रश्न यहाँ दिखाई देगा</div>
-        <div class="options" id="optionsContainer" role="radiogroup" aria-label="उत्तर विकल्प"></div>
-        <div class="hint-box" id="hintBox" aria-live="polite"></div>
-        <div class="footer-actions">
-          <button class="btn btn-secondary" id="hintBtn" onclick="toggleHint()">संकेत (Hint)</button>
-          <button class="btn" id="nextBtn" onclick="nextQuestion()" style="display: none;">अगला प्रश्न</button>
-        </div>
-      `;
-      // Re-bind dynamic elements
-      window.questionText = document.getElementById('questionText');
-      window.optionsContainer = document.getElementById('optionsContainer');
-      window.progress = document.getElementById('progress');
-      window.scoreTracker = document.getElementById('scoreTracker');
-      window.hintBox = document.getElementById('hintBox');
-      window.hintBtn = document.getElementById('hintBtn');
-      window.nextBtn = document.getElementById('nextBtn');
-
-      loadQuestion();
-    }
-
     function showResults() {
-      quizContainer.innerHTML = `
-        <div class="score-screen">
-          <h2>क्विज़ समाप्त!</h2>
-          <p>आपका कुल स्कोर: <strong>${score} / ${newQuizQuestions.length}</strong></p>
-          <button class="btn" onclick="resetQuiz()">पुनः प्रयास करें</button>
-        </div>
-      `;
+      document.getElementById('finalScore').textContent = `${score} / ${newQuizQuestions.length}`;
+      switchScreen('end-screen');
     }
 
-    // Start Quiz
-    loadQuestion();
+    function restartQuiz() {
+      switchScreen('intro-screen');
+    }
   </script>
 </body>
 </html>
