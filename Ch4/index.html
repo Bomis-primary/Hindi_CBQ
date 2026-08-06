@@ -73,7 +73,7 @@
             display: flex;
         }
 
-        /* SCREEN 1: SPLASH SCREEN (INNOVINE LOGO) */
+        /* SCREEN 1: SPLASH SCREEN (INNOVINE LOGO ONLY HERE) */
         #splash-screen {
             background: #FFFFFF;
             justify-content: center;
@@ -108,7 +108,7 @@
             50% { transform: scale(1.04); opacity: 1; }
         }
 
-        /* SCREEN 2: INSTRUCTIONS */
+        /* SCREEN 2: INSTRUCTIONS (NO LOGO HERE) */
         #instruction-screen {
             justify-content: center;
             align-items: center;
@@ -360,19 +360,19 @@
 
     <div class="quiz-container">
         
-        <!-- Screen 1: Splash Screen (Innovine Logo) -->
+        <!-- Screen 1: Splash Screen (Innovine Logo ONLY here) -->
         <div id="splash-screen" class="view-panel active" onclick="goToInstructions()">
             <div class="splash-logo-box">
                 <img 
                     src="assets/innovine-logo 1.png" 
-                    alt="Logo" 
+                    alt="Innovine Logo" 
                     class="splash-logo"
                     onerror="this.onerror=null; this.src='innovine-logo 1.png';"
                 />
             </div>
         </div>
 
-        <!-- Screen 2: Instructions -->
+        <!-- Screen 2: Instructions (No Logo Here) -->
         <div id="instruction-screen" class="view-panel">
             <div class="screen-title">निर्देश</div>
             
@@ -565,13 +565,12 @@
             document.getElementById(panelId).classList.add('active');
         }
 
-        // Screen 1 Transition Handler: Move to Instruction Screen
+        // Auto transition or manual click to Screen 2
         function goToInstructions() {
             if (splashTimer) clearTimeout(splashTimer);
             showPanel('instruction-screen');
         }
 
-        // Automatic switch from Splash Screen (Screen 1) to Instructions (Screen 2)
         splashTimer = setTimeout(() => {
             goToInstructions();
         }, 2500);
