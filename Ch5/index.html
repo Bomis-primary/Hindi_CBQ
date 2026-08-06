@@ -6,16 +6,21 @@
     <title>इंटरैक्टिव अभ्यास</title>
     <style>
         :root {
-            --bg-main: #ffffff;
-            --panel-bg: #f8fafc;
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --success: #16a34a;
-            --error: #dc2626;
-            --warning: #d97706;
-            --border: #e2e8f0;
-            --text-dark: #0f172a;
-            --text-muted: #64748b;
+            /* Pastel Color Palette */
+            --bg-main: #fcfbf7;
+            --panel-bg: #ffffff;
+            --primary: #7c9ebc;
+            --primary-hover: #6082a0;
+            --primary-light: #e8f1f5;
+            --success: #6bb283;
+            --success-bg: #eaf6ed;
+            --error: #e07a5f;
+            --error-bg: #fdf0ed;
+            --warning: #d9a05b;
+            --warning-bg: #fdf8ed;
+            --border: #ece8df;
+            --text-dark: #3d405b;
+            --text-muted: #8d99ae;
         }
 
         * {
@@ -28,7 +33,7 @@
         }
 
         body {
-            background-color: #f1f5f9;
+            background-color: #f4f1de;
             color: var(--text-dark);
             display: flex;
             justify-content: center;
@@ -43,9 +48,9 @@
             max-width: 650px;
             min-height: 550px;
             background: var(--bg-main);
-            border-radius: 20px;
+            border-radius: 24px;
             border: 1px solid var(--border);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 12px 30px rgba(61, 64, 91, 0.06);
             position: relative;
             overflow: hidden;
             display: flex;
@@ -58,7 +63,7 @@
             height: 100%;
             min-height: 550px;
             flex-direction: column;
-            padding: 24px;
+            padding: 28px;
             flex-grow: 1;
             position: relative;
             background: var(--bg-main);
@@ -68,7 +73,7 @@
             display: flex;
         }
 
-        /* SCREEN 1: SPLASH SCREEN (Only Logo for 5 Seconds or Click) */
+        /* SCREEN 1: SPLASH SCREEN */
         #splash-screen {
             position: absolute;
             top: 0;
@@ -76,7 +81,7 @@
             width: 100%;
             height: 100%;
             z-index: 100;
-            background: #ffffff;
+            background: var(--bg-main);
             justify-content: center;
             align-items: center;
             display: flex;
@@ -96,11 +101,11 @@
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            animation: softPulse 2s infinite ease-in-out;
+            animation: softPulse 2.5s infinite ease-in-out;
         }
 
         @keyframes softPulse {
-            0%, 100% { transform: scale(0.97); opacity: 0.95; }
+            0%, 100% { transform: scale(0.97); opacity: 0.9; }
             50% { transform: scale(1.03); opacity: 1; }
         }
 
@@ -114,25 +119,26 @@
         .screen-title {
             font-size: 26px;
             font-weight: 800;
-            color: var(--primary);
+            color: var(--primary-hover);
             margin-bottom: 20px;
         }
 
         .instruction-card {
             background: var(--panel-bg);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 20px;
+            border-radius: 20px;
+            padding: 22px;
             width: 100%;
             text-align: left;
             margin-bottom: 28px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
         }
 
         .instruction-item {
             font-size: 15px;
             font-weight: 600;
-            margin-bottom: 12px;
-            color: #334155;
+            margin-bottom: 14px;
+            color: var(--text-dark);
             display: flex;
             align-items: center;
             gap: 12px;
@@ -147,12 +153,12 @@
             background: var(--primary);
             color: #ffffff;
             border: none;
-            padding: 14px 40px;
+            padding: 14px 42px;
             font-size: 18px;
             font-weight: 700;
             border-radius: 30px;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+            box-shadow: 0 4px 14px rgba(124, 158, 188, 0.3);
             transition: all 0.2s ease;
         }
 
@@ -171,10 +177,10 @@
             justify-content: space-between;
             align-items: center;
             background: var(--panel-bg);
-            padding: 12px 18px;
-            border-radius: 14px;
+            padding: 12px 20px;
+            border-radius: 16px;
             border: 1px solid var(--border);
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
 
         .hud-box {
@@ -182,11 +188,12 @@
             font-weight: 700;
             color: var(--text-muted);
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .hud-box span {
             display: block;
-            font-size: 16px;
+            font-size: 17px;
             color: var(--text-dark);
             font-weight: 800;
         }
@@ -194,21 +201,21 @@
         .question-card {
             background: var(--panel-bg);
             border: 1px solid var(--border);
-            padding: 20px;
-            border-radius: 16px;
+            padding: 22px;
+            border-radius: 20px;
             margin-bottom: 18px;
             position: relative;
         }
 
         .tag-competency {
             display: inline-block;
-            background: #e0e7ff;
-            color: #3730a3;
+            background: var(--primary-light);
+            color: var(--primary-hover);
             font-size: 11px;
-            padding: 3px 10px;
-            border-radius: 8px;
+            padding: 4px 12px;
+            border-radius: 12px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         .question-text {
@@ -221,18 +228,18 @@
         .options-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 12px;
         }
 
         .btn-option {
-            background: #ffffff;
+            background: var(--panel-bg);
             border: 2px solid var(--border);
-            border-radius: 14px;
-            padding: 14px 16px;
+            border-radius: 16px;
+            padding: 14px 18px;
             font-size: 14px;
             font-weight: 600;
-            color: #334155;
+            color: var(--text-dark);
             cursor: pointer;
             transition: all 0.15s ease;
             display: flex;
@@ -243,13 +250,13 @@
 
         .btn-option:hover:not(:disabled) {
             border-color: var(--primary);
-            background: #f8fafc;
+            background: var(--primary-light);
         }
 
         .badge-index {
-            width: 26px;
-            height: 26px;
-            background: #f1f5f9;
+            width: 28px;
+            height: 28px;
+            background: var(--bg-main);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -260,9 +267,9 @@
             font-weight: 800;
         }
 
-        /* Feedback States */
+        /* Pastel Feedback States */
         .btn-option.hit-success {
-            background: #f0fdf4 !important;
+            background: var(--success-bg) !important;
             border-color: var(--success) !important;
             color: var(--success) !important;
         }
@@ -273,10 +280,10 @@
         }
 
         .btn-option.hit-failed {
-            background: #fef2f2 !important;
+            background: var(--error-bg) !important;
             border-color: var(--error) !important;
             color: var(--error) !important;
-            opacity: 0.7;
+            opacity: 0.8;
         }
 
         .btn-option.hit-failed .badge-index {
@@ -285,11 +292,11 @@
         }
 
         .toast-msg {
-            background: #fffbeeb0;
-            border: 1px solid #fde68a;
+            background: var(--warning-bg);
+            border: 1px solid var(--warning);
             color: var(--warning);
-            padding: 10px;
-            border-radius: 10px;
+            padding: 12px;
+            border-radius: 14px;
             text-align: center;
             font-size: 13px;
             font-weight: 700;
@@ -297,12 +304,12 @@
             display: none;
         }
 
-        /* SCREEN 4: CREATIVE CONGRATULATIONS PAGE */
+        /* SCREEN 4: END PAGE */
         #end-screen {
             justify-content: center;
             align-items: center;
             text-align: center;
-            background: #ffffff;
+            background: var(--bg-main);
         }
 
         .celebration-badge {
@@ -326,7 +333,7 @@
         .score-banner {
             font-size: 42px;
             font-weight: 900;
-            color: var(--primary);
+            color: var(--primary-hover);
             margin: 15px 0;
         }
 
@@ -356,10 +363,10 @@
         <div id="splash-screen" class="view-panel active" onclick="goToInstructions()">
             <div class="splash-logo-box">
                 <img 
-                    src="assets/innovine logo: assets/innovine-logo 1.png" 
+                    src="assets/innovine-logo 1.png" 
                     alt="Innovine Logo" 
                     class="splash-logo"
-                    onerror="this.onerror=null; this.src='image_9d321f.png';"
+                    onerror="this.onerror=null; this.src='assets/innovine-logo 1.png';"
                 />
             </div>
         </div>
@@ -412,6 +419,10 @@
         </div>
 
     </div>
+
+    <!-- Audio Elements -->
+    <audio id="snd-correct" src="correct 1.mp3" preload="auto"></audio>
+    <audio id="snd-wrong" src="wrong 1.mp3" preload="auto"></audio>
 
     <script>
         const quizDataset = [
@@ -533,6 +544,35 @@
         let isLocked = false;
         let splashTimer = null;
 
+        // Audio helper logic
+        function playSound(type) {
+            const id = type === 'correct' ? 'snd-correct' : 'snd-wrong';
+            const audio = document.getElementById(id);
+            if (audio) {
+                audio.currentTime = 0;
+                audio.play().catch(() => {
+                    // Fallback synthesizer tone if audio file path is missing or blocked
+                    playSynthTone(type === 'correct' ? 587.33 : 220);
+                });
+            }
+        }
+
+        function playSynthTone(freq) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, ctx.currentTime);
+                gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.3);
+            } catch (e) {}
+        }
+
         function showPanel(panelId) {
             document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
             document.getElementById(panelId).classList.add('active');
@@ -543,7 +583,6 @@
             showPanel('instruction-screen');
         }
 
-        // Auto-switch Splash Screen after 5 seconds
         window.onload = () => {
             splashTimer = setTimeout(() => {
                 goToInstructions();
@@ -591,11 +630,13 @@
                 buttonElem.classList.add('hit-success');
                 score += (attemptsLeft === 2) ? 10 : 5;
                 document.getElementById('hud-score').innerText = score;
-                setTimeout(nextQuestion, 1000);
+                playSound('correct');
+                setTimeout(nextQuestion, 1200);
             } else {
                 attemptsLeft--;
                 buttonElem.classList.add('hit-failed');
                 buttonElem.disabled = true;
+                playSound('wrong');
 
                 if (attemptsLeft === 1) {
                     toast.innerText = "⚠️ गलत उत्तर! आपके पास 1 अंतिम प्रयास बचा है।";
@@ -609,7 +650,7 @@
                     allButtons[currentQ.correctIdx].classList.add('hit-success');
                     allButtons.forEach(b => b.disabled = true);
 
-                    setTimeout(nextQuestion, 1800);
+                    setTimeout(nextQuestion, 2000);
                 }
             }
         }
@@ -655,7 +696,7 @@
             canvas.height = canvas.parentElement.clientHeight;
 
             const pieces = [];
-            const colors = ['#2563eb', '#16a34a', '#d97706', '#ec4899', '#8b5cf6'];
+            const colors = ['#7c9ebc', '#6bb283', '#d9a05b', '#e07a5f', '#b1a7a6'];
 
             for (let i = 0; i < 60; i++) {
                 pieces.push({
