@@ -27,7 +27,7 @@
             user-select: none;
         }
 
-        /* Faint Animated Gradient Background */
+        /* Direct & Soft Background Gradient */
         body {
             background: linear-gradient(-45deg, #e2e8f0, #eff6ff, #f1f5f9, #e0e7ff);
             background-size: 400% 400%;
@@ -46,7 +46,7 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Responsive Container */
+        /* Main Container */
         .quiz-container {
             width: 100%;
             max-width: 650px;
@@ -75,7 +75,7 @@
             display: flex;
         }
 
-        /* SCREEN 1: SPLASH SCREEN (Visible strictly for 5 seconds) */
+        /* SCREEN 1: SPLASH SCREEN */
         #splash-screen {
             background: #ffffff;
             justify-content: center;
@@ -86,14 +86,14 @@
 
         .splash-logo-box {
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             width: 100%;
-            max-width: 300px;
-            height: 200px;
+            max-width: 320px;
+            height: 220px;
         }
 
+        /* Displays the Exact Logo Image from Assets */
         .splash-logo {
             max-width: 100%;
             max-height: 100%;
@@ -101,30 +101,12 @@
             animation: softPulse 2s infinite ease-in-out;
         }
 
-        .logo-fallback-text {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .logo-icon {
-            font-size: 48px;
-        }
-
-        .logo-brand {
-            font-size: 24px;
-            font-weight: 900;
-            letter-spacing: 2px;
-            color: var(--primary);
-        }
-
         @keyframes softPulse {
-            0%, 100% { transform: scale(0.96); opacity: 0.9; }
-            50% { transform: scale(1.04); opacity: 1; }
+            0%, 100% { transform: scale(0.96); opacity: 0.92; }
+            50% { transform: scale(1.03); opacity: 1; }
         }
 
-        /* SCREEN 2: INSTRUCTIONS WITH CHAPTER TITLE */
+        /* SCREEN 2: INSTRUCTION SCREEN */
         #instruction-screen {
             justify-content: center;
             align-items: center;
@@ -197,7 +179,7 @@
             transform: translateY(1px);
         }
 
-        /* SCREEN 3: GAMEPLAY CONSOLE */
+        /* SCREEN 3: GAMEPLAY SCREEN */
         .hud-header {
             display: flex;
             justify-content: space-between;
@@ -292,7 +274,6 @@
             font-weight: 800;
         }
 
-        /* Feedback States */
         .btn-option.hit-success {
             background: #f0fdf4 !important;
             border-color: var(--success) !important;
@@ -329,7 +310,7 @@
             display: none;
         }
 
-        /* SCREEN 4: CONGRATULATIONS PAGE */
+        /* SCREEN 4: END SCREEN */
         #end-screen {
             justify-content: center;
             align-items: center;
@@ -386,16 +367,7 @@
         
         <div id="splash-screen" class="view-panel active">
             <div class="splash-logo-box">
-                <img 
-                    src="assets/innovine-logo 1.png" 
-                    alt="Innovine Logo" 
-                    class="splash-logo"
-                    onerror="this.onerror=null; this.src='assets/innovine-logo%201.png'; this.onerror=function(){ this.style.display='none'; document.getElementById('logo-fallback').style.display='flex'; };"
-                />
-                <div id="logo-fallback" class="logo-fallback-text" style="display:none;">
-                    <span class="logo-icon">💡</span>
-                    <span class="logo-brand">INNOVINE</span>
-                </div>
+                <img src="assets/innovine-logo%201.png" alt="Innovine Logo" class="splash-logo" />
             </div>
         </div>
 
@@ -448,14 +420,14 @@
     </div>
 
     <script>
-        // Audio Effects mapped to assets folder files
-        const soundCorrect = new Audio('assets/correct 1.mp3');
-        const soundWrong = new Audio('assets/wrong 1.mp3');
-        const soundClapping = new Audio('assets/clapping 1.mp3');
+        // Audio files from assets folder
+        const soundCorrect = new Audio('assets/correct%201.mp3');
+        const soundWrong = new Audio('assets/wrong%201.mp3');
+        const soundClapping = new Audio('assets/clapping%201.mp3');
 
         function playSound(audioObj) {
             audioObj.currentTime = 0;
-            audioObj.play().catch(() => {}); // Safely handle browser audio play restrictions
+            audioObj.play().catch(() => {});
         }
 
         const quizDataset = [
@@ -576,7 +548,7 @@
         let attemptsLeft = 2;
         let isLocked = false;
 
-        // Display Splash Screen for EXACTLY 5 Seconds
+        // SplashScreen visible for 5 Seconds
         window.onload = () => {
             setTimeout(() => {
                 showPanel('instruction-screen');
@@ -625,7 +597,6 @@
             const toast = document.getElementById('lbl-toast');
 
             if (selectedIndex === currentQ.correctIdx) {
-                // Correct Answer
                 isLocked = true;
                 buttonElem.classList.add('hit-success');
                 playSound(soundCorrect);
@@ -634,7 +605,6 @@
                 document.getElementById('hud-score').innerText = score;
                 setTimeout(nextQuestion, 1200);
             } else {
-                // Wrong Answer
                 attemptsLeft--;
                 buttonElem.classList.add('hit-failed');
                 buttonElem.disabled = true;
