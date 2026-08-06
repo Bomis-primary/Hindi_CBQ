@@ -27,7 +27,7 @@
             user-select: none;
         }
 
-        /* Faint Moving Gradient Background */
+        /* Faint Animated Gradient Background */
         body {
             background: linear-gradient(-45deg, #e2e8f0, #eff6ff, #f1f5f9, #e0e7ff);
             background-size: 400% 400%;
@@ -46,7 +46,7 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Fully Responsive Container */
+        /* Responsive Container */
         .quiz-container {
             width: 100%;
             max-width: 650px;
@@ -75,7 +75,7 @@
             display: flex;
         }
 
-        /* SCREEN 1: SPLASH SCREEN (Visible for 5 Seconds) */
+        /* SCREEN 1: SPLASH SCREEN (Visible strictly for 5 seconds) */
         #splash-screen {
             background: #ffffff;
             justify-content: center;
@@ -90,8 +90,8 @@
             justify-content: center;
             align-items: center;
             width: 100%;
-            max-width: 280px;
-            height: 180px;
+            max-width: 300px;
+            height: 200px;
         }
 
         .splash-logo {
@@ -101,7 +101,6 @@
             animation: softPulse 2s infinite ease-in-out;
         }
 
-        /* Fallback Logo Style if Image path fails */
         .logo-fallback-text {
             display: flex;
             flex-direction: column;
@@ -125,7 +124,7 @@
             50% { transform: scale(1.04); opacity: 1; }
         }
 
-        /* SCREEN 2: INSTRUCTIONS WITH CHAPTER NAME */
+        /* SCREEN 2: INSTRUCTIONS WITH CHAPTER TITLE */
         #instruction-screen {
             justify-content: center;
             align-items: center;
@@ -388,10 +387,10 @@
         <div id="splash-screen" class="view-panel active">
             <div class="splash-logo-box">
                 <img 
-                    src="assets/image_9d321f.png" 
+                    src="assets/innovine-logo 1.png" 
                     alt="Innovine Logo" 
                     class="splash-logo"
-                    onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';"
+                    onerror="this.onerror=null; this.src='assets/innovine-logo%201.png'; this.onerror=function(){ this.style.display='none'; document.getElementById('logo-fallback').style.display='flex'; };"
                 />
                 <div id="logo-fallback" class="logo-fallback-text" style="display:none;">
                     <span class="logo-icon">💡</span>
@@ -401,7 +400,7 @@
         </div>
 
         <div id="instruction-screen" class="view-panel">
-            <div class="chapter-tag">📖 अध्याय: देश का मान बढ़ाओ</div>
+            <div class="chapter-tag">📖 अध्याय 1: भाषा और सद्व्यवहार</div>
             <div class="screen-title">अभ्यास के निर्देश</div>
             
             <div class="instruction-card">
@@ -449,6 +448,16 @@
     </div>
 
     <script>
+        // Audio Effects mapped to assets folder files
+        const soundCorrect = new Audio('assets/correct 1.mp3');
+        const soundWrong = new Audio('assets/wrong 1.mp3');
+        const soundClapping = new Audio('assets/clapping 1.mp3');
+
+        function playSound(audioObj) {
+            audioObj.currentTime = 0;
+            audioObj.play().catch(() => {}); // Safely handle browser audio play restrictions
+        }
+
         const quizDataset = [
             {
                 q: "यदि आपके मित्र की कोई आदत अच्छी नहीं है, तो आपको क्या करना चाहिए?",
@@ -567,7 +576,7 @@
         let attemptsLeft = 2;
         let isLocked = false;
 
-        // Auto-switch Splash Screen after EXACTLY 5 Seconds
+        // Display Splash Screen for EXACTLY 5 Seconds
         window.onload = () => {
             setTimeout(() => {
                 showPanel('instruction-screen');
@@ -619,14 +628,17 @@
                 // Correct Answer
                 isLocked = true;
                 buttonElem.classList.add('hit-success');
+                playSound(soundCorrect);
+                
                 score += (attemptsLeft === 2) ? 10 : 5;
                 document.getElementById('hud-score').innerText = score;
-                setTimeout(nextQuestion, 1000);
+                setTimeout(nextQuestion, 1200);
             } else {
                 // Wrong Answer
                 attemptsLeft--;
                 buttonElem.classList.add('hit-failed');
                 buttonElem.disabled = true;
+                playSound(soundWrong);
 
                 if (attemptsLeft === 1) {
                     toast.innerText = "⚠️ गलत उत्तर! आपके पास 1 अंतिम प्रयास बचा है।";
@@ -640,7 +652,7 @@
                     allButtons[currentQ.correctIdx].classList.add('hit-success');
                     allButtons.forEach(b => b.disabled = true);
 
-                    setTimeout(nextQuestion, 1800);
+                    setTimeout(nextQuestion, 2000);
                 }
             }
         }
@@ -657,7 +669,8 @@
         function renderEndScreen() {
             showPanel('end-screen');
             document.getElementById('lbl-final-score').innerText = `${score} PTS`;
-            
+            playSound(soundClapping);
+
             const title = document.getElementById('end-title');
             const desc = document.getElementById('lbl-final-desc');
             const icon = document.getElementById('end-icon');
