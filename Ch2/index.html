@@ -72,6 +72,9 @@
             justify-content: center;
             align-items: center;
             display: flex;
+            cursor: pointer;
+            flex-direction: column;
+            gap: 15px;
         }
 
         .splash-logo-box {
@@ -90,9 +93,42 @@
             animation: softPulse 2s infinite ease-in-out;
         }
 
+        .logo-fallback-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px;
+            background: #f0f7ff;
+            border-radius: 16px;
+            border: 2px solid #bfdbfe;
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 24px;
+            letter-spacing: 1px;
+        }
+
+        .logo-fallback-badge svg {
+            width: 60px;
+            height: 60px;
+            fill: var(--primary);
+        }
+
+        .splash-hint {
+            font-size: 12px;
+            color: var(--text-muted);
+            animation: fadeInOut 2s infinite;
+        }
+
         @keyframes softPulse {
             0%, 100% { transform: scale(0.97); opacity: 0.95; }
             50% { transform: scale(1.03); opacity: 1; }
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
         }
 
         /* SCREEN 2: INSTRUCTIONS (No Logo) */
@@ -156,7 +192,7 @@
             transform: translateY(1px);
         }
 
-        /* SCREEN 3: GAMEPLAY CONSOLE */
+        /* SCREEN 3: GAMEPLAY CONSOLE (No Logo) */
         .hud-header {
             display: flex;
             justify-content: space-between;
@@ -288,7 +324,7 @@
             display: none;
         }
 
-        /* SCREEN 4: CREATIVE CONGRATULATIONS PAGE */
+        /* SCREEN 4: CREATIVE CONGRATULATIONS PAGE (No Logo) */
         #end-screen {
             justify-content: center;
             align-items: center;
@@ -343,15 +379,16 @@
 
     <div class="quiz-container">
         
-        <div id="splash-screen" class="view-panel active">
-            <div class="splash-logo-box">
+        <div id="splash-screen" class="view-panel active" onclick="skipSplash()">
+            <div class="splash-logo-box" id="logo-container">
                 <img 
                     src="assets/image_9d321f.png" 
                     alt="Innovine Logo" 
                     class="splash-logo"
-                    onerror="this.onerror=null; this.src='image_9d321f.png';"
+                    onerror="handleLogoError(this)"
                 />
             </div>
+            <div class="splash-hint">आगे बढ़ने के लिए कहीं भी क्लिक करें ➔</div>
         </div>
 
         <div id="instruction-screen" class="view-panel">
@@ -385,7 +422,7 @@
             </div>
 
             <div class="options-list" id="container-options">
-                </div>
+            </div>
 
             <div class="toast-msg" id="lbl-toast"></div>
         </div>
@@ -402,6 +439,134 @@
     </div>
 
     <script>
+        // WEB AUDIO API SOUND EFFECTS (Clapping & Wrong Buzzer)
+        let audioCtx = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        // Clapping & Cheer Sound for Correct Answer
+        function playClappingSound() {
+            try {
+                const ctx = getAudioContext();
+
+                // 1. Victory Chime Tone
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                notes.forEach((freq, idx) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.value = freq;
+                    
+                    const startTime = ctx.currentTime + idx * 0.07;
+                    gain.gain.setValueAtTime(0, startTime);
+                    gain.gain.linearRampToValueAtTime(0.2, startTime + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.35);
+                    
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    
+                    osc.start(startTime);
+                    osc.stop(startTime + 0.35);
+                });
+
+                // 2. Synthesized Clapping Noise Burst
+                const duration = 1.2;
+                const bufferSize = ctx.sampleRate * duration;
+                const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = (Math.random() * 2 - 1);
+                }
+
+                const noise = ctx.createBufferSource();
+                noise.buffer = buffer;
+
+                const filter = ctx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.value = 1100;
+                filter.Q.value = 1.2;
+
+                const gain = ctx.createGain();
+                const startTime = ctx.currentTime + 0.1;
+
+                // Create rhythmic clap pulses
+                for (let t = 0; t < 1.0; t += 0.075) {
+                    gain.gain.setValueAtTime(0.25, startTime + t);
+                    gain.gain.exponentialRampToValueAtTime(0.01, startTime + t + 0.05);
+                }
+
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(ctx.destination);
+
+                noise.start(startTime);
+                noise.stop(startTime + duration);
+
+            } catch (e) {
+                console.log('Audio error:', e);
+            }
+        }
+
+        // Wrong Buzzer Sound for Incorrect Answer
+        function playWrongBuzzer() {
+            try {
+                const ctx = getAudioContext();
+
+                // Double Low Sawtooth Buzz
+                [0, 0.18].forEach(delay => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, ctx.currentTime + delay);
+                    osc.frequency.linearRampToValueAtTime(100, ctx.currentTime + delay + 0.15);
+
+                    gain.gain.setValueAtTime(0.25, ctx.currentTime + delay);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + delay + 0.15);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.start(ctx.currentTime + delay);
+                    osc.stop(ctx.currentTime + delay + 0.15);
+                });
+            } catch (e) {
+                console.log('Audio error:', e);
+            }
+        }
+
+        // Logo Fallback Handler
+        function handleLogoError(imgElem) {
+            if (imgElem.dataset.failed) return;
+            imgElem.dataset.failed = "true";
+            
+            // Try secondary image path
+            imgElem.src = "image_9d321f.png";
+
+            // If secondary image path fails, display SVG Logo
+            imgElem.onerror = function() {
+                const container = document.getElementById('logo-container');
+                container.innerHTML = `
+                    <div class="logo-fallback-badge">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                        </svg>
+                        <span>INNOVINE</span>
+                    </div>
+                `;
+            };
+        }
+
+        // Quiz Dataset
         const quizDataset = [
             {
                 q: "यदि कोई व्यक्ति आपसे मदद माँगता है, तो कहानी के अनुसार आपको क्या करना चाहिए?",
@@ -519,13 +684,19 @@
         let score = 0;
         let attemptsLeft = 2;
         let isLocked = false;
+        let splashTimer = null;
 
-        // Auto-switch Splash Screen after EXACTLY 5 Seconds
+        // Auto-switch Splash Screen after 5 Seconds
         window.onload = () => {
-            setTimeout(() => {
+            splashTimer = setTimeout(() => {
                 showPanel('instruction-screen');
             }, 5000);
         };
+
+        function skipSplash() {
+            if (splashTimer) clearTimeout(splashTimer);
+            showPanel('instruction-screen');
+        }
 
         function showPanel(panelId) {
             document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
@@ -533,6 +704,7 @@
         }
 
         function startQuiz() {
+            getAudioContext(); // Enable AudioContext on click
             currentIdx = 0;
             score = 0;
             showPanel('gameplay-screen');
@@ -571,12 +743,14 @@
             if (selectedIndex === currentQ.correctIdx) {
                 // Correct Answer
                 isLocked = true;
+                playClappingSound(); // ताली और जीत की ध्वनि
                 buttonElem.classList.add('hit-success');
                 score += (attemptsLeft === 2) ? 10 : 5;
                 document.getElementById('hud-score').innerText = score;
-                setTimeout(nextQuestion, 1000);
+                setTimeout(nextQuestion, 1200);
             } else {
                 // Wrong Answer
+                playWrongBuzzer(); // गलत उत्तर पर बज़र
                 attemptsLeft--;
                 buttonElem.classList.add('hit-failed');
                 buttonElem.disabled = true;
