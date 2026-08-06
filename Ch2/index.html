@@ -198,7 +198,7 @@
   <div class="quiz-container">
     
     <div id="start-screen">
-      <img src="assets/innovine-logo 1.png" alt="Innovine Logo" class="logo">
+      <img src="assets/logo.png" alt="Innovine Logo" class="logo">
       <h2>अध्याय 2: लकड़हारा और पेड़</h2>
       <h3>अभ्यास प्रश्नोत्तरी</h3>
       
@@ -207,9 +207,9 @@
         <ul>
           <li>इस प्रश्नोत्तरी में कुल 10 बहुविकल्पीय प्रश्न हैं।</li>
           <li>प्रत्येक प्रश्न के लिए सही उत्तर का चयन करें।</li>
-          <li>सही उत्तर चुनने पर सही ध्वनि और गलत चुनने पर बजर सुनाई देगा।</li>
-          <li>उत्तर देने के बाद सही उत्तर का कारण/स्पष्टीकरण दिखाया जाएगा।</li>
-          <li>अंत में आपका कुल अंक (Score) दिखाया जाएगा।</li>
+          <li>सही उत्तर चुनने पर तालियों की गूँज तथा गलत उत्तर चुनने पर बजर सुनाई देगा।</li>
+          <li>प्रत्येक उत्तर के बाद सही विकल्प का कारण/स्पष्टीकरण दिखाया जाएगा।</li>
+          <li>अंत में आपका कुल अंक (Score) प्रदर्शित होगा।</li>
         </ul>
       </div>
 
@@ -236,7 +236,6 @@
     </div>
 
     <div id="result-screen" class="hidden result-card">
-      <img src="assets/innovine-logo 1.png" alt="Innovine Logo" class="logo">
       <h2>प्रश्नोत्तरी समाप्त!</h2>
       <div class="score-text" id="final-score">आपका कुल अंक: 0 / 10</div>
       <p id="result-message" style="margin-bottom: 25px; color: #555;"></p>
@@ -245,7 +244,6 @@
 
   </div>
 
-  <audio id="sound-correct" src="assets/correct 1.mp3"></audio>
   <audio id="sound-wrong" src="assets/wrong 1.mp3"></audio>
   <audio id="sound-clapping" src="assets/clapping 1.mp3"></audio>
 
@@ -369,7 +367,6 @@
     const scoreDisplay = document.getElementById("score-display");
     const progressBar = document.getElementById("progress");
 
-    const soundCorrect = document.getElementById("sound-correct");
     const soundWrong = document.getElementById("sound-wrong");
     const soundClapping = document.getElementById("sound-clapping");
 
@@ -415,13 +412,17 @@
         selectedBtn.classList.add("correct");
         score++;
         scoreDisplay.innerText = `अंक: ${score}`;
-        soundCorrect.currentTime = 0;
-        soundCorrect.play();
+        
+        // Correct Answer -> Clapping Sound
+        soundClapping.currentTime = 0;
+        soundClapping.play();
 
         rationaleBox.classList.add("correct");
         rationaleBox.innerHTML = `<strong>✅ सही उत्तर!</strong><br>${optionData.rationale}`;
       } else {
         selectedBtn.classList.add("wrong");
+
+        // Wrong Answer -> Wrong Buzzer Sound
         soundWrong.currentTime = 0;
         soundWrong.play();
 
@@ -461,9 +462,6 @@
       } else {
         msg.innerText = "अच्छा प्रयास! कहानी को एक बार फिर से पढ़ें और पुनः प्रयास करें।";
       }
-
-      soundClapping.currentTime = 0;
-      soundClapping.play();
     }
 
     function restartQuiz() {
