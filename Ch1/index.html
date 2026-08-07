@@ -386,7 +386,7 @@
         }
 
         // 10 Direct Competency Questions specifically for Chapter "कोयल" (Koyal)
-        const quizDataset = [
+        const rawQuizDataset = [
             {
                 q: "'कोयल' कविता के अनुसार, कोयल ने अपनी मीठी आवाज़ में कूक-कूक कर आमों में क्या घोला है?",
                 choices: [
@@ -489,10 +489,38 @@
             }
         ];
 
+        let activeDataset = [];
         let currentIdx = 0;
         let score = 0;
         let attemptsLeft = 2;
         let isLocked = false;
+
+        // Fisher-Yates Shuffle Algorithm to randomize elements
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Randomize question sequence and option orders while preserving correct answers
+        function prepareRandomizedDataset() {
+            const shuffledQuestions = shuffleArray(rawQuizDataset);
+
+            return shuffledQuestions.map((item) => {
+                const correctChoiceText = item.choices[item.correctIdx];
+                const shuffledChoices = shuffleArray(item.choices);
+                const newCorrectIdx = shuffledChoices.indexOf(correctChoiceText);
+
+                return {
+                    q: item.q,
+                    choices: shuffledChoices,
+                    correctIdx: newCorrectIdx
+                };
+            });
+        }
 
         // Auto switch Splash Screen to Instruction Screen strictly after 5 Seconds
         window.onload = () => {
@@ -507,6 +535,7 @@
         }
 
         function startQuiz() {
+            activeDataset = prepareRandomizedDataset();
             currentIdx = 0;
             score = 0;
             showPanel('gameplay-screen');
@@ -516,9 +545,9 @@
         function loadQuestion() {
             attemptsLeft = 2;
             isLocked = false;
-            const currentQ = quizDataset[currentIdx];
+            const currentQ = activeDataset[currentIdx];
 
-            document.getElementById('hud-round').innerText = `${String(currentIdx + 1).padStart(2, '0')} / ${quizDataset.length}`;
+            document.getElementById('hud-round').innerText = `${String(currentIdx + 1).padStart(2, '0')} / ${activeDataset.length}`;
             document.getElementById('hud-score').innerText = score;
             document.getElementById('lbl-question').innerText = currentQ.q;
             document.getElementById('lbl-toast').style.display = 'none';
@@ -538,7 +567,7 @@
 
         function selectOption(selectedIndex, buttonElem) {
             if (isLocked) return;
-            const currentQ = quizDataset[currentIdx];
+            const currentQ = activeDataset[currentIdx];
             const toast = document.getElementById('lbl-toast');
 
             if (selectedIndex === currentQ.correctIdx) {
@@ -576,7 +605,7 @@
 
         function nextQuestion() {
             currentIdx++;
-            if (currentIdx < quizDataset.length) {
+            if (currentIdx < activeDataset.length) {
                 loadQuestion();
             } else {
                 renderEndScreen();
