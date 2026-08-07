@@ -47,7 +47,6 @@
             padding: 16px;
         }
 
-        /* Responsive Main Container */
         .quiz-container {
             width: 100%;
             max-width: 640px;
@@ -82,7 +81,6 @@
             transform: translateY(0);
         }
 
-        /* SCREEN 1: SPLASH SCREEN */
         #splash-screen {
             justify-content: center;
             align-items: center;
@@ -109,7 +107,6 @@
             50% { transform: scale(1.04); opacity: 1; }
         }
 
-        /* SCREEN 2: INSTRUCTIONS */
         #instruction-screen {
             justify-content: space-between;
             align-items: center;
@@ -175,7 +172,6 @@
             transform: translateY(0);
         }
 
-        /* SCREEN 3: GAMEPLAY CONSOLE */
         .hud-header {
             display: flex;
             justify-content: space-between;
@@ -278,7 +274,6 @@
             transition: all 0.2s ease;
         }
 
-        /* Feedback States */
         .btn-option.hit-success {
             background: var(--success-bg) !important;
             border-color: var(--success) !important;
@@ -321,7 +316,6 @@
             to { opacity: 1; }
         }
 
-        /* SCREEN 4: CONGRATULATIONS PAGE */
         #end-screen {
             justify-content: center;
             align-items: center;
@@ -438,7 +432,7 @@
     </div>
 
     <script>
-        const quizDataset = [
+        const rawDataset = [
             {
                 q: "कविता में बच्चों को देश का मान बढ़ाने के लिए अच्छे काम करने की प्रेरणा दी गई है। एक विद्यार्थी देश के लिए क्या कर सकता है?",
                 choices: [
@@ -551,6 +545,7 @@
             }
         ];
 
+        let quizDataset = [];
         let currentIdx = 0;
         let score = 0;
         let attemptsLeft = 2;
@@ -563,12 +558,43 @@
             }, 3000);
         };
 
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function prepareRandomizedQuiz() {
+            const shuffledQuestions = shuffleArray(rawDataset);
+
+            quizDataset = shuffledQuestions.map(item => {
+                const indexedChoices = item.choices.map((choice, idx) => ({
+                    text: choice,
+                    isCorrect: idx === item.correctIdx
+                }));
+
+                const shuffledChoices = shuffleArray(indexedChoices);
+                const newCorrectIdx = shuffledChoices.findIndex(c => c.isCorrect);
+
+                return {
+                    q: item.q,
+                    comp: item.comp,
+                    choices: shuffledChoices.map(c => c.text),
+                    correctIdx: newCorrectIdx
+                };
+            });
+        }
+
         function showPanel(panelId) {
             document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
             document.getElementById(panelId).classList.add('active');
         }
 
         function startQuiz() {
+            prepareRandomizedQuiz();
             currentIdx = 0;
             score = 0;
             showPanel('gameplay-screen');
