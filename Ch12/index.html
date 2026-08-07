@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>तरबूज़ एवं विज्ञान - CBQ Quiz Application</title>
+<title>एआई का कमाल - CBQ Quiz Application</title>
 <style>
   :root {
     --primary: #2563eb;
@@ -61,9 +61,8 @@
   .btn-option.correct { background: #dcfce7; border-color: var(--success); color: #14532d; font-weight: bold; }
   .btn-option.incorrect { background: #fee2e2; border-color: var(--danger); color: #7f1d1d; }
 
-  .feedback-box, .hint-box { border-radius: 6px; padding: 12px; margin-top: 15px; text-align: left; font-size: 0.95rem; }
-  .feedback-box { background: #e0f2fe; border: 1px solid #bae6fd; color: #0369a1; display: none; }
-  .hint-box { background: #fef3c7; border: 1px solid #fde68a; color: #92400e; display: none; }
+  .competency-tag { display: inline-block; background: #e0e7ff; color: #3730a3; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; margin-bottom: 10px; font-weight: bold; }
+  .hint-box { background: #fef3c7; border: 1px solid #fde68a; color: #92400e; display: none; border-radius: 6px; padding: 12px; margin-top: 15px; text-align: left; font-size: 0.95rem; }
 
   .footer-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
   .btn-secondary { background: #e2e8f0; color: var(--text); border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: 600; }
@@ -82,8 +81,8 @@
   <div id="intro-screen" class="screen">
     <h1 style="color: var(--primary); margin-bottom: 10px;">क्विज़ विवरण (Overview)</h1>
     <div class="meta-card">
-      <p><strong>विषय (Subject):</strong> हिंदी / विज्ञान (Hindi / Science)</p>
-      <p><strong>शीर्षक (Topic):</strong> तरबूज़ एवं विज्ञान</p>
+      <p><strong>विषय (Subject):</strong> हिंदी / तकनीक (Hindi / Technology)</p>
+      <p><strong>शीर्षक (Topic):</strong> एआई का कमाल</p>
       <p><strong>कुल प्रश्न (Total Questions):</strong> <span id="total-q-count">0</span></p>
       <p><strong>समय सीमा (Time Limit):</strong> 45 सेकंड प्रति प्रश्न</p>
     </div>
@@ -98,11 +97,13 @@
       <span>प्रश्न: <span id="question-number">1</span>/<span id="total-questions">0</span></span>
     </div>
 
+    <div style="text-align: left;">
+      <span class="competency-tag" id="competencyTag">Competency</span>
+    </div>
     <div class="scenario-text" id="scenarioText">प्रश्न यहाँ दिखाई देगा</div>
     <div class="options-grid" id="optionsContainer"></div>
 
     <div class="hint-box" id="hintBox"></div>
-    <div class="feedback-box" id="feedbackBox"></div>
 
     <div class="footer-controls">
       <button class="btn-secondary" id="hintBtn" onclick="toggleHint()">संकेत (Hint)</button>
@@ -121,54 +122,164 @@
   </div>
 
   <script>
-    const quizQuestions = [
+    const originalQuestions = [
       {
-        scenario: "(क) तरबूज़ में लगभग कितने प्रतिशत पानी होता है?",
-        options: ["50 प्रतिशत", "80 प्रतिशत", "92 प्रतिशत", "100 प्रतिशत"],
-        answer: 2,
-        hint: "यह 90% से अधिक होता है और शरीर को हाइड्रेटेड रखने में मदद करता है।"
-      },
-      {
-        scenario: "(ख) जापान के चौकोर तरबूज़ किस कारण विशेष माने जाते हैं?",
+        scenario: "यदि आपको किसी विषय को समझने में कठिनाई हो रही है, तो एआई आपकी किस प्रकार सहायता कर सकता है?",
         options: [
-          "उनके अनोखे आकार और सुंदरता के कारण",
-          "उनके नीले रंग के कारण",
-          "उनमें बीज न होने के कारण",
-          "उनके बहुत छोटे होने के कारण"
+          "वह आपकी जगह परीक्षा दे सकता है।",
+          "वह जानकारी देकर और समझाकर सीखने में मदद कर सकता है।",
+          "वह आपको पढ़ाई से दूर कर सकता है।",
+          "वह केवल खेल खेलने में मदद कर सकता है।"
         ],
-        answer: 0,
-        hint: "उन्हें खास साँचे में उगाया जाता है जिससे उनका रूप आकर्षक दिखता है।"
+        answerText: "वह जानकारी देकर और समझाकर सीखने में मदद कर सकता है।",
+        competency: "तकनीक का उचित उपयोग करना",
+        hint: "एआई एक शिक्षण सहायक के रूप में काम करता है, जो कठिन विषयों को आसान भाषा में समझा सकता है।"
       },
       {
-        scenario: "(ग) तरबूज़ के लाल भाग में कौन-सा लाभदायक तत्व पाया जाता है?",
-        options: ["लाइकोपीन", "तारा", "साँचा", "काँच"],
-        answer: 0,
-        hint: "यह एक शक्तिशाली एंटी-ऑक्सीडेंट है जो फल को लाल रंग भी देता है।"
-      },
-      {
-        scenario: "(घ) दादाजी ने गोलू को वैज्ञानिक बनने के लिए क्यों प्रेरित किया?",
+        scenario: "कविता में कहा गया है कि एआई काम का बोझ हल्का करती है। इसका सही अर्थ क्या है?",
         options: [
-          "क्योंकि वैज्ञानिक नई बातों को समझते हैं और उपयोगी खोज करते हैं।",
-          "क्योंकि वैज्ञानिक केवल खेल-कूद करते हैं।",
-          "क्योंकि वैज्ञानिक केवल पुस्तकें पढ़ते हैं।",
-          "क्योंकि वैज्ञानिक महँगे फल खरीदते हैं।"
+          "एआई सारे काम मनुष्यों की जगह कर देगी।",
+          "एआई कठिन कार्यों को आसान बनाने में सहायता कर सकती है।",
+          "मनुष्य को कोई काम नहीं करना पड़ेगा।",
+          "एआई केवल मनोरंजन के लिए है।"
         ],
-        answer: 0,
-        hint: "वैज्ञानिक नई तकनीकों और प्रयोगों से समाज का भला करते हैं।"
+        answerText: "एआई कठिन कार्यों को आसान बनाने में सहायता कर सकती है।",
+        competency: "विचारों का विश्लेषण करना",
+        hint: "यह तकनीक हमारे काम की गति और दक्षता को बढ़ाती है, न कि मनुष्य की आवश्यकता को खत्म करती है।"
+      },
+      {
+        scenario: "यदि आपको एआई से कोई उत्तर मिलता है, तो आपको क्या करना चाहिए?",
+        options: [
+          "बिना सोचे उसे हमेशा सही मान लेना चाहिए।",
+          "उसे समझकर और जाँचकर उपयोग करना चाहिए।",
+          "एआई का उपयोग कभी नहीं करना चाहिए।",
+          "दूसरों को गलत जानकारी देनी चाहिए।"
+        ],
+        answerText: "उसे समझकर और जाँचकर उपयोग करना चाहिए।",
+        competency: "सोच-समझकर निर्णय लेना",
+        hint: "एआई द्वारा दी गई जानकारी की सत्यता की जांच करना एक जिम्मेदार व्यवहार है।"
+      },
+      {
+        scenario: "कविता के अनुसार मनुष्य और एआई मिलकर बेहतर काम कैसे कर सकते हैं?",
+        options: [
+          "केवल एआई काम करे।",
+          "मनुष्य सोच-विचार करे और एआई सहायता करे।",
+          "मनुष्य एआई पर पूरी तरह निर्भर हो जाए।",
+          "एआई को बंद कर दिया जाए।"
+        ],
+        answerText: "मनुष्य सोच-विचार करे और एआई सहायता करे।",
+        competency: "मानव और तकनीक के संबंध को समझना",
+        hint: "मानवीय बुद्धि और एआई की क्षमता का सही संतुलन ही सबसे अच्छा परिणाम देता है।"
+      },
+      {
+        scenario: "यदि विद्यालय में एआई रोबोट बच्चों की सहायता करता है, तो वह किस काम में मदद कर सकता है?",
+        options: [
+          "बच्चों को सीखने और जानकारी प्राप्त करने में।",
+          "बच्चों की जगह सभी निर्णय लेने में।",
+          "बच्चों को खेल से रोकने में।",
+          "बच्चों का गृहकार्य स्वयं करने में।"
+        ],
+        answerText: "बच्चों को सीखने और जानकारी प्राप्त करने में।",
+        competency: "तकनीक के उपयोग को वास्तविक जीवन से जोड़ना",
+        hint: "विद्यालय में तकनीक का उपयोग ज्ञान वृद्धि और सीखने की प्रक्रिया को सरल बनाने के लिए होता है।"
+      },
+      {
+        scenario: "“मशीनें अब सोचती हैं, जैसे कोई इंसान है” पंक्ति का भाव क्या है?",
+        options: [
+          "मशीनों में बिल्कुल इंसानों जैसी भावनाएँ होती हैं।",
+          "मशीनें कुछ कार्यों को समझने और पूरा करने में सक्षम हैं।",
+          "मशीनें इंसानों से बेहतर होती हैं।",
+          "मशीनें इंसानों की जगह ले लेंगी।"
+        ],
+        answerText: "मशीनें कुछ कार्यों को समझने और पूरा करने में सक्षम हैं।",
+        competency: "भाव और अर्थ को समझना",
+        hint: "यह पंक्ति एआई द्वारा डेटा का विश्लेषण करके स्मार्ट निर्णय लेने की क्षमता को दर्शाती है।"
+      },
+      {
+        scenario: "एआई का उपयोग करते समय हमें किस बात का ध्यान रखना चाहिए?",
+        options: [
+          "हर जानकारी को बिना जाँच के स्वीकार करना चाहिए।",
+          "एआई का उपयोग जिम्मेदारी और समझदारी से करना चाहिए।",
+          "केवल मनोरंजन के लिए उपयोग करना चाहिए।",
+          "अपनी सोच का उपयोग नहीं करना चाहिए।"
+        ],
+        answerText: "एआई का उपयोग जिम्मेदारी और समझदारी से करना चाहिए।",
+        competency: "जिम्मेदार डिजिटल व्यवहार",
+        hint: "तकनीक का नैतिक और विवेकपूर्ण उपयोग ही हमें सही दिशा में ले जाता है।"
+      },
+      {
+        scenario: "एआई और मनुष्य में सबसे बड़ा अंतर क्या है?",
+        options: [
+          "एआई डेटा के आधार पर काम करती है, जबकि मनुष्य सोच-विचार और भावनाओं से निर्णय लेते हैं।",
+          "एआई कभी कोई काम नहीं कर सकती।",
+          "मनुष्य कोई नया विचार नहीं बना सकते।",
+          "दोनों बिल्कुल एक जैसे हैं।"
+        ],
+        answerText: "एआई डेटा के आधार पर काम करती है, जबकि मनुष्य सोच-विचार और भावनाओं से निर्णय लेते हैं।",
+        competency: "तुलना और विश्लेषण करना",
+        hint: "एआई के पास केवल डेटा और एल्गोरिदम हैं, जबकि मनुष्य के पास चेतना और भावनाएं हैं।"
+      },
+      {
+        scenario: "यदि आपको एआई रोबोट बनाने का अवसर मिले, तो आप उसे किस काम के लिए उपयोग करना चाहेंगे?",
+        options: [
+          "लोगों की सहायता और सीखने को आसान बनाने के लिए।",
+          "लोगों को काम करने से रोकने के लिए।",
+          "गलत जानकारी फैलाने के लिए।",
+          "केवल समय बर्बाद करने के लिए।"
+        ],
+        answerText: "लोगों की सहायता और सीखने को आसान बनाने के लिए।",
+        competency: "रचनात्मक सोच का प्रयोग",
+        hint: "तकनीक का निर्माण समाज के कल्याण और बेहतरी के लिए होना चाहिए।"
+      },
+      {
+        scenario: "“एआई का कमाल” कविता का मुख्य संदेश क्या है?",
+        options: [
+          "एआई मनुष्यों की जगह ले लेगी।",
+          "एआई एक उपयोगी साथी है, जिसका प्रयोग सोच-समझकर करना चाहिए।",
+          "मशीनों का उपयोग नहीं करना चाहिए।",
+          "केवल मशीनों पर निर्भर रहना चाहिए।"
+        ],
+        answerText: "एआई एक उपयोगी साथी है, जिसका प्रयोग सोच-समझकर करना चाहिए।",
+        competency: "मुख्य विचार का मूल्यांकन करना",
+        hint: "कविता तकनीक को एक सहायक के रूप में देखने की सलाह देती है।"
       }
     ];
 
+    let quizQuestions = [];
     let currentQuestionIndex = 0;
     let score = 0;
     let timerVal = 45;
     let timerInterval = null;
 
+    // Shuffle Array Function (Fisher-Yates)
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Prepare Randomized Quiz Data
+    function prepareQuizData() {
+      // 1. Shuffle questions order
+      let shuffledData = shuffleArray(JSON.parse(JSON.stringify(originalQuestions)));
+
+      // 2. Shuffle options inside each question & recalculate correct answer index
+      shuffledData.forEach(item => {
+        item.options = shuffleArray(item.options);
+        item.answer = item.options.indexOf(item.answerText);
+      });
+
+      return shuffledData;
+    }
+
     // Window load handler for splash screen
     window.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('total-q-count').textContent = quizQuestions.length;
-      document.getElementById('total-questions').textContent = quizQuestions.length;
+      document.getElementById('total-q-count').textContent = originalQuestions.length;
+      document.getElementById('total-questions').textContent = originalQuestions.length;
       
-      // Auto-transition from Logo Screen to Intro Screen after 5 seconds
+      // Transition from Logo Screen to Intro Screen after 5 seconds
       setTimeout(() => {
         switchScreen('intro-screen');
       }, 5000);
@@ -180,6 +291,7 @@
     }
 
     function startQuiz() {
+      quizQuestions = prepareQuizData(); // Generate randomized set
       currentQuestionIndex = 0;
       score = 0;
       switchScreen('game-screen');
@@ -194,23 +306,24 @@
       document.getElementById('question-number').textContent = currentQuestionIndex + 1;
       document.getElementById('current-score').textContent = score;
       document.getElementById('scenarioText').textContent = q.scenario;
+      document.getElementById('competencyTag').textContent = `Competency: ${q.competency}`;
       
       const optionsContainer = document.getElementById('optionsContainer');
       optionsContainer.innerHTML = '';
       
       const hintBox = document.getElementById('hintBox');
-      const feedbackBox = document.getElementById('feedbackBox');
       hintBox.style.display = 'none';
-      feedbackBox.style.display = 'none';
       hintBox.textContent = `संकेत: ${q.hint}`;
       
       document.getElementById('nextBtn').style.display = 'none';
       document.getElementById('hintBtn').style.display = 'inline-block';
 
+      const hindiLetters = ['क', 'ख', 'ग', 'घ'];
+
       q.options.forEach((opt, idx) => {
         const btn = document.createElement('button');
         btn.className = 'btn-option';
-        btn.textContent = `${idx + 1}. ${opt}`;
+        btn.textContent = `${hindiLetters[idx]}) ${opt}`;
         btn.onclick = () => selectAnswer(idx);
         optionsContainer.appendChild(btn);
       });
