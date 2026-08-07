@@ -274,7 +274,7 @@
   </div>
 
   <script>
-    const newQuizQuestions = [
+    const rawQuizQuestions = [
       {
         scenario: "डॉ. ए.पी.जे. अब्दुल कलाम का जन्म कब और किस स्थान पर हुआ था?",
         options: [
@@ -387,6 +387,7 @@
       }
     ];
 
+    let activeQuestions = [];
     let currentQuestionIndex = 0;
     let score = 0;
 
@@ -398,9 +399,35 @@
     const hintBtn = document.getElementById('hintBtn');
     const nextBtn = document.getElementById('nextBtn');
 
+    // Utility function to shuffle array items
+    function shuffleArray(array) {
+      const shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+
+    // Prepare randomized questions & options
+    function generateRandomizedQuestions() {
+      const shuffledQuestions = shuffleArray(rawQuizQuestions);
+      return shuffledQuestions.map(q => {
+        const originalCorrectText = q.options[q.answer];
+        const shuffledOpts = shuffleArray(q.options);
+        const newAnswerIndex = shuffledOpts.indexOf(originalCorrectText);
+        return {
+          scenario: q.scenario,
+          options: shuffledOpts,
+          answer: newAnswerIndex,
+          hint: q.hint
+        };
+      });
+    }
+
     // Auto switch from Logo Screen to Intro Screen after 5 seconds
     window.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('intro-q-count').textContent = newQuizQuestions.length;
+      document.getElementById('intro-q-count').textContent = rawQuizQuestions.length;
       setTimeout(() => {
         switchScreen('intro-screen');
       }, 5000);
@@ -412,6 +439,7 @@
     }
 
     function startQuiz() {
+      activeQuestions = generateRandomizedQuestions();
       currentQuestionIndex = 0;
       score = 0;
       switchScreen('game-screen');
@@ -419,9 +447,9 @@
     }
 
     function loadQuestion() {
-      const currentQ = newQuizQuestions[currentQuestionIndex];
+      const currentQ = activeQuestions[currentQuestionIndex];
       questionText.textContent = `${currentQuestionIndex + 1}. ${currentQ.scenario}`;
-      progress.textContent = `प्रश्न ${currentQuestionIndex + 1} / ${newQuizQuestions.length}`;
+      progress.textContent = `प्रश्न ${currentQuestionIndex + 1} / ${activeQuestions.length}`;
       scoreTracker.textContent = `अंक: ${score}`;
       
       optionsContainer.innerHTML = '';
@@ -440,7 +468,7 @@
     }
 
     function selectAnswer(selectedIndex) {
-      const currentQ = newQuizQuestions[currentQuestionIndex];
+      const currentQ = activeQuestions[currentQuestionIndex];
       const buttons = optionsContainer.children;
 
       for (let i = 0; i < buttons.length; i++) {
@@ -470,7 +498,7 @@
 
     function nextQuestion() {
       currentQuestionIndex++;
-      if (currentQuestionIndex < newQuizQuestions.length) {
+      if (currentQuestionIndex < activeQuestions.length) {
         loadQuestion();
       } else {
         showResults();
@@ -478,7 +506,7 @@
     }
 
     function showResults() {
-      document.getElementById('finalScore').textContent = `${score} / ${newQuizQuestions.length}`;
+      document.getElementById('finalScore').textContent = `${score} / ${activeQuestions.length}`;
       switchScreen('end-screen');
     }
 
