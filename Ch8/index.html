@@ -255,7 +255,7 @@
 </div>
 
 <script>
-const quizData = [
+const rawQuizData = [
   {
     scenario: "अमन मेले में अपने माता-पिता के साथ घूम रहा था। भीड़ अधिक होने के कारण उसके पापा ने उसे क्या निर्देश दिया?",
     options: [
@@ -368,6 +368,7 @@ const quizData = [
   }
 ];
 
+let quizData = [];
 let currentQ = 0;
 let score = 0;
 let attempts = 0;
@@ -375,8 +376,36 @@ let timerVal = 45;
 let timerInterval = null;
 let logoTimeout = null;
 
+function shuffleArray(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function prepareQuizData() {
+  const shuffledQuestions = shuffleArray(rawQuizData);
+  quizData = shuffledQuestions.map(item => {
+    const indexedOptions = item.options.map((opt, idx) => ({
+      text: opt,
+      isCorrect: idx === item.answer
+    }));
+    const shuffledOptions = shuffleArray(indexedOptions);
+    const newAnswerIndex = shuffledOptions.findIndex(o => o.isCorrect);
+
+    return {
+      scenario: item.scenario,
+      options: shuffledOptions.map(o => o.text),
+      answer: newAnswerIndex,
+      hint: item.hint
+    };
+  });
+}
+
 window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('intro-q-count').textContent = quizData.length;
+  document.getElementById('intro-q-count').textContent = rawQuizData.length;
   logoTimeout = setTimeout(() => {
     switchScreen('intro-screen');
   }, 3000);
@@ -389,6 +418,7 @@ function switchScreen(id) {
 
 function startQuiz() {
   if (logoTimeout) clearTimeout(logoTimeout);
+  prepareQuizData();
   currentQ = 0;
   score = 0;
   switchScreen('game-screen');
