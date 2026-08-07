@@ -111,128 +111,157 @@
 </div>
 
 <script>
-const quizData = [
+const rawQuizData = [
   {
-    scenario: "1. स्थितिजन्य विश्लेषण: चोट लगने के बाद भी डेरेक रेडमंड का स्ट्रेचर पर बैठने से इनकार कर आगे बढ़ना उनकी किस क्षमता को उजागर करता है?",
+    scenario: "स्थितिजन्य विश्लेषण: चोट लगने के बाद भी डेरेक रेडमंड का स्ट्रेचर पर बैठने से इनकार कर आगे बढ़ना उनकी किस क्षमता को उजागर करता है?",
     options: [
-      "(A) शारीरिक रूप से पूरी तरह स्वस्थ होना",
-      "(B) मानसिक दृढ़ता और लक्ष्य के प्रति अटूट निष्ठा",
-      "(C) खेल नियमों से अनजान होना",
-      "(D) प्रतिस्पर्धियों को डराने का प्रयास करना"
+      "शारीरिक रूप से पूरी तरह स्वस्थ होना",
+      "मानसिक दृढ़ता और लक्ष्य के प्रति अटूट निष्ठा",
+      "खेल नियमों से अनजान होना",
+      "प्रतिस्पर्धियों को डराने का प्रयास करना"
     ],
     answer: 1,
     hint: "संकेत: डेरेक का यह कदम शारीरिक ताकत से ज्यादा उनके मानसिक संकल्प और कभी हार न मानने के जज्बे को दिखाता है।"
   },
   {
-    scenario: "2. चरित्र मूल्यांकन: सुरक्षाकर्मियों की परवाह किए बिना मैदान में उतरकर पिता (जिम रेडमंड) द्वारा सहारा बनना किस मानवीय मूल्य को दर्शाता है?",
+    scenario: "चरित्र मूल्यांकन: सुरक्षाकर्मियों की परवाह किए बिना मैदान में उतरकर पिता (जिम रेडमंड) द्वारा सहारा बनना किस मानवीय मूल्य को दर्शाता है?",
     options: [
-      "(A) बिना इजाज़त नियमों को तोड़ना",
-      "(B) संकट के समय बिना शर्त नैतिक व भावनात्मक संबल प्रदान करना",
-      "(C) किसी भी तरह बेटे को पहला स्थान दिलाना",
-      "(D) खेल संघ के फैसले का विरोध करना"
+      "बिना इजाज़त नियमों को तोड़ना",
+      "संकट के समय बिना शर्त नैतिक व भावनात्मक संबल प्रदान करना",
+      "किसी भी तरह बेटे को पहला स्थान दिलाना",
+      "खेल संघ के फैसले का विरोध करना"
     ],
     answer: 1,
     hint: "संकेत: एक पिता का अपने बच्चे के सबसे मुश्किल क्षणों में उसके साथ मजबूती से खड़े रहना।"
   },
   {
-    scenario: "3. जीवन अनुप्रयोग: यदि कोई छात्र परीक्षा की तैयारी के अंतिम दौर में बीमार हो जाए, तो इस पाठ के आधार पर उसे क्या दृष्टिकोण अपनाना चाहिए?",
+    scenario: "जीवन अनुप्रयोग: यदि कोई छात्र परीक्षा की तैयारी के अंतिम दौर में बीमार हो जाए, तो इस पाठ के आधार पर उसे क्या दृष्टिकोण अपनाना चाहिए?",
     options: [
-      "(A) परीक्षा में बैठना पूरी तरह छोड़ देना",
-      "(B) परिणाम की चिंता किए बिना धैर्य और साहस से अपनी पूरी क्षमता के साथ प्रयास करना",
-      "(C) अपनी परिस्थिति और भाग्य को दोष देना",
-      "(D) परिजनों की सहायता लेने से इनकार करना"
+      "परीक्षा में बैठना पूरी तरह छोड़ देना",
+      "परिणाम की चिंता किए बिना धैर्य और साहस से अपनी पूरी क्षमता के साथ प्रयास करना",
+      "अपनी परिस्थिति और भाग्य को दोष देना",
+      "परिजनों की सहायता लेने से इनकार करना"
     ],
     answer: 1,
     hint: "संकेत: परिणाम चाहे जो हो, कठिन परिस्थिति में भी अपना सर्वश्रेष्ठ प्रयास करना चाहिए।"
   },
   {
-    scenario: "4. खेल भावना: फिनिश लाइन के बिल्कुल पास पहुँचकर पिता जिम रेडमंड ने डेरेक का हाथ क्यों छोड़ दिया?",
+    scenario: "खेल भावना: फिनिश लाइन के बिल्कुल पास पहुँचकर पिता जिम रेडमंड ने डेरेक का हाथ क्यों छोड़ दिया?",
     options: [
-      "(A) क्योंकि वे शारीरिक रूप से थक चुके थे",
-      "(B) ताकि डेरेक आत्म-सम्मान के साथ स्वयं अपने पैरों पर फिनिश लाइन पार कर सके",
-      "(C) क्योंकि सुरक्षाकर्मी उन्हें खींच रहे थे",
-      "(D) ताकि डेरेक आधिकारिक रूप से स्वर्ण पदक प्राप्त कर सके"
+      "क्योंकि वे शारीरिक रूप से थक चुके थे",
+      "ताकि डेरेक आत्म-सम्मान के साथ स्वयं अपने पैरों पर फिनिश लाइन पार कर सके",
+      "क्योंकि सुरक्षाकर्मी उन्हें खींच रहे थे",
+      "ताकि डेरेक आधिकारिक रूप से स्वर्ण पदक प्राप्त कर सके"
     ],
     answer: 1,
     hint: "संकेत: पिता चाहते थे कि डेरेक की इस व्यक्तिगत यात्रा का अंतिम कदम उसका अपना हो।"
   },
   {
-    scenario: "5. निष्कर्ष निर्माण: कोई पदक न मिलने पर भी स्टेडियम के 65,000 दर्शकों द्वारा खड़े होकर तालियाँ बजाने का मुख्य संदेश क्या है?",
+    scenario: "निष्कर्ष निर्माण: कोई पदक न मिलने पर भी स्टेडियम के 65,000 दर्शकों द्वारा खड़े होकर तालियाँ बजाने का मुख्य संदेश क्या है?",
     options: [
-      "(A) दर्शक केवल अंतिम विजेता का सम्मान करते हैं",
-      "(B) असली जीत केवल ट्रॉफी या मेडल जीतना नहीं, बल्कि गिरकर फिर उठ खड़े होना है",
-      "(C) चोट के बाद दौड़ पूरी करना खेल नियमों में अनिवार्य है",
-      "(D) दर्शक केवल समय बिताने के लिए ताली बजा रहे थे"
+      "दर्शक केवल अंतिम विजेता का सम्मान करते हैं",
+      "असली जीत केवल ट्रॉफी या मेडल जीतना नहीं, बल्कि गिरकर फिर उठ खड़े होना है",
+      "चोट के बाद दौड़ पूरी करना खेल नियमों में अनिवार्य है",
+      "दर्शक केवल समय बिताने के लिए ताली बजा रहे थे"
     ],
     answer: 1,
     hint: "संकेत: दर्शकों ने डेरेक के जुझारूपन, साहस और खेल भावना को सलाम किया था।"
   },
   {
-    scenario: "6. तथ्य एवं तर्क:\nकथन (A): 1992 ओलंपिक में डेरेक को आधिकारिक रूप से Did Not Finish माना गया।\nकारण (R): ओलंपिक नियमों अनुसार बाहरी व्यक्ति की मदद लेने पर खिलाड़ी को आधिकारिक विजेता नहीं माना जाता।",
+    scenario: "तथ्य एवं तर्क:\nकथन (A): 1992 ओलंपिक में डेरेक को आधिकारिक रूप से Did Not Finish माना गया।\nकारण (R): ओलंपिक नियमों अनुसार बाहरी व्यक्ति की मदद लेने पर खिलाड़ी को आधिकारिक विजेता नहीं माना जाता।",
     options: [
-      "(A) (A) और (R) दोनों सही हैं तथा (R), (A) की सही व्याख्या करता है",
-      "(B) (A) और (R) दोनों सही हैं लेकिन व्याख्या सही नहीं है",
-      "(C) (A) सही है लेकिन (R) गलत है",
-      "(D) (A) गलत है लेकिन (R) सही है"
+      "(A) और (R) दोनों सही हैं तथा (R), (A) की सही व्याख्या करता है",
+      "(A) और (R) दोनों सही हैं लेकिन व्याख्या सही नहीं है",
+      "(A) सही है लेकिन (R) गलत है",
+      "(A) गलत है लेकिन (R) सही है"
     ],
     answer: 0,
     hint: "संकेत: ओलंपिक के नियमों के अनुसार किसी अन्य व्यक्ति की सहायता लेने पर ट्रैक इवेंट में खिलाड़ी को डिस्क्वालिफाई कर दिया जाता है।"
   },
   {
-    scenario: "7. व्याकरण अनुप्रयोग: 'दाँतों तले उँगली दबाना' मुहावरे का प्रयोग दर्शकों की किस प्रतिक्रिया के लिए उपयुक्त है?",
+    scenario: "व्याकरण अनुप्रयोग: 'दाँतों तले उँगली दबाना' मुहावरे का प्रयोग दर्शकों की किस प्रतिक्रिया के लिए उपयुक्त है?",
     options: [
-      "(A) डेरेक के मैदान में गिर जाने पर",
-      "(B) असह्य दर्द के बावजूद डेरेक के लँगड़ाते हुए दौड़ जारी रखने के दृश्य को देखकर",
-      "(C) दौड़ की शुरुआती बंदूक की आवाज़ सुनकर",
-      "(D) डेरेक द्वारा 1985 में नया राष्ट्रीय रिकॉर्ड बनाने पर"
+      "डेरेक के मैदान में गिर जाने पर",
+      "असह्य दर्द के बावजूद डेरेक के लँगड़ाते हुए दौड़ जारी रखने के दृश्य को देखकर",
+      "दौड़ की शुरुआती बंदूक की आवाज़ सुनकर",
+      "डेरेक द्वारा 1985 में नया राष्ट्रीय रिकॉर्ड बनाने पर"
     ],
     answer: 1,
     hint: "संकेत: 'दाँतों तले उँगली दबाना' मुहावरे का अर्थ है आश्चर्यचकित या दंग रह जाना।"
   },
   {
-    scenario: "8. तुलनात्मक अध्ययन: पी.टी. उषा (1984) और डेरेक रेडमंड (1992) के ओलंपिक प्रदर्शन में क्या समानता दिखाई देती है?",
+    scenario: "तुलनात्मक अध्ययन: पी.टी. उषा (1984) और डेरेक रेडमंड (1992) के ओलंपिक प्रदर्शन में क्या समानता दिखाई देती है?",
     options: [
-      "(A) दोनों ने अपने-अपने खेलों में स्वर्ण पदक प्राप्त किया",
-      "(B) दोनों ने 400m स्पर्धा में अपनी उत्कृष्ट प्रतिभा और दृढ़ इच्छाशक्ति का प्रदर्शन किया",
-      "(C) दोनों ने चोट के कारण संन्यास लिया",
-      "(D) दोनों ने केवल एशियाई खेलों में भाग लिया"
+      "दोनों ने अपने-अपने खेलों में स्वर्ण पदक प्राप्त किया",
+      "दोनों ने 400m स्पर्धा में अपनी उत्कृष्ट प्रतिभा और दृढ़ इच्छाशक्ति का प्रदर्शन किया",
+      "दोनों ने चोट के कारण संन्यास लिया",
+      "दोनों ने केवल एशियाई खेलों में भाग लिया"
     ],
     answer: 1,
     hint: "संकेत: दोनों ही एथलीटों ने 400 मीटर की दौड़ में अपनी अदम्य इच्छाशक्ति दिखाई।"
   },
   {
-    scenario: "9. समस्या निवारण: 250m पर गंभीर चोट लगने पर डेरेक ने क्या निर्णय लिया?",
+    scenario: "समस्या निवारण: 250m पर गंभीर चोट लगने पर डेरेक ने क्या निर्णय लिया?",
     options: [
-      "(A) मैदान छोड़ना और दोबारा दौड़ की माँग करना",
-      "(B) स्ट्रेचर मना करके दर्द सहते हुए दौड़ पूरी करना ताकि सालों का सपना अधूरा न रहे",
-      "(C) दूसरी लेन में दौड़ना और आराम करना",
-      "(D) तुरंत संन्यास लेना और कोच को दोष देना"
+      "मैदान छोड़ना और दोबारा दौड़ की माँग करना",
+      "स्ट्रेचर मना करके दर्द सहते हुए दौड़ पूरी करना ताकि सालों का सपना अधूरा न रहे",
+      "दूसरी लेन में दौड़ना और आराम करना",
+      "तुरंत संन्यास लेना और कोच को दोष देना"
     ],
     answer: 1,
     hint: "संकेत: उन्होंने मेडिकल टीम के स्ट्रेचर को मना कर लँगड़ाते हुए दौड़ खत्म करने का फैसला किया।"
   },
   {
-    scenario: "10. HOTS: \"असली चैंपियन वह नहीं जो हमेशा जीतता है, बल्कि वह है जो गिरकर भी उठना जानता है।\" यह विचार क्या सीख देता है?",
+    scenario: "HOTS: \"असली चैंपियन वह नहीं जो हमेशा जीतता है, बल्कि वह है जो गिरकर भी उठना जानता है।\" यह विचार क्या सीख देता है?",
     options: [
-      "(A) असफलता मिलने पर तुरंत लक्ष्य बदल लेना चाहिए",
-      "(B) रुकावटें अंतिम नहीं होतीं; पुनः प्रयास करना ही सफलता की कुंजी है",
-      "(C) प्रतियोगिता में केवल तभी भाग लें जब जीत पक्की हो",
-      "(D) पुरस्कार जीतना ही जीवन का एकमात्र उद्देश्य होना चाहिए"
+      "असफलता मिलने पर तुरंत लक्ष्य बदल लेना चाहिए",
+      "रुकावटें अंतिम नहीं होतीं; पुनः प्रयास करना ही सफलता की कुंजी है",
+      "प्रतियोगिता में केवल तभी भाग लें जब जीत पक्की हो",
+      "पुरस्कार जीतना ही जीवन का एकमात्र उद्देश्य होना चाहिए"
     ],
     answer: 1,
     hint: "संकेत: यह पंक्ति हमें जीवन की चुनौतियों का डटकर सामना करने और दृढ़ रहने की सीख देती है।"
   }
 ];
 
+let activeQuizData = [];
 let currentQ = 0;
 let score = 0;
 let attempts = 0;
 let timerVal = 45;
 let timerInterval = null;
 
+// Helper function to shuffle an array using Fisher-Yates algorithm
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+// Function to process and shuffle questions & their options
+function prepareRandomizedQuizData() {
+  const shuffledQuestions = shuffleArray(rawQuizData);
+  
+  return shuffledQuestions.map((q) => {
+    const originalCorrectOptionText = q.options[q.answer];
+    const shuffledOptions = shuffleArray(q.options);
+    const newCorrectAnswerIndex = shuffledOptions.indexOf(originalCorrectOptionText);
+    
+    return {
+      scenario: q.scenario,
+      options: shuffledOptions,
+      answer: newCorrectAnswerIndex,
+      hint: q.hint
+    };
+  });
+}
+
 // Display logo screen briefly for 5 seconds before going to Intro screen
 window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('intro-q-count').textContent = quizData.length;
+  document.getElementById('intro-q-count').textContent = rawQuizData.length;
   setTimeout(() => {
     switchScreen('intro-screen');
   }, 5000);
@@ -244,6 +273,7 @@ function switchScreen(id) {
 }
 
 function startQuiz() {
+  activeQuizData = prepareRandomizedQuizData(); // Randomize questions & options on start
   currentQ = 0;
   score = 0;
   switchScreen('game-screen');
@@ -253,10 +283,14 @@ function startQuiz() {
 function loadQuestion() {
   attempts = 0;
   timerVal = 45;
+  const labels = ["(A) ", "(B) ", "(C) ", "(D) "];
+
   document.getElementById('live-score').textContent = score;
   document.getElementById('q-idx').textContent = currentQ + 1;
-  document.getElementById('q-total').textContent = quizData.length;
-  document.getElementById('scenario').textContent = quizData[currentQ].scenario;
+  document.getElementById('q-total').textContent = activeQuizData.length;
+  
+  // Format question number dynamically
+  document.getElementById('scenario').textContent = `${currentQ + 1}. ${activeQuizData[currentQ].scenario}`;
   
   const hintBox = document.getElementById('hint-box');
   const feedBox = document.getElementById('feedback-box');
@@ -266,10 +300,10 @@ function loadQuestion() {
   const optionsDiv = document.getElementById('options');
   optionsDiv.innerHTML = '';
 
-  quizData[currentQ].options.forEach((opt, idx) => {
+  activeQuizData[currentQ].options.forEach((opt, idx) => {
     const btn = document.createElement('button');
     btn.className = 'btn-option';
-    btn.textContent = opt;
+    btn.textContent = `${labels[idx]}${opt}`;
     btn.onclick = () => handleAnswer(idx, btn);
     optionsDiv.appendChild(btn);
   });
@@ -291,7 +325,7 @@ function startTimer() {
 }
 
 function handleAnswer(selectedIdx, btnElement) {
-  const q = quizData[currentQ];
+  const q = activeQuizData[currentQ];
   const feedBox = document.getElementById('feedback-box');
   const hintBox = document.getElementById('hint-box');
 
@@ -332,7 +366,7 @@ function handleTimeout() {
   highlightCorrectOption();
   const feedBox = document.getElementById('feedback-box');
   feedBox.className = 'feedback-box danger';
-  feedBox.textContent = `समय समाप्त! सही उत्तर है: ${quizData[currentQ].options[quizData[currentQ].answer]}`;
+  feedBox.textContent = `समय समाप्त! सही उत्तर है: ${activeQuizData[currentQ].options[activeQuizData[currentQ].answer]}`;
   feedBox.style.display = 'block';
   setTimeout(nextQuestion, 2200);
 }
@@ -343,12 +377,12 @@ function disableAllOptions() {
 
 function highlightCorrectOption() {
   const options = document.querySelectorAll('.btn-option');
-  options[quizData[currentQ].answer].classList.add('correct');
+  options[activeQuizData[currentQ].answer].classList.add('correct');
 }
 
 function nextQuestion() {
   currentQ++;
-  if (currentQ < quizData.length) {
+  if (currentQ < activeQuizData.length) {
     loadQuestion();
   } else {
     endQuiz();
@@ -357,7 +391,7 @@ function nextQuestion() {
 
 function endQuiz() {
   clearInterval(timerInterval);
-  document.getElementById('final-score').textContent = `${score} / ${quizData.length}`;
+  document.getElementById('final-score').textContent = `${score} / ${activeQuizData.length}`;
   const msg = document.getElementById('final-message');
   if (score >= 8) {
     msg.textContent = "उत्कृष्ट प्रदर्शन! 🌟 आपने पाठ को बहुत अच्छी तरह समझा है।";
