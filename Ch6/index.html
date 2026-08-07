@@ -526,11 +526,40 @@
             }
         ];
 
+        let activeDataset = [];
         let currentIdx = 0;
         let score = 0;
         let attemptsLeft = 2;
         let isLocked = false;
         let splashTimer = null;
+
+        // Utility: Fisher-Yates Shuffle
+        function shuffleArray(array) {
+            const shuffled = JSON.parse(JSON.stringify(array));
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Randomize questions & shuffle choices inside each question
+        function prepareRandomizedQuiz() {
+            const shuffledQuestions = shuffleArray(quizDataset);
+            
+            activeDataset = shuffledQuestions.map(item => {
+                const correctText = item.choices[item.correctIdx];
+                const shuffledChoices = shuffleArray(item.choices);
+                const newCorrectIdx = shuffledChoices.indexOf(correctText);
+
+                return {
+                    q: item.q,
+                    choices: shuffledChoices,
+                    correctIdx: newCorrectIdx,
+                    comp: item.comp
+                };
+            });
+        }
 
         function playSound(type) {
             let id = '';
@@ -584,6 +613,7 @@
         }, 5000);
 
         function startQuiz() {
+            prepareRandomizedQuiz();
             currentIdx = 0;
             score = 0;
             showPanel('gameplay-screen');
@@ -593,9 +623,9 @@
         function loadQuestion() {
             attemptsLeft = 2;
             isLocked = false;
-            const currentQ = quizDataset[currentIdx];
+            const currentQ = activeDataset[currentIdx];
 
-            document.getElementById('hud-round').innerText = `${String(currentIdx + 1).padStart(2, '0')} / ${quizDataset.length}`;
+            document.getElementById('hud-round').innerText = `${String(currentIdx + 1).padStart(2, '0')} / ${activeDataset.length}`;
             document.getElementById('hud-score').innerText = score;
             document.getElementById('lbl-competency').innerText = currentQ.comp;
             document.getElementById('lbl-question').innerText = currentQ.q;
@@ -616,7 +646,7 @@
 
         function selectOption(selectedIndex, buttonElem) {
             if (isLocked) return;
-            const currentQ = quizDataset[currentIdx];
+            const currentQ = activeDataset[currentIdx];
             const toast = document.getElementById('lbl-toast');
 
             if (selectedIndex === currentQ.correctIdx) {
@@ -651,7 +681,7 @@
 
         function nextQuestion() {
             currentIdx++;
-            if (currentIdx < quizDataset.length) {
+            if (currentIdx < activeDataset.length) {
                 loadQuestion();
             } else {
                 renderEndScreen();
