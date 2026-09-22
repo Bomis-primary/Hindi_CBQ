@@ -368,6 +368,11 @@
 </head>
 <body>
 
+    <!-- Audio Elements -->
+    <audio id="sound-correct" src="assets/correct.mp3" preload="auto"></audio>
+    <audio id="sound-wrong" src="assets/wrong.mp3" preload="auto"></audio>
+    <audio id="sound-clapping" src="assets/clapping.mp3" preload="auto"></audio>
+
     <div class="quiz-container">
         
         <!-- Screen 1: Splash -->
@@ -377,7 +382,6 @@
                     src="assets/innovine-logo.png" 
                     alt="Innovine Logo" 
                     class="splash-logo"
-                    onerror="this.onerror=null; this.src='image_9d321f.png';"
                 />
             </div>
         </div>
@@ -552,6 +556,15 @@
         let isLocked = false;
         let confettiAnimationId = null;
 
+        // Sound player helper
+        function playSound(soundId) {
+            const sound = document.getElementById(soundId);
+            if (sound) {
+                sound.currentTime = 0;
+                sound.play().catch(e => console.log("Audio play blocked by browser:", e));
+            }
+        }
+
         window.onload = () => {
             setTimeout(() => {
                 showPanel('instruction-screen');
@@ -642,11 +655,13 @@
                 buttonElem.setAttribute('aria-checked', 'true');
                 score += (attemptsLeft === 2) ? 10 : 5;
                 document.getElementById('hud-score').innerText = score;
+                playSound('sound-correct');
                 setTimeout(nextQuestion, 1000);
             } else {
                 attemptsLeft--;
                 buttonElem.classList.add('hit-failed');
                 buttonElem.disabled = true;
+                playSound('sound-wrong');
 
                 if (attemptsLeft === 1) {
                     toast.innerText = "⚠️ गलत उत्तर! आपके पास 1 अंतिम प्रयास बचा है।";
@@ -677,6 +692,7 @@
         function renderEndScreen() {
             showPanel('end-screen');
             document.getElementById('lbl-final-score').innerText = `${score} PTS`;
+            playSound('sound-clapping');
             
             const title = document.getElementById('end-title');
             const desc = document.getElementById('lbl-final-desc');
