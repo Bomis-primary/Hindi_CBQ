@@ -432,10 +432,10 @@
         // Safely Initialize Audio Objects
         let soundCorrect, soundWrong;
         try {
-            soundCorrect = new Audio('assets/sound correct 1.mp3');
-            soundWrong = new Audio('assets/wrong 1.mp3');
-            soundCorrect.onerror = () => soundCorrect.src = 'sound correct 1.mp3';
-            soundWrong.onerror = () => soundWrong.src = 'wrong 1.mp3';
+            soundCorrect = new Audio('correct.mp3');
+            soundWrong = new Audio('wrong.mp3');
+            soundCorrect.onerror = () => soundCorrect.src = 'correct.mp3';
+            soundWrong.onerror = () => soundWrong.src = 'wrong.mp3';
         } catch (e) {
             console.log("Audio init bypassed.");
         }
