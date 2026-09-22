@@ -227,6 +227,11 @@
 </head>
 <body>
 
+  <!-- Audio Elements -->
+  <audio id="sound-correct" src="assets/correct.mp3" preload="auto"></audio>
+  <audio id="sound-wrong" src="assets/wrong.mp3" preload="auto"></audio>
+  <audio id="sound-clapping" src="assets/freesound_community-claps-44774.mp3" preload="auto"></audio>
+
   <!-- 1. Logo Screen -->
   <div id="logo-screen" class="screen active">
     <img src="assets/logo.png" alt="Innovine Logo" class="app-logo">
@@ -454,7 +459,38 @@
     const hintBtn = document.getElementById('hintBtn');
     const nextBtn = document.getElementById('nextBtn');
 
-    // एरे को रैंडम करने का फ़ंक्शन (Fisher-Yates Shuffle Algorithm)
+    // Audio Playback Function
+    function playAudio(soundId) {
+      const sound = document.getElementById(soundId);
+      if (sound) {
+        sound.currentTime = 0;
+        const playPromise = sound.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            console.warn("Autoplay browser policy blocked audio:", error);
+          });
+        }
+      }
+    }
+
+    // Unlock browser audio restrictions on initial user interaction
+    function unlockAudio() {
+      const sounds = ['sound-correct', 'sound-wrong', 'sound-clapping'];
+      sounds.forEach(id => {
+        const audio = document.getElementById(id);
+        if (audio) {
+          audio.play().then(() => {
+            audio.pause();
+            audio.currentTime = 0;
+          }).catch(() => {});
+        }
+      });
+    }
+
+    document.addEventListener('click', unlockAudio, { once: true });
+    document.addEventListener('touchstart', unlockAudio, { once: true });
+
+    // Fisher-Yates Shuffle Algorithm
     function shuffleArray(array) {
       const arr = [...array];
       for (let i = arr.length - 1; i > 0; i--) {
@@ -464,12 +500,9 @@
       return arr;
     }
 
-    // प्रश्नों और उनके विकल्पों दोनों को रैंडम बनाना
     function prepareRandomQuizData() {
-      // 1. प्रश्नों का क्रम बदलें
       const shuffledQuestions = shuffleArray(originalQuizQuestions);
 
-      // 2. हर प्रश्न के विकल्पों को रैंडम करें और सही उत्तर सूचकांक (answer index) को अपडेट करें
       return shuffledQuestions.map(q => {
         const correctAnswerText = q.options[q.answer];
         const shuffledOptions = shuffleArray(q.options);
@@ -483,7 +516,6 @@
       });
     }
 
-    // Auto switch from Logo Screen to Intro Screen after 5 seconds
     window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('intro-q-count').textContent = originalQuizQuestions.length;
       setTimeout(() => {
@@ -497,7 +529,7 @@
     }
 
     function startQuiz() {
-      newQuizQuestions = prepareRandomQuizData(); // हर बार नए सिरे से रैंडमाइज करें
+      newQuizQuestions = prepareRandomQuizData();
       currentQuestionIndex = 0;
       score = 0;
       switchScreen('game-screen');
@@ -539,8 +571,10 @@
       if (selectedIndex === currentQ.answer) {
         score++;
         scoreTracker.textContent = `अंक: ${score}`;
+        playAudio('sound-correct');
       } else {
         buttons[selectedIndex].classList.add('wrong');
+        playAudio('sound-wrong');
       }
 
       nextBtn.style.display = 'inline-block';
@@ -566,6 +600,7 @@
     function showResults() {
       document.getElementById('finalScore').textContent = `${score} / ${newQuizQuestions.length}`;
       switchScreen('end-screen');
+      playAudio('sound-clapping');
     }
 
     function restartQuiz() {
