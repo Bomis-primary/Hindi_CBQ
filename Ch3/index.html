@@ -192,6 +192,11 @@
 </head>
 <body>
 
+    <!-- Audio Elements -->
+    <audio id="sound-correct" src="assets/correct 1.mp3" preload="auto"></audio>
+    <audio id="sound-wrong" src="assets/wrong 1.mp3" preload="auto"></audio>
+    <audio id="sound-clapping" src="assets/clapping 1.mp3" preload="auto"></audio>
+
     <!-- 1. Logo Screen -->
     <div id="logo-screen" class="screen active">
         <img src="assets/innovine-logo 1.png" alt="Innovine Logo" class="app-logo">
@@ -199,10 +204,9 @@
 
     <!-- 2. Intro Screen -->
     <div id="intro-screen" class="screen">
-        <h1>क्विज़ विवरण (Overview)</h1>
         <div class="meta-card">
             <p><strong>विषय (Subject):</strong> हिंदी</p>
-            <p><strong>पाठ (Topic):</strong> पाठ 3: हवा महल / ऐतिहासिक धरोहर</p>
+            <p><strong>पाठ (Topic):</strong> पाठ 3: हवा महल</p>
             <p><strong>कुल प्रश्न (Total Questions):</strong> <span id="intro-q-count">0</span></p>
             <p><strong>समय सीमा (Time Limit):</strong> 45 सेकंड प्रति प्रश्न</p>
         </div>
@@ -345,6 +349,15 @@
         let timerVal = 45;
         let timerInterval = null;
 
+        // Sound helper function
+        function playSound(soundId) {
+            const sound = document.getElementById(soundId);
+            if (sound) {
+                sound.currentTime = 0;
+                sound.play().catch(e => console.log("Audio play blocked by browser:", e));
+            }
+        }
+
         // Utility to shuffle an array (Fisher-Yates)
         function shuffleArray(array) {
             const arr = [...array];
@@ -443,9 +456,11 @@
                 button.classList.add("correct");
                 score++;
                 document.getElementById('live-score').textContent = score;
+                playSound('sound-correct');
             } else {
                 button.classList.add("incorrect");
                 buttons[correctIndex].classList.add("correct");
+                playSound('sound-wrong');
             }
 
             document.getElementById('next-btn').style.display = 'inline-block';
@@ -456,6 +471,7 @@
             buttons.forEach(btn => btn.disabled = true);
             const correctIndex = quizData[currentQuestionIndex].correct;
             buttons[correctIndex].classList.add("correct");
+            playSound('sound-wrong');
 
             document.getElementById('next-btn').style.display = 'inline-block';
         }
@@ -473,6 +489,7 @@
             clearInterval(timerInterval);
             document.getElementById('final-score').textContent = `${score} / ${quizData.length}`;
             switchScreen('end-screen');
+            playSound('sound-clapping');
         }
 
         function restartQuiz() {
