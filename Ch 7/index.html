@@ -120,6 +120,31 @@
             letter-spacing: -0.5px;
         }
 
+        /* Detail Box Style (Image se inspired) */
+        .details-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            width: 100%;
+            text-align: left;
+            margin-top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .details-item {
+            font-size: 16px;
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        .details-item strong {
+            font-weight: 800;
+            color: #0f172a;
+        }
+
         .instruction-card {
             background: var(--panel-bg);
             border: 1px solid var(--border);
@@ -127,14 +152,14 @@
             padding: 20px;
             width: 100%;
             text-align: left;
-            margin: 20px 0;
+            margin: 16px 0;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 12px;
         }
 
         .instruction-item {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             color: #334155;
             display: flex;
@@ -386,10 +411,17 @@
             </div>
         </div>
 
-        <!-- Screen 2: Instructions -->
+        <!-- Screen 2: Instructions & Topic Details -->
         <div id="instruction-screen" class="view-panel">
-            <div class="screen-title">निर्देश</div>
+            <div class="screen-title">अभ्यास विवरण</div>
             
+            <!-- Details Card (From Image Layout) -->
+            <div class="details-card">
+                <div class="details-item"><strong>विषय (Subject):</strong> हिंदी (Hindi)</div>
+                <div class="details-item"><strong>शीर्षक (Topic):</strong> देश का मान बढ़ाओ</div>
+                <div class="details-item"><strong>कुल प्रश्न (Total Questions):</strong> <span id="lbl-total-q-count">10</span></div>
+            </div>
+
             <div class="instruction-card">
                 <div class="instruction-item">🎯 <span>प्रत्येक प्रश्न का उत्तर देने के लिए <b>2 अवसर</b> मिलेंगे।</span></div>
                 <div class="instruction-item">⭐ <span>सही उत्तर चुनने पर अंक प्राप्त होंगे।</span></div>
@@ -397,7 +429,7 @@
                 <div class="instruction-item">🏆 <span>सभी प्रश्नों को पूरा करके अपना अंतिम स्कोर देखें।</span></div>
             </div>
             
-            <button class="btn-action" onclick="startQuiz()">शुरू करें 🚀</button>
+            <button class="btn-action" onclick="startQuiz()">किज़ शुरू करें 🚀</button>
         </div>
 
         <!-- Screen 3: Gameplay -->
@@ -566,6 +598,7 @@
         }
 
         window.onload = () => {
+            document.getElementById('lbl-total-q-count').innerText = rawDataset.length;
             setTimeout(() => {
                 showPanel('instruction-screen');
             }, 3000);
