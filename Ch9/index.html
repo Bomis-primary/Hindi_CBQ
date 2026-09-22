@@ -227,6 +227,11 @@
 </head>
 <body>
 
+  <!-- Audio Elements -->
+  <audio id="sound-correct" src="assets/correct.mp3" preload="auto"></audio>
+  <audio id="sound-wrong" src="assets/wrong.mp3" preload="auto"></audio>
+  <audio id="sound-clapping" src="assets/freesound_community-claps-44774.mp3" preload="auto"></audio>
+
   <!-- 1. Logo Screen -->
   <div id="logo-screen" class="screen active">
     <img src="assets/logo.png" alt="Innovine Logo" class="app-logo">
@@ -399,6 +404,37 @@
     const hintBtn = document.getElementById('hintBtn');
     const nextBtn = document.getElementById('nextBtn');
 
+    // Function to play sound safely
+    function playAudio(soundId) {
+      const sound = document.getElementById(soundId);
+      if (sound) {
+        sound.currentTime = 0;
+        const playPromise = sound.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            console.warn("Audio play blocked by browser autoplay policy:", error);
+          });
+        }
+      }
+    }
+
+    // Unlock audio context on user interaction
+    function unlockAudio() {
+      const sounds = ['sound-correct', 'sound-wrong', 'sound-clapping'];
+      sounds.forEach(id => {
+        const audio = document.getElementById(id);
+        if (audio) {
+          audio.play().then(() => {
+            audio.pause();
+            audio.currentTime = 0;
+          }).catch(() => {});
+        }
+      });
+    }
+
+    document.addEventListener('click', unlockAudio, { once: true });
+    document.addEventListener('touchstart', unlockAudio, { once: true });
+
     // Utility function to shuffle array items
     function shuffleArray(array) {
       const shuffled = [...array];
@@ -481,8 +517,10 @@
       if (selectedIndex === currentQ.answer) {
         score++;
         scoreTracker.textContent = `अंक: ${score}`;
+        playAudio('sound-correct');
       } else {
         buttons[selectedIndex].classList.add('wrong');
+        playAudio('sound-wrong');
       }
 
       nextBtn.style.display = 'inline-block';
@@ -508,6 +546,7 @@
     function showResults() {
       document.getElementById('finalScore').textContent = `${score} / ${activeQuestions.length}`;
       switchScreen('end-screen');
+      playAudio('sound-clapping');
     }
 
     function restartQuiz() {
